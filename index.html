@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MoyaCode Quiz</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="app-shell" id="app-shell">
+    <div id="home-view" class="home-view">
+      <div class="home-header">
+        <h1>MoyaCode Quizzes 🚀</h1>
+        <p>Select your class to begin your session</p>
+      </div>
+
+      <div class="class-grid">
+        <button class="class-card" onclick="startQuiz('jss2')">
+          <span class="class-level">JSS2</span>
+          <span class="class-subject">Advanced Scratch</span>
+        </button>
+        <button class="class-card" onclick="startQuiz('ss1')">
+          <span class="class-level">SS1</span>
+          <span class="class-subject">HTML Basics</span>
+        </button>
+        <button class="class-card" onclick="startQuiz('ss2')">
+          <span class="class-level">SS2</span>
+          <span class="class-subject">CSS Styling</span>
+        </button>
+        <button class="class-card" onclick="startQuiz('ss3')">
+          <span class="class-level">SS3</span>
+          <span class="class-subject">JavaScript Logic</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="quiz-view" style="display: none;">
+       <div class="subject-badge" id="dynamic-subject-badge">Subject</div>
+       ```
+    <div id="quiz-view">
+      <div class="top-bar">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <button id="back-btn" class="back-btn">←</button>
+          <div class="hearts-row" id="hearts-display"></div>
+        </div>
+        
+        <div class="xp-row">
+          <span class="xp-badge" id="xp-display">⚡ 0 XP</span>
+          <span class="streak-badge" id="streak-display" style="display: none;">🔥 0 streak</span>
+        </div>
+      </div>
+
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-bar"></div>
+      </div>
+      <p class="progress-label" id="progress-label"></p>
+
+      <div class="question-card">
+        <div class="subject-badge">JSS2 · Advanced Scratch</div>
+        <p class="question-text" id="question-text"></p>
+      </div>
+
+      <div class="options-grid" id="options-grid"></div>
+
+      <button class="check-btn" id="check-btn" disabled>Select an option</button>
+    </div>
+
+    <div id="end-screen" class="end-screen" style="display: none;">
+      <div id="end-emoji" style="font-size: 72px;"></div>
+      <h2 class="end-title" id="end-title"></h2>
+      <p class="end-sub" id="end-sub"></p>
+      <div class="stats-row" id="end-stats"></div>
+      <button class="restart-btn" id="restart-btn">Try Again 💪</button>
+    </div>
+
+    <div class="drawer" id="feedback-drawer">
+      <div class="drawer-emoji" id="drawer-emoji"></div>
+      <h3 class="drawer-title" id="drawer-title"></h3>
+      <p class="drawer-explanation" id="drawer-explanation"></p>
+      
+      <div class="teacher-box">
+        <p class="teacher-comment" id="teacher-comment"></p>
+        <p class="teacher-label">— Mr. Grok, your Scratch sensei 🧠</p>
+      </div>
+      
+      <div class="xp-earned" id="xp-earned"></div>
+      <button class="continue-btn" id="continue-btn"></button>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
