@@ -76,6 +76,8 @@ const DOM = {
   heartsDisplay: document.getElementById('hearts-display'),
   xpDisplay: document.getElementById('xp-display'),
   streakDisplay: document.getElementById('streak-display'),
+  assemblyArea: document.getElementById('assembly-area'),
+  skipBtn: document.getElementById('skip-btn'),
   progressBar: document.getElementById('progress-bar'),
   progressLabel: document.getElementById('progress-label'),
   questionText: document.getElementById('question-text'),
@@ -154,25 +156,15 @@ function renderGame() {
   DOM.progressLabel.innerText = `Question ${state.currentQuestionIndex + 1} of ${state.activeQuestions.length}`;
 
   DOM.questionText.innerText = q.question;
+  if (DOM.assemblyArea) {
+    DOM.assemblyArea.innerText = state.selectedAnswer === null ? '' : q.options[state.selectedAnswer];
+  }
   renderOptions();
   updateCheckButton();
 }
 
 function renderHearts() {
-  DOM.heartsDisplay.innerHTML = '';
-  for (let i = 0; i < MAX_LIVES; i++) {
-    const isAlive = i < state.currentLives;
-    const heart = document.createElement('span');
-    heart.className = 'heart';
-    heart.innerText = isAlive ? '❤️' : '🖤';
-    
-    if (!isAlive) {
-      heart.style.opacity = '0.3';
-      heart.style.filter = 'grayscale(1)';
-      heart.style.transform = 'scale(0.78) rotate(-12deg)';
-    }
-    DOM.heartsDisplay.appendChild(heart);
-  }
+  DOM.heartsDisplay.innerText = `❤️ ${Math.max(0, state.currentLives)}`;
 }
 
 function renderOptions() {
@@ -204,6 +196,7 @@ function renderOptions() {
     btn.onclick = () => {
       if (!isLocked) {
         state.selectedAnswer = i;
+        if (DOM.assemblyArea) DOM.assemblyArea.innerText = q.options[i];
         renderOptions();
         updateCheckButton();
       }
@@ -217,12 +210,18 @@ function updateCheckButton() {
   if (state.selectedAnswer !== null && state.feedbackState === "idle") {
     DOM.checkBtn.classList.add('active');
     DOM.checkBtn.disabled = false;
-    DOM.checkBtn.innerText = "Check Answer ✅";
+    DOM.checkBtn.innerText = "CHECK";
   } else {
     DOM.checkBtn.classList.remove('active');
     DOM.checkBtn.disabled = true;
-    DOM.checkBtn.innerText = "Select an option";
+    DOM.checkBtn.innerText = "CHECK";
   }
+}
+
+
+function handleSkip() {
+  if (state.phase !== "quiz" || state.feedbackState !== "idle") return;
+  handleContinue();
 }
 
 function handleCheck() {
@@ -348,5 +347,6 @@ DOM.continueBtn.addEventListener('click', handleContinue);
 DOM.restartBtn.addEventListener('click', goHome);
 // Add this right above goHome(); at the bottom of the file
 DOM.backBtn.addEventListener('click', goHome);
+if (DOM.skipBtn) DOM.skipBtn.addEventListener('click', handleSkip);
 // Start the app by showing the Home Screen
 goHome();

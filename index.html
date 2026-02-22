@@ -1,96 +1,331 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MoyaCode Quiz</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MoyaCode | Learn Coding the Fun Way</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #58cc02;
+      --green-dark: #44a001;
+      --blue: #1cb0f6;
+      --blue-dark: #1597d6;
+      --text: #3c3c3c;
+      --muted: #767676;
+      --line: #e5e5e5;
+      --surface: #f7f7f7;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Nunito', sans-serif;
+      color: var(--text);
+      background: #fff;
+    }
+
+    .container {
+      width: min(1120px, 92vw);
+      margin: 0 auto;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 16px 20px;
+      border-radius: 16px;
+      font-size: 1rem;
+      font-weight: 900;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: .02em;
+      border: 2px solid transparent;
+      border-bottom-width: 4px;
+      transition: transform .15s ease, filter .15s ease;
+    }
+
+    .btn:hover { filter: brightness(.98); }
+    .btn:active { transform: translateY(2px); border-bottom-width: 2px; }
+
+    .btn-primary {
+      color: #fff;
+      background: var(--green);
+      border-color: #55bf02;
+      border-bottom-color: var(--green-dark);
+    }
+
+    .btn-secondary {
+      color: var(--blue);
+      background: #fff;
+      border-color: #d7effb;
+      border-bottom-color: #b5ddf3;
+    }
+
+    .hero {
+      padding: 52px 0 44px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero-grid {
+      display: flex;
+      gap: 42px;
+      align-items: center;
+    }
+
+    .hero-mascot,
+    .illus-box {
+      background: linear-gradient(140deg, #f4f7fb, #ecf2f7);
+      border: 2px solid #dfebf3;
+      border-bottom: 4px solid #d1deea;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-mascot {
+      flex: 1;
+      min-height: 360px;
+      padding: 24px;
+    }
+
+    .hero-copy { flex: 1; }
+
+    h1 {
+      margin: 0 0 24px;
+      font-size: clamp(2.1rem, 4vw, 3.4rem);
+      line-height: 1.1;
+      font-weight: 900;
+    }
+
+    .hero-cta { display: flex; flex-direction: column; gap: 14px; }
+
+    .tracks {
+      padding: 22px 0;
+      background: var(--surface);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .track-list {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+
+    .track {
+      min-width: 210px;
+      background: #fff;
+      border: 2px solid #ececec;
+      border-bottom: 4px solid #dddddd;
+      border-radius: 18px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      color: #585858;
+    }
+
+    .track-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      background: #eff8ff;
+      border: 2px solid #d8ecfa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .features { padding: 44px 0; }
+
+    .feature {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      padding: 24px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .feature:nth-child(even) { flex-direction: row-reverse; }
+
+    .feature-copy,
+    .feature-visual { flex: 1; }
+
+    .feature h2 {
+      margin: 0 0 8px;
+      font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+      line-height: 1.15;
+      color: #4b4b4b;
+    }
+
+    .feature p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 1.02rem;
+      max-width: 520px;
+    }
+
+    .illus-box {
+      min-height: 190px;
+      color: #7d98ad;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      text-align: center;
+      padding: 20px;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 26px 0 36px;
+      background: #fff;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 22px;
+      justify-content: center;
+      font-weight: 700;
+    }
+
+    .footer-links a {
+      color: #7a7a7a;
+      text-decoration: none;
+    }
+
+    .footer-links a:hover { color: #4f4f4f; }
+
+    @media (max-width: 900px) {
+      .hero-grid,
+      .feature,
+      .feature:nth-child(even) {
+        flex-direction: column;
+      }
+
+      .hero-mascot { min-height: 280px; width: 100%; }
+      .hero-copy { width: 100%; }
+    }
+  </style>
 </head>
 <body>
-
-  <div class="app-shell" id="app-shell">
-    <div id="home-view" class="home-view">
-      <div class="home-header">
-        <h1>MoyaCode Quizzes 🚀</h1>
-        <p>Select your class to begin your session</p>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-mascot" aria-label="Floating robot mascot placeholder">
+        <svg width="260" height="260" viewBox="0 0 260 260" role="img" aria-label="Friendly coding robot" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="100%" stop-color="#e8f4ff"/>
+            </linearGradient>
+          </defs>
+          <circle cx="130" cy="130" r="122" fill="#f6fbff"/>
+          <rect x="72" y="68" width="116" height="92" rx="22" fill="url(#g1)" stroke="#bfdcf2" stroke-width="4"/>
+          <circle cx="108" cy="112" r="11" fill="#1cb0f6"/>
+          <circle cx="152" cy="112" r="11" fill="#1cb0f6"/>
+          <rect x="102" y="132" width="56" height="10" rx="5" fill="#58cc02"/>
+          <rect x="84" y="166" width="92" height="46" rx="14" fill="#ffffff" stroke="#bfdcf2" stroke-width="4"/>
+          <text x="130" y="195" text-anchor="middle" font-family="Nunito, sans-serif" font-size="21" font-weight="900" fill="#4f6b80">&lt;/&gt;</text>
+          <line x1="130" y1="68" x2="130" y2="46" stroke="#bfdcf2" stroke-width="4"/>
+          <circle cx="130" cy="40" r="8" fill="#58cc02"/>
+        </svg>
       </div>
 
-      <div class="class-grid">
-        <button class="class-card" onclick="startQuiz('jss2')">
-          <span class="class-level">JSS2</span>
-          <span class="class-subject">Advanced Scratch</span>
-        </button>
-        <button class="class-card" onclick="startQuiz('ss1')">
-          <span class="class-level">SS1</span>
-          <span class="class-subject">HTML Basics</span>
-        </button>
-        <button class="class-card" onclick="startQuiz('ss2')">
-          <span class="class-level">SS2</span>
-          <span class="class-subject">CSS Styling</span>
-        </button>
-        <button class="class-card" onclick="startQuiz('ss3')">
-          <span class="class-level">SS3</span>
-          <span class="class-subject">JavaScript Logic</span>
-        </button>
-      </div>
-    </div>
-
-    <div id="quiz-view" style="display: none;">
-       <div class="subject-badge" id="dynamic-subject-badge">Subject</div>
-       ```
-    <div id="quiz-view">
-      <div class="top-bar">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <button id="back-btn" class="back-btn">←</button>
-          <div class="hearts-row" id="hearts-display"></div>
-        </div>
-        
-        <div class="xp-row">
-          <span class="xp-badge" id="xp-display">⚡ 0 XP</span>
-          <span class="streak-badge" id="streak-display" style="display: none;">🔥 0 streak</span>
+      <div class="hero-copy">
+        <h1>The free, fun, and effective way to learn coding.</h1>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="welcome.html">Get Started</a>
+          <a class="btn btn-secondary" href="#">I ALREADY HAVE AN ACCOUNT</a>
         </div>
       </div>
-
-      <div class="progress-track">
-        <div class="progress-fill" id="progress-bar"></div>
-      </div>
-      <p class="progress-label" id="progress-label"></p>
-
-      <div class="question-card">
-        <div class="subject-badge">JSS2 · Advanced Scratch</div>
-        <p class="question-text" id="question-text"></p>
-      </div>
-
-      <div class="options-grid" id="options-grid"></div>
-
-      <button class="check-btn" id="check-btn" disabled>Select an option</button>
     </div>
+  </section>
 
-    <div id="end-screen" class="end-screen" style="display: none;">
-      <div id="end-emoji" style="font-size: 72px;"></div>
-      <h2 class="end-title" id="end-title"></h2>
-      <p class="end-sub" id="end-sub"></p>
-      <div class="stats-row" id="end-stats"></div>
-      <button class="restart-btn" id="restart-btn">Try Again 💪</button>
-    </div>
-
-    <div class="drawer" id="feedback-drawer">
-      <div class="drawer-emoji" id="drawer-emoji"></div>
-      <h3 class="drawer-title" id="drawer-title"></h3>
-      <p class="drawer-explanation" id="drawer-explanation"></p>
-      
-      <div class="teacher-box">
-        <p class="teacher-comment" id="teacher-comment"></p>
-        <p class="teacher-label">— Mr. Grok, your Scratch sensei 🧠</p>
+  <section class="tracks" aria-label="Coding tracks">
+    <div class="container">
+      <div class="track-list">
+        <div class="track">
+          <div class="track-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3L20 8V16L12 21L4 16V8L12 3Z" stroke="#1CB0F6" stroke-width="2"/><path d="M12 8L16 10.5V13.5L12 16L8 13.5V10.5L12 8Z" fill="#58CC02"/></svg>
+          </div>
+          Advanced Scratch
+        </div>
+        <div class="track">
+          <div class="track-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 6L4 12L9 18" stroke="#1CB0F6" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 6L20 12L15 18" stroke="#1CB0F6" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          HTML Basics
+        </div>
+        <div class="track">
+          <div class="track-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 6H17" stroke="#1CB0F6" stroke-width="2.3" stroke-linecap="round"/><path d="M7 12H14" stroke="#58CC02" stroke-width="2.3" stroke-linecap="round"/><path d="M7 18H11" stroke="#1CB0F6" stroke-width="2.3" stroke-linecap="round"/></svg>
+          </div>
+          CSS Styling
+        </div>
+        <div class="track">
+          <div class="track-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="16" height="16" rx="4" stroke="#1CB0F6" stroke-width="2"/><path d="M9 9H12V12H15V15H12V12H9V9Z" fill="#58CC02"/></svg>
+          </div>
+          JavaScript Logic
+        </div>
       </div>
-      
-      <div class="xp-earned" id="xp-earned"></div>
-      <button class="continue-btn" id="continue-btn"></button>
     </div>
+  </section>
 
-  </div>
+  <section class="features">
+    <div class="container">
+      <article class="feature">
+        <div class="feature-visual"><div class="illus-box">XP + 3 Hearts Visual</div></div>
+        <div class="feature-copy">
+          <h2>Code, Play, Win.</h2>
+          <p>Earn XP every time you solve a coding challenge, protect your three hearts, and keep progressing through lessons that feel like a game.</p>
+        </div>
+      </article>
 
-  <script src="script.js"></script>
+      <article class="feature">
+        <div class="feature-visual"><div class="illus-box">Project Builder Visual</div></div>
+        <div class="feature-copy">
+          <h2>Build Real Projects.</h2>
+          <p>Start with visual logic blocks and smoothly transition into real-world HTML, CSS, and JavaScript syntax as your confidence grows.</p>
+        </div>
+      </article>
+
+      <article class="feature">
+        <div class="feature-visual"><div class="illus-box">Daily Streak Visual</div></div>
+        <div class="feature-copy">
+          <h2>Stay in the Zone.</h2>
+          <p>Keep your daily coding streak alive with bite-sized sessions designed to make learning consistent, motivating, and habit-forming.</p>
+        </div>
+      </article>
+
+      <article class="feature">
+        <div class="feature-visual"><div class="illus-box">AI Challenge Visual</div></div>
+        <div class="feature-copy">
+          <h2>Learn at Your Pace.</h2>
+          <p>Personalized AI-driven challenges adapt to your level, helping you master each concept without pressure or one-size-fits-all pacing.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container footer-links">
+      <a href="#">About MoyaCode</a>
+      <a href="#">MoyaCode for Schools</a>
+      <a href="#">Terms</a>
+      <a href="#">Privacy</a>
+    </div>
+  </footer>
 </body>
 </html>
