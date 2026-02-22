@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MoyaCode | Welcome</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #58cc02;
+      --green-dark: #46a302;
+      --text: #3d3d3d;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #ffffff;
+      font-family: 'Nunito', sans-serif;
+      color: var(--text);
+    }
+
+    .screen {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 24px;
+      padding-bottom: 120px;
+    }
+
+    .center-wrap {
+      width: min(580px, 94vw);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .speech {
+      position: relative;
+      width: 100%;
+      background: #fff;
+      border: 2px solid #ececec;
+      border-radius: 20px;
+      padding: 22px 24px;
+      text-align: center;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+    }
+
+    .speech::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      bottom: -10px;
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-right: 2px solid #ececec;
+      border-bottom: 2px solid #ececec;
+    }
+
+    .speech h1 {
+      margin: 0;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      line-height: 1.15;
+      font-weight: 900;
+    }
+
+    .speech p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 2.2vw, 1.08rem);
+      font-weight: 700;
+    }
+
+    .robot-box {
+      width: min(360px, 72vw);
+      aspect-ratio: 1/1;
+      border-radius: 28px;
+      border: 2px solid #e7edf4;
+      border-bottom: 4px solid #d9e2ec;
+      background: linear-gradient(155deg, #f6fbff, #eef6ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .bottom-bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-top: 1px solid var(--line);
+      background: #fff;
+      padding: 16px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .continue-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      background: var(--green);
+      color: #fff;
+      font-weight: 900;
+      border-radius: 16px;
+      padding: 14px 30px;
+      border: 2px solid #55bf02;
+      border-bottom: 4px solid var(--green-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      transition: transform .15s ease, filter .15s ease;
+    }
+
+    .continue-btn:hover { filter: brightness(.98); }
+    .continue-btn:active { transform: translateY(2px); border-bottom-width: 2px; }
+  </style>
+</head>
+<body>
+  <main class="screen">
+    <section class="center-wrap" aria-label="Welcome from MoyaCode robot">
+      <div class="speech">
+        <h1>Hi there! I'm MoyaBot!</h1>
+        <p>I'm here to help you become a master developer.</p>
+      </div>
+
+      <div class="robot-box" aria-label="MoyaCode robot placeholder image">
+        <svg width="240" height="240" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Friendly robot mascot">
+          <circle cx="130" cy="130" r="120" fill="#f8fcff"/>
+          <rect x="68" y="70" width="124" height="96" rx="24" fill="#ffffff" stroke="#c9e2f5" stroke-width="4"/>
+          <circle cx="108" cy="114" r="11" fill="#1cb0f6"/>
+          <circle cx="152" cy="114" r="11" fill="#1cb0f6"/>
+          <rect x="102" y="136" width="56" height="10" rx="5" fill="#58cc02"/>
+          <rect x="84" y="172" width="92" height="44" rx="14" fill="#ffffff" stroke="#c9e2f5" stroke-width="4"/>
+          <text x="130" y="201" text-anchor="middle" font-family="Nunito, sans-serif" font-size="22" font-weight="900" fill="#4b6478">&lt;/&gt;</text>
+          <line x1="130" y1="70" x2="130" y2="46" stroke="#c9e2f5" stroke-width="4"/>
+          <circle cx="130" cy="40" r="8" fill="#58cc02"/>
+        </svg>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bottom-bar">
+    <a class="continue-btn" href="discovery.html">Continue</a>
+  </footer>
+</body>
+</html>
