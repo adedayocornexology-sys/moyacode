@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MoyaCode | Motivation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #58cc02;
+      --green-dark: #46a302;
+      --blue: #1cb0f6;
+      --gray-1: #eef1f4;
+      --gray-2: #d6dee6;
+      --gray-3: #9aa5b1;
+      --text: #3f3f46;
+      --line: #e5e7eb;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Nunito', sans-serif;
+      color: var(--text);
+      background: #fff;
+      padding-bottom: 110px;
+    }
+
+    .progress-wrap {
+      display: flex;
+      justify-content: center;
+      padding: 14px 12px 10px;
+    }
+
+    .progress-track {
+      width: min(860px, 92vw);
+      height: 8px;
+      border-radius: 999px;
+      background: #eceff3;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 25%;
+      height: 100%;
+      background: var(--green);
+    }
+
+    .page {
+      width: min(1040px, 92vw);
+      margin: 0 auto;
+      padding: 14px 0 24px;
+    }
+
+    .intro {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .mascot {
+      width: 120px;
+      height: 120px;
+      border-radius: 22px;
+      border: 2px solid #dce7f3;
+      border-bottom: 4px solid #c9d9e8;
+      background: linear-gradient(160deg, #f6fbff, #eef6ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .bubble {
+      position: relative;
+      flex: 1;
+      background: #fff;
+      border: 2px solid #ececec;
+      border-radius: 20px;
+      padding: 18px 22px;
+      font-size: clamp(1.15rem, 2.4vw, 1.8rem);
+      font-weight: 900;
+      line-height: 1.2;
+      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.05);
+    }
+
+    .bubble::before {
+      content: '';
+      position: absolute;
+      left: -10px;
+      top: 45%;
+      width: 16px;
+      height: 16px;
+      transform: rotate(45deg);
+      background: #fff;
+      border-left: 2px solid #ececec;
+      border-bottom: 2px solid #ececec;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .option {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 18px 16px;
+      border-radius: 16px;
+      background: #fff;
+      border: 2px solid var(--gray-2);
+      border-bottom: 4px solid var(--gray-3);
+      font: inherit;
+      font-size: 1.04rem;
+      font-weight: 800;
+      color: #4b5563;
+      text-align: left;
+      cursor: pointer;
+      transition: transform .16s ease, border-color .16s ease, color .16s ease, box-shadow .16s ease;
+    }
+
+    .option:hover { transform: translateY(-2px); }
+
+    .option .emoji {
+      width: 34px;
+      text-align: center;
+      font-size: 1.7rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .option.selected {
+      border-color: var(--blue);
+      border-bottom-color: #1498d6;
+      color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(28, 176, 246, 0.16);
+    }
+
+    .footer {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-top: 1px solid var(--line);
+      background: #fff;
+      padding: 16px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .continue-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 185px;
+      padding: 14px 28px;
+      border-radius: 16px;
+      border: 2px solid #d1d5db;
+      border-bottom: 4px solid #a8afb8;
+      background: #cfd4db;
+      color: #fff;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: .02em;
+      font-size: 1rem;
+      font-weight: 900;
+      pointer-events: none;
+      transition: transform .15s ease, filter .15s ease, background .15s ease, border-color .15s ease;
+    }
+
+    .continue-btn.enabled {
+      pointer-events: auto;
+      background: var(--green);
+      border-color: #55bf02;
+      border-bottom-color: var(--green-dark);
+    }
+
+    .continue-btn.enabled:hover { filter: brightness(.98); }
+    .continue-btn.enabled:active { transform: translateY(2px); border-bottom-width: 2px; }
+
+    @media (max-width: 760px) {
+      .intro { align-items: flex-start; }
+      .mascot { width: 92px; height: 92px; }
+      .grid { grid-template-columns: 1fr; }
+      .bubble::before { top: 30px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress-wrap">
+    <div class="progress-track" aria-label="Onboarding progress">
+      <div class="progress-fill"></div>
+    </div>
+  </div>
+
+  <main class="page">
+    <section class="intro" aria-label="Motivation prompt">
+      <div class="mascot" aria-label="MoyaCode Robot">
+        <svg width="76" height="76" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Robot mascot">
+          <rect x="68" y="70" width="124" height="96" rx="24" fill="#ffffff" stroke="#c9e2f5" stroke-width="8"/>
+          <circle cx="108" cy="114" r="11" fill="#1cb0f6"/>
+          <circle cx="152" cy="114" r="11" fill="#1cb0f6"/>
+          <rect x="102" y="136" width="56" height="10" rx="5" fill="#58cc02"/>
+          <line x1="130" y1="70" x2="130" y2="46" stroke="#c9e2f5" stroke-width="8"/>
+          <circle cx="130" cy="40" r="8" fill="#58cc02"/>
+        </svg>
+      </div>
+      <div class="bubble">What is your coding superpower for?</div>
+    </section>
+
+    <section class="grid" aria-label="Motivation options">
+      <button class="option" type="button"><span class="emoji">📚</span><span>Support my education</span></button>
+      <button class="option" type="button"><span class="emoji">💼</span><span>Boost my future career</span></button>
+      <button class="option" type="button"><span class="emoji">🚀</span><span>Build my own startup</span></button>
+      <button class="option" type="button"><span class="emoji">🤝</span><span>Help my community</span></button>
+      <button class="option" type="button"><span class="emoji">🧠</span><span>Solve hard problems</span></button>
+      <button class="option" type="button"><span class="emoji">🎉</span><span>Just for fun</span></button>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <a id="continue-btn" class="continue-btn" href="goals.html" aria-disabled="true">Continue</a>
+  </footer>
+
+  <script>
+    const options = document.querySelectorAll('.option');
+    const continueBtn = document.getElementById('continue-btn');
+
+    options.forEach((card) => {
+      card.addEventListener('click', () => {
+        options.forEach((item) => item.classList.remove('selected'));
+        card.classList.add('selected');
+        continueBtn.classList.add('enabled');
+        continueBtn.setAttribute('aria-disabled', 'false');
+      });
+    });
+  </script>
+</body>
+</html>
