@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MoyaCode Lesson</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *{box-sizing:border-box} body{margin:0;font-family:'Nunito',sans-serif;background:#fff;color:#3f3f46}
+    .page{max-width:900px;margin:0 auto;min-height:100vh;padding:20px 18px 120px}
+    .top{position:sticky;top:0;background:#fff;z-index:20;display:flex;align-items:center;gap:12px;padding:8px 0 14px}
+    .x-btn{width:42px;height:42px;border-radius:999px;border:2px solid #d1d5db;background:#f3f4f6;color:#6b7280;font-weight:900;font-size:1.2rem;cursor:pointer}
+    .track{flex:1;height:16px;background:#eceff3;border-radius:999px;overflow:hidden}.fill{height:100%;width:0;background:#58cc02;transition:width .25s ease}
+    .hearts{min-width:70px;padding:8px 10px;border-radius:999px;border:2px solid #fecaca;border-bottom:4px solid #fca5a5;background:#fff1f2;color:#dc2626;font-weight:900;text-align:center}
+    .tag{display:inline-block;background:#ede9fe;color:#7c3aed;font-weight:900;border-radius:999px;padding:6px 12px;font-size:.8rem;margin:8px 0 14px}
+    .challenge{display:flex;gap:14px;align-items:flex-start}
+    .bot{width:86px;height:86px;border-radius:20px;border:2px solid #dbeafe;border-bottom:4px solid #bfdbfe;background:linear-gradient(160deg,#f8fbff,#eef5ff);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .bubble{position:relative;flex:1;border:2px solid #e5e7eb;border-radius:16px;background:#fff;padding:14px 16px;min-height:86px;display:flex;align-items:center}
+    .bubble:before{content:'';position:absolute;left:-9px;top:30px;width:14px;height:14px;background:#fff;border-left:2px solid #e5e7eb;border-bottom:2px solid #e5e7eb;transform:rotate(45deg)}
+    .q{margin:0;font-size:1.45rem;line-height:1.2;font-weight:900}
+    .assembly{margin:20px 0 14px;min-height:58px;border-bottom:3px solid #e5e7eb;display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;padding-bottom:10px}
+    .bank{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start}
+    .chip{padding:10px 14px;border-radius:999px;border:2px solid #e5e7eb;border-bottom:4px solid #cbd5e1;background:#fff;color:#374151;font-weight:800;cursor:pointer;transition:transform .12s ease}
+    .chip:active{transform:translateY(2px);border-bottom-width:2px}
+    .chip.placed{border-color:#bfdbfe;border-bottom-color:#60a5fa;background:#eff6ff;color:#1d4ed8}
+    .footer{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #e5e7eb;padding:14px 18px;display:flex;justify-content:center}
+    .footer-inner{max-width:900px;width:100%;display:flex;justify-content:space-between;gap:12px}
+    .skip,.check{border-radius:16px;font-weight:900;padding:14px 24px;border:2px solid #d1d5db;border-bottom:4px solid #9ca3af;cursor:pointer}
+    .skip{background:#fff;color:#6b7280}.check{min-width:190px;background:#e5e5e5;color:#8a8a8a;border-color:#d1d5db;border-bottom-color:#9ca3af}
+    .check.active{background:#58cc02;color:#fff;border-color:#65d40d;border-bottom-color:#3f9c00}
+    .drawer{position:fixed;left:0;right:0;bottom:0;max-width:900px;margin:0 auto;background:#22c55e;color:#fff;border-radius:20px 20px 0 0;padding:18px;transform:translateY(110%);transition:transform .25s ease;z-index:40;text-align:center}
+    .drawer.bad{background:#ef4444}.drawer.open{transform:translateY(0)}
+    .drawer h3{margin:0 0 6px}.drawer p{margin:0 0 12px}.next{width:100%;padding:12px;border:none;border-radius:12px;font-weight:900}
+    @media (max-width:720px){.q{font-size:1.2rem}.chip{font-size:.95rem}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <button class="x-btn" id="close-btn">✕</button>
+      <div class="track"><div class="fill" id="progress-fill"></div></div>
+      <div class="hearts" id="hearts">❤️ 3</div>
+    </header>
+
+    <span class="tag">✨ NEW CHALLENGE</span>
+
+    <section class="challenge">
+      <div class="bot"><img src="https://placehold.co/150x150/58CC02/white?text=Moya+Bot" alt="MoyaBot" style="width:54px;height:54px;object-fit:contain" /></div>
+      <div class="bubble"><h2 class="q" id="question-text"></h2></div>
+    </section>
+
+    <section class="assembly" id="assembly-line"></section>
+    <section class="bank" id="chip-bank"></section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <button class="skip" id="skip-btn">SKIP</button>
+      <button class="check" id="check-btn" disabled>CHECK</button>
+    </div>
+  </footer>
+
+  <div class="drawer" id="feedback-drawer">
+    <h3 id="feedback-title">Great!</h3>
+    <p id="feedback-text"></p>
+    <button class="next" id="next-btn">CONTINUE</button>
+  </div>
+
+  <script src="quiz.js"></script>
+</body>
+</html>
