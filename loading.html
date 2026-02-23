@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MoyaCode | Loading Quest</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #1e1b4b;
+      color: #ffffff;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .loading-wrap {
+      width: min(760px, 92vw);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 18px;
+    }
+
+    .bot-zone {
+      position: relative;
+      width: 240px;
+      height: 240px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .pulse-ring {
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(139, 233, 255, 0.45) 0%, rgba(139, 233, 255, 0.08) 65%, rgba(139, 233, 255, 0) 100%);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+
+    .bot {
+      position: relative;
+      z-index: 2;
+      width: 170px;
+      height: 170px;
+      border-radius: 26px;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-bottom: 4px solid rgba(255, 255, 255, 0.2);
+      background: linear-gradient(160deg, #f7fcff, #ecf7ff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    h2, p {
+      opacity: 0;
+      animation: fadeIn .7s ease-out forwards;
+      animation-delay: .5s;
+      margin: 0;
+    }
+
+    h2 {
+      font-size: clamp(1.5rem, 3.4vw, 2rem);
+      font-weight: 900;
+    }
+
+    p {
+      max-width: 560px;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: clamp(1rem, 2.4vw, 1.15rem);
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(0.92); opacity: .6; }
+      50% { transform: scale(1.08); opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <main class="loading-wrap">
+    <div class="bot-zone" aria-label="MoyaBot loading animation">
+      <div class="pulse-ring"></div>
+      <div class="bot">
+        <svg width="120" height="120" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MoyaBot placeholder">
+          <rect x="68" y="70" width="124" height="96" rx="24" fill="#ffffff" stroke="#c9e2f5" stroke-width="8"/>
+          <circle cx="108" cy="114" r="11" fill="#1cb0f6"/>
+          <circle cx="152" cy="114" r="11" fill="#1cb0f6"/>
+          <rect x="102" y="136" width="56" height="10" rx="5" fill="#58cc02"/>
+          <line x1="130" y1="70" x2="130" y2="46" stroke="#c9e2f5" stroke-width="8"/>
+          <circle cx="130" cy="40" r="8" fill="#58cc02"/>
+        </svg>
+      </div>
+    </div>
+
+    <h2>MoyaBot is preparing your Quest...</h2>
+    <p>Tip: Every great developer started exactly where you are right now.</p>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const selectedClass = params.get('class') || '';
+
+    setTimeout(() => {
+      window.location.href = 'lesson.html?class=' + encodeURIComponent(selectedClass);
+    }, 3500);
+  </script>
+</body>
+</html>

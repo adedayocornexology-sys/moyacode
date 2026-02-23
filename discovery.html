@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MoyaCode | Discovery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #58cc02;
+      --green-dark: #46a302;
+      --blue: #1cb0f6;
+      --blue-dark: #1292cb;
+      --text: #3f3f46;
+      --muted: #71717a;
+      --line: #e5e7eb;
+      --surface: #f8fafc;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Nunito', sans-serif;
+      background: #fff;
+      color: var(--text);
+      padding-bottom: 110px;
+    }
+
+    .progress-track {
+      height: 8px;
+      width: 100%;
+      background: #eceff3;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 15%;
+      height: 100%;
+      background: var(--green);
+    }
+
+    .page {
+      width: min(1040px, 92vw);
+      margin: 0 auto;
+      padding: 26px 0 26px;
+    }
+
+    .intro {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .mascot {
+      width: 120px;
+      height: 120px;
+      border-radius: 24px;
+      border: 2px solid #dce7f3;
+      border-bottom: 4px solid #c8d9eb;
+      background: linear-gradient(160deg, #f6fbff, #eef6ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .bubble {
+      position: relative;
+      flex: 1;
+      border: 2px solid #ececec;
+      border-radius: 20px;
+      background: #fff;
+      padding: 18px 22px;
+      font-size: clamp(1.2rem, 2.4vw, 1.8rem);
+      font-weight: 900;
+      line-height: 1.2;
+      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.05);
+    }
+
+    .bubble::before {
+      content: '';
+      position: absolute;
+      left: -10px;
+      top: 45%;
+      width: 16px;
+      height: 16px;
+      transform: rotate(45deg);
+      background: #fff;
+      border-left: 2px solid #ececec;
+      border-bottom: 2px solid #ececec;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .choice {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      background: var(--surface);
+      border: 2px solid #e6ebf1;
+      border-bottom: 5px solid #d6dee7;
+      border-radius: 18px;
+      padding: 20px 18px;
+      font-family: inherit;
+      font-size: 1.08rem;
+      font-weight: 800;
+      color: #334155;
+      text-align: left;
+      cursor: pointer;
+      transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease, background .16s ease;
+    }
+
+    .choice:hover { transform: translateY(-3px); }
+    .choice:active { transform: translateY(0); border-bottom-width: 3px; }
+
+    .choice .emoji {
+      font-size: 1.8rem;
+      line-height: 1;
+      width: 38px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .choice.selected {
+      background: #eef8ff;
+      border-color: #b7e5ff;
+      border-bottom-color: var(--blue-dark);
+      box-shadow: 0 0 0 3px rgba(28, 176, 246, 0.18);
+    }
+
+    .footer {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-top: 1px solid var(--line);
+      background: #fff;
+      padding: 16px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .continue-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      min-width: 185px;
+      padding: 14px 28px;
+      border-radius: 16px;
+      border: 2px solid #d1d5db;
+      border-bottom: 4px solid #a8afb8;
+      background: #cdd3db;
+      color: #ffffff;
+      font-size: 1rem;
+      font-weight: 900;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+      pointer-events: none;
+      transition: transform .15s ease, filter .15s ease, background .15s ease, border-color .15s ease;
+    }
+
+    .continue-btn.enabled {
+      pointer-events: auto;
+      background: var(--green);
+      border-color: #55bf02;
+      border-bottom-color: var(--green-dark);
+    }
+
+    .continue-btn.enabled:hover { filter: brightness(.98); }
+    .continue-btn.enabled:active { transform: translateY(2px); border-bottom-width: 2px; }
+
+    @media (max-width: 760px) {
+      .intro { align-items: flex-start; }
+      .mascot { width: 92px; height: 92px; border-radius: 20px; }
+      .grid { grid-template-columns: 1fr; }
+      .bubble::before { top: 30px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress-track" aria-label="Onboarding progress">
+    <div class="progress-fill"></div>
+  </div>
+
+  <main class="page">
+    <section class="intro" aria-label="Discovery intro">
+      <div class="mascot" aria-label="MoyaCode Robot">
+        <svg width="76" height="76" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Robot mascot">
+          <rect x="68" y="70" width="124" height="96" rx="24" fill="#ffffff" stroke="#c9e2f5" stroke-width="8"/>
+          <circle cx="108" cy="114" r="11" fill="#1cb0f6"/>
+          <circle cx="152" cy="114" r="11" fill="#1cb0f6"/>
+          <rect x="102" y="136" width="56" height="10" rx="5" fill="#58cc02"/>
+          <line x1="130" y1="70" x2="130" y2="46" stroke="#c9e2f5" stroke-width="8"/>
+          <circle cx="130" cy="40" r="8" fill="#58cc02"/>
+        </svg>
+      </div>
+      <div class="bubble">What is your ultimate coding dream?</div>
+    </section>
+
+    <section class="grid" aria-label="Discovery choices">
+      <button class="choice" type="button"><span class="emoji">🎮</span><span>Build Games</span></button>
+      <button class="choice" type="button"><span class="emoji">🌐</span><span>Create Websites</span></button>
+      <button class="choice" type="button"><span class="emoji">📱</span><span>Design Mobile Apps</span></button>
+      <button class="choice" type="button"><span class="emoji">🤖</span><span>Work with AI</span></button>
+      <button class="choice" type="button"><span class="emoji">🔒</span><span>Become a Hacker</span></button>
+      <button class="choice" type="button"><span class="emoji">✨</span><span>Just for Fun</span></button>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <a id="continue-btn" class="continue-btn" href="motivation.html" aria-disabled="true">Continue</a>
+  </footer>
+
+  <script>
+    const choices = document.querySelectorAll('.choice');
+    const continueBtn = document.getElementById('continue-btn');
+
+    choices.forEach((card) => {
+      card.addEventListener('click', () => {
+        choices.forEach((item) => item.classList.remove('selected'));
+        card.classList.add('selected');
+        continueBtn.classList.add('enabled');
+        continueBtn.setAttribute('aria-disabled', 'false');
+      });
+    });
+  </script>
+</body>
+</html>

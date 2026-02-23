@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MoyaCode | Choose Your Path</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f7f9fc;
+      --text: #1f2937;
+      --muted: #64748b;
+      --white: #ffffff;
+
+      --green: #58cc02;
+      --green-dark: #44a001;
+
+      --blue: #1cb0f6;
+      --blue-dark: #1596cf;
+
+      --orange: #ff8f36;
+      --orange-dark: #dc7420;
+
+      --yellow: #ffd53d;
+      --yellow-dark: #d9b42f;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Nunito', sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 10%, #ffffff 0%, #f7f9fc 45%),
+        radial-gradient(circle at 85% 90%, #eef4ff 0%, #f7f9fc 40%);
+    }
+
+    .page {
+      width: min(1100px, 92vw);
+      margin: 0 auto;
+      padding: 48px 0 64px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 34px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4.4vw, 3.3rem);
+      line-height: 1.1;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .header p {
+      margin: 14px auto 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 2.2vw, 1.25rem);
+      font-weight: 700;
+      max-width: 620px;
+    }
+
+    .path-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .path-card {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      background: var(--white);
+      border-radius: 18px;
+      padding: 24px 22px;
+      min-height: 220px;
+      text-decoration: none;
+      border: 2px solid transparent;
+      border-bottom: 7px solid;
+      box-shadow: 0 10px 26px rgba(31, 41, 55, 0.08);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      will-change: transform;
+    }
+
+    .path-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 30px rgba(31, 41, 55, 0.14);
+    }
+
+    .path-card:active {
+      transform: translateY(-2px);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      font-weight: 900;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      background: rgba(255, 255, 255, 0.7);
+      border: 2px solid rgba(255, 255, 255, 0.95);
+      color: #334155;
+    }
+
+    .title {
+      font-size: clamp(1.5rem, 2.8vw, 2rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin: 0;
+    }
+
+    .sub {
+      margin: 8px 0 0;
+      font-size: 1rem;
+      line-height: 1.5;
+      color: #334155;
+      font-weight: 700;
+    }
+
+    .learner-count {
+      margin-top: auto;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #475569;
+      opacity: 0.95;
+    }
+
+    .theme-green {
+      background: linear-gradient(160deg, #f5ffe9 0%, #efffe2 100%);
+      border-color: #cdeeb1;
+      border-bottom-color: var(--green-dark);
+    }
+    .theme-green .title { color: #2f7d08; }
+
+    .theme-blue {
+      background: linear-gradient(160deg, #ebf8ff 0%, #e5f5ff 100%);
+      border-color: #bfe9ff;
+      border-bottom-color: var(--blue-dark);
+    }
+    .theme-blue .title { color: #0a6b96; }
+
+    .theme-orange {
+      background: linear-gradient(160deg, #fff3e8 0%, #ffeedf 100%);
+      border-color: #ffd7ba;
+      border-bottom-color: var(--orange-dark);
+    }
+    .theme-orange .title { color: #a55012; }
+
+    .theme-yellow {
+      background: linear-gradient(160deg, #fffce7 0%, #fff8d3 100%);
+      border-color: #ffe791;
+      border-bottom-color: var(--yellow-dark);
+    }
+    .theme-yellow .title { color: #8f7410; }
+
+    @media (max-width: 760px) {
+      .page { padding-top: 34px; }
+      .path-grid { grid-template-columns: 1fr; }
+      .path-card { min-height: 200px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="header">
+      <h1>Choose your path, Hero!</h1>
+      <p>Join over 500 students in Owo mastering the future.</p>
+    </header>
+
+    <section class="path-grid" aria-label="Learning path options">
+      <a class="path-card theme-green" href="goals.html">
+        <div class="card-top">
+          <span class="badge">JSS 1-2</span>
+        </div>
+        <div>
+          <h2 class="title">Logic Architect</h2>
+          <p class="sub">Master Game Design with Scratch</p>
+        </div>
+        <p class="learner-count">120 students active</p>
+      </a>
+
+      <a class="path-card theme-blue" href="goals.html">
+        <div class="card-top">
+          <span class="badge">JSS 3 - SS 1</span>
+        </div>
+        <div>
+          <h2 class="title">Web Wizard</h2>
+          <p class="sub">Build your first website with HTML</p>
+        </div>
+        <p class="learner-count">145 students active</p>
+      </a>
+
+      <a class="path-card theme-orange" href="goals.html">
+        <div class="card-top">
+          <span class="badge">SS 2</span>
+        </div>
+        <div>
+          <h2 class="title">Style Master</h2>
+          <p class="sub">Design beautiful UI with CSS</p>
+        </div>
+        <p class="learner-count">98 students active</p>
+      </a>
+
+      <a class="path-card theme-yellow" href="goals.html">
+        <div class="card-top">
+          <span class="badge">SS 3</span>
+        </div>
+        <div>
+          <h2 class="title">Script Ninja</h2>
+          <p class="sub">Advanced logic with JavaScript</p>
+        </div>
+        <p class="learner-count">137 students active</p>
+      </a>
+    </section>
+  </main>
+</body>
+</html>

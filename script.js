@@ -1,5 +1,15 @@
 // ─── 1. DATA BANKS FOR ALL CLASSES ───────────────────────────────────────────
 const QUIZ_BANKS = {
+  jss1: {
+    title: "JSS1 · Scratch Basics",
+    questions: [
+      { id: 1, question: "Which block starts the program when clicked?", options: ["When green flag clicked", "Forever", "Wait 1 second", "Stop all"], correct_idx: 0, explanation: "The green flag block is the standard way to start a Scratch script.", xp_value: 10 },
+      { id: 2, question: "Which block makes a sprite talk in a speech bubble?", options: ["Think [Hello]", "Say [Hello]", "Broadcast [Hello]", "Play sound"], correct_idx: 1, explanation: "Use the Say block to display speech text from a sprite.", xp_value: 10 },
+      { id: 3, question: "Which motion block moves sprite horizontally?", options: ["Change y by 10", "Point in direction 90", "Change x by 10", "Go to random position"], correct_idx: 2, explanation: "X controls left-right movement on Scratch stage.", xp_value: 10 },
+      { id: 4, question: "How do you repeat an action forever?", options: ["Repeat 10", "Forever", "If then", "Wait until"], correct_idx: 1, explanation: "Forever loop keeps running until the project stops.", xp_value: 10 },
+      { id: 5, question: "Which block changes how sprite looks?", options: ["Next costume", "Show variable", "Set volume", "Change size by"], correct_idx: 0, explanation: "Costumes are visual appearances; next costume cycles through them.", xp_value: 15 },
+    ]
+  },
   jss2: {
     title: "JSS2 · Advanced Scratch",
     questions: [
@@ -8,6 +18,16 @@ const QUIZ_BANKS = {
       { id: 3, question: "Which block makes a sprite say \"Hello\" for 2 seconds?", options: ["Think [Hello] for [2] seconds", "Say [Hello] for [2] seconds", "Broadcast [Hello]", "Play sound [Hello]"], correct_idx: 1, explanation: "'Say' shows a speech bubble. 'Think' shows a thought bubble — they look different on screen!", xp_value: 10 },
       { id: 4, question: "In Scratch, what is a \"sprite\"?", options: ["The background image", "A sound file", "A character or object that can be programmed", "A block that controls timing"], correct_idx: 2, explanation: "Sprites are the actors in your Scratch project.", xp_value: 10 },
       { id: 5, question: "What does the \"broadcast\" block do?", options: ["Makes the sprite louder", "Sends sprite to a new costume", "Sends a message other sprites can receive", "Copies a block to another sprite"], correct_idx: 2, explanation: "Broadcast allows sprites to communicate with each other.", xp_value: 15 },
+    ]
+  },
+  jss3: {
+    title: "JSS3 · Intro to HTML",
+    questions: [
+      { id: 1, question: "What does HTML stand for?", options: ["HyperText Markup Language", "HighText Machine Language", "Hyper Transfer Markup Link", "Home Tool Markup Language"], correct_idx: 0, explanation: "HTML is the language used to structure web pages.", xp_value: 10 },
+      { id: 2, question: "Which tag creates the largest heading?", options: ["<h6>", "<heading>", "<h1>", "<head>"], correct_idx: 2, explanation: "h1 is the highest-level heading.", xp_value: 10 },
+      { id: 3, question: "Which tag is used for a paragraph?", options: ["<text>", "<p>", "<para>", "<article>"], correct_idx: 1, explanation: "Paragraph text is written with the p tag.", xp_value: 10 },
+      { id: 4, question: "Which tag inserts a line break?", options: ["<br>", "<break>", "<lb>", "<line>"], correct_idx: 0, explanation: "br creates a single line break in text.", xp_value: 10 },
+      { id: 5, question: "Which tag makes text strongly important?", options: ["<strong>", "<bold>", "<em>", "<important>"], correct_idx: 0, explanation: "strong marks text as strongly important.", xp_value: 15 },
     ]
   },
   ss1: {
@@ -76,6 +96,8 @@ const DOM = {
   heartsDisplay: document.getElementById('hearts-display'),
   xpDisplay: document.getElementById('xp-display'),
   streakDisplay: document.getElementById('streak-display'),
+  assemblyArea: document.getElementById('assembly-area'),
+  skipBtn: document.getElementById('skip-btn'),
   progressBar: document.getElementById('progress-bar'),
   progressLabel: document.getElementById('progress-label'),
   questionText: document.getElementById('question-text'),
@@ -154,25 +176,15 @@ function renderGame() {
   DOM.progressLabel.innerText = `Question ${state.currentQuestionIndex + 1} of ${state.activeQuestions.length}`;
 
   DOM.questionText.innerText = q.question;
+  if (DOM.assemblyArea) {
+    DOM.assemblyArea.innerText = state.selectedAnswer === null ? '' : q.options[state.selectedAnswer];
+  }
   renderOptions();
   updateCheckButton();
 }
 
 function renderHearts() {
-  DOM.heartsDisplay.innerHTML = '';
-  for (let i = 0; i < MAX_LIVES; i++) {
-    const isAlive = i < state.currentLives;
-    const heart = document.createElement('span');
-    heart.className = 'heart';
-    heart.innerText = isAlive ? '❤️' : '🖤';
-    
-    if (!isAlive) {
-      heart.style.opacity = '0.3';
-      heart.style.filter = 'grayscale(1)';
-      heart.style.transform = 'scale(0.78) rotate(-12deg)';
-    }
-    DOM.heartsDisplay.appendChild(heart);
-  }
+  DOM.heartsDisplay.innerText = `❤️ ${Math.max(0, state.currentLives)}`;
 }
 
 function renderOptions() {
@@ -204,6 +216,7 @@ function renderOptions() {
     btn.onclick = () => {
       if (!isLocked) {
         state.selectedAnswer = i;
+        if (DOM.assemblyArea) DOM.assemblyArea.innerText = q.options[i];
         renderOptions();
         updateCheckButton();
       }
@@ -217,12 +230,18 @@ function updateCheckButton() {
   if (state.selectedAnswer !== null && state.feedbackState === "idle") {
     DOM.checkBtn.classList.add('active');
     DOM.checkBtn.disabled = false;
-    DOM.checkBtn.innerText = "Check Answer ✅";
+    DOM.checkBtn.innerText = "CHECK";
   } else {
     DOM.checkBtn.classList.remove('active');
     DOM.checkBtn.disabled = true;
-    DOM.checkBtn.innerText = "Select an option";
+    DOM.checkBtn.innerText = "CHECK";
   }
+}
+
+
+function handleSkip() {
+  if (state.phase !== "quiz" || state.feedbackState !== "idle") return;
+  handleContinue();
 }
 
 function handleCheck() {
@@ -348,5 +367,6 @@ DOM.continueBtn.addEventListener('click', handleContinue);
 DOM.restartBtn.addEventListener('click', goHome);
 // Add this right above goHome(); at the bottom of the file
 DOM.backBtn.addEventListener('click', goHome);
+if (DOM.skipBtn) DOM.skipBtn.addEventListener('click', handleSkip);
 // Start the app by showing the Home Screen
 goHome();
