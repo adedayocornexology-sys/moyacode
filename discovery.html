@@ -6,12 +6,12 @@
   <title>MoyaCode | Discovery</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --green: #58cc02;
-      --green-dark: #46a302;
-      --blue: #1cb0f6;
+      --green: var(--teal);
+      --green-dark: var(--teal-dark);
+      --blue: #38bdf8;
       --blue-dark: #1292cb;
       --text: #3f3f46;
       --muted: #71717a;
@@ -23,8 +23,8 @@
 
     body {
       margin: 0;
-      font-family: 'Nunito', sans-serif;
-      background: #fff;
+      font-family: var(--font-body);
+      background: var(--bg-deep);
       color: var(--text);
       padding-bottom: 110px;
     }
@@ -73,7 +73,7 @@
       flex: 1;
       border: 2px solid #ececec;
       border-radius: 20px;
-      background: #fff;
+      background: var(--bg-deep);
       padding: 18px 22px;
       font-size: clamp(1.2rem, 2.4vw, 1.8rem);
       font-weight: 900;
@@ -89,7 +89,7 @@
       width: 16px;
       height: 16px;
       transform: rotate(45deg);
-      background: #fff;
+      background: var(--bg-deep);
       border-left: 2px solid #ececec;
       border-bottom: 2px solid #ececec;
     }
@@ -143,7 +143,7 @@
       right: 0;
       bottom: 0;
       border-top: 1px solid var(--line);
-      background: #fff;
+      background: var(--bg-deep);
       padding: 16px;
       display: flex;
       justify-content: flex-end;
@@ -187,6 +187,7 @@
       .bubble::before { top: 30px; }
     }
   </style>
+  <link rel="stylesheet" href="css/tokens.css" />
 </head>
 <body>
   <div class="progress-track" aria-label="Onboarding progress">
@@ -198,11 +199,11 @@
       <div class="mascot" aria-label="MoyaCode Robot">
         <svg width="76" height="76" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Robot mascot">
           <rect x="68" y="70" width="124" height="96" rx="24" fill="#ffffff" stroke="#c9e2f5" stroke-width="8"/>
-          <circle cx="108" cy="114" r="11" fill="#1cb0f6"/>
-          <circle cx="152" cy="114" r="11" fill="#1cb0f6"/>
-          <rect x="102" y="136" width="56" height="10" rx="5" fill="#58cc02"/>
+          <circle cx="108" cy="114" r="11" fill="var(--blue)"/>
+          <circle cx="152" cy="114" r="11" fill="var(--blue)"/>
+          <rect x="102" y="136" width="56" height="10" rx="5" fill="var(--teal)"/>
           <line x1="130" y1="70" x2="130" y2="46" stroke="#c9e2f5" stroke-width="8"/>
-          <circle cx="130" cy="40" r="8" fill="#58cc02"/>
+          <circle cx="130" cy="40" r="8" fill="var(--teal)"/>
         </svg>
       </div>
       <div class="bubble">What is your ultimate coding dream?</div>
