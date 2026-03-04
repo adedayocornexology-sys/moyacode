@@ -175,6 +175,9 @@ function renderGame() {
   DOM.progressBar.style.width = `${pct}%`;
   DOM.progressLabel.innerText = `Question ${state.currentQuestionIndex + 1} of ${state.activeQuestions.length}`;
 
+  DOM.questionText.classList.remove('refreshed');
+  void DOM.questionText.offsetWidth;
+  DOM.questionText.classList.add('refreshed');
   DOM.questionText.innerText = q.question;
   if (DOM.assemblyArea) {
     DOM.assemblyArea.innerText = state.selectedAnswer === null ? '' : q.options[state.selectedAnswer];
@@ -183,8 +186,21 @@ function renderGame() {
   updateCheckButton();
 }
 
-function renderHearts() {
-  DOM.heartsDisplay.innerText = `❤️ ${Math.max(0, state.currentLives)}`;
+function renderHearts(previousLives = state.currentLives) {
+  const currentLives = Math.max(0, state.currentLives);
+  const oldLives = Math.max(0, previousLives);
+
+  const drawHearts = (count, poppingIndex = -1) => {
+    DOM.heartsDisplay.innerHTML = `<span class="hearts-row">${Array.from({ length: count }, (_, i) => `<span class="heart${i === poppingIndex ? ' pop' : ''}">❤️</span>`).join('')}</span>`;
+  };
+
+  if (currentLives < oldLives && oldLives > 0) {
+    drawHearts(oldLives, oldLives - 1);
+    setTimeout(() => drawHearts(currentLives), 250);
+    return;
+  }
+
+  drawHearts(currentLives);
 }
 
 function renderOptions() {
@@ -271,7 +287,7 @@ function handleCheck() {
 
   renderOptions();
   updateCheckButton();
-  renderHearts();
+  renderHearts(oldLives);
   showFeedback(isCorrect, q);
 }
 
