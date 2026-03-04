@@ -18,3 +18,6 @@
 .skip-btn{color:#7b8794}.check-btn{background:#e5e5e5;color:#8a8a8a;border-color:#d2d2d2;border-bottom-color:#b8b8b8;min-width:180px}.check-btn.active{background:#58cc02;color:#fff;border-color:#56c202;border-bottom-color:#46a302}
 .xp-row,.xp-badge,.streak-badge{display:none!important}
 @media (max-width:760px){.class-grid,.options-grid{grid-template-columns:1fr}.question-text{font-size:1.55rem}.app-shell{padding:14px 14px 120px}}
+
+.app-shell.loading{opacity:.65;pointer-events:none}
+.engine-error{color:#dc2626;font-weight:800;text-align:center;margin:8px 0 12px}

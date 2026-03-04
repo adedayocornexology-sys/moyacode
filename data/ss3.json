@@ -1,0 +1,14 @@
+{
+  "title": "SS3 · JavaScript Logic",
+  "questions": [
+    { "id": 1, "question": "Inside which HTML element do we put the JavaScript?", "options": ["<js>", "<scripting>", "<script>", "<javascript>"], "correct_idx": 2, "explanation": "The <script> tag is used to embed a client-side script (JavaScript).", "xp_value": 10 },
+    { "id": 2, "question": "How do you write 'Hello World' in an alert box?", "options": ["msg('Hello World');", "alertBox('Hello World');", "msgBox('Hello World');", "alert('Hello World');"], "correct_idx": 3, "explanation": "The alert() method displays an alert box with a specified message.", "xp_value": 15 }
+  ],
+  "assemblyQuestions": [
+    { "q": "How do you declare a modern variable?", "answer": ["let", "name", "=", "value"], "options": ["let", "name", "=", "value", "var", "int", "const"] },
+    { "q": "How do you show a popup box to the user?", "answer": ["alert();"], "options": ["alert();", "popup();", "msg();", "window();"] },
+    { "q": "How do you write a single-line comment?", "answer": ["//", "comment"], "options": ["//", "comment", "/*", "*/"] },
+    { "q": "Which symbol assigns a value to a variable?", "answer": ["="], "options": ["=", "==", "===", "=>"] },
+    { "q": "How do you print text to the developer tools?", "answer": ["console.log();"], "options": ["console.log();", "print();", "log();", "write();"] }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "title": "JSS1 · Scratch Basics",
+  "questions": [
+    { "id": 1, "question": "Which block starts the program when clicked?", "options": ["When green flag clicked", "Forever", "Wait 1 second", "Stop all"], "correct_idx": 0, "explanation": "The green flag block is the standard way to start a Scratch script.", "xp_value": 10 },
+    { "id": 2, "question": "Which block makes a sprite talk in a speech bubble?", "options": ["Think [Hello]", "Say [Hello]", "Broadcast [Hello]", "Play sound"], "correct_idx": 1, "explanation": "Use the Say block to display speech text from a sprite.", "xp_value": 10 },
+    { "id": 3, "question": "Which motion block moves sprite horizontally?", "options": ["Change y by 10", "Point in direction 90", "Change x by 10", "Go to random position"], "correct_idx": 2, "explanation": "X controls left-right movement on Scratch stage.", "xp_value": 10 },
+    { "id": 4, "question": "How do you repeat an action forever?", "options": ["Repeat 10", "Forever", "If then", "Wait until"], "correct_idx": 1, "explanation": "Forever loop keeps running until the project stops.", "xp_value": 10 },
+    { "id": 5, "question": "Which block changes how sprite looks?", "options": ["Next costume", "Show variable", "Set volume", "Change size by"], "correct_idx": 0, "explanation": "Costumes are visual appearances; next costume cycles through them.", "xp_value": 15 }
+  ],
+  "assemblyQuestions": [
+    { "q": "Which block starts the program?", "answer": ["When", "Green", "Flag", "clicked"], "options": ["When", "Green", "Flag", "clicked", "Space", "Stop"] },
+    { "q": "How do you make a sprite speak?", "answer": ["Say", "Hello", "for", "2", "seconds"], "options": ["Say", "Hello", "for", "2", "seconds", "Think", "Broadcast"] },
+    { "q": "Which block repeats actions infinitely?", "answer": ["Forever", "loop"], "options": ["Forever", "loop", "Repeat", "10", "Wait"] },
+    { "q": "What controls left and right movement?", "answer": ["Change", "x", "by", "10"], "options": ["Change", "x", "by", "10", "y", "Set"] },
+    { "q": "How do you change a character's look?", "answer": ["Next", "costume"], "options": ["Next", "costume", "Hide", "Show", "Backdrop"] }
+  ]
+}
