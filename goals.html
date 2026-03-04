@@ -32,16 +32,62 @@
 <body>
   <a class="home-link" href="index.html" aria-label="Go to homepage">← Home</a>
   <main class="wrap">
-    <div class="progress"><div class="fill"></div></div>
-    <h1>Set your daily coding goal</h1>
-    <p class="sub">Choose the pace that fits your routine.</p>
-    <section class="grid">
-      <button class="goal" type="button">5 min/day<small>Warm up habit</small></button>
-      <button class="goal" type="button">10 min/day<small>Steady progress</small></button>
-      <button class="goal" type="button">15 min/day<small>Fast momentum</small></button>
-      <button class="goal" type="button">20 min/day<small>Power learner</small></button>
+    <section class="steps" aria-label="Onboarding progress">
+      <div class="step-line">
+        <div class="step-dot done" aria-hidden="true"></div>
+        <div class="connector" aria-hidden="true"></div>
+        <div class="step-dot done" aria-hidden="true"></div>
+        <div class="connector" aria-hidden="true"></div>
+        <div class="step-dot current" aria-hidden="true"></div>
+      </div>
+      <div class="step-labels">
+        <span>Discovery</span>
+        <span>Motivation</span>
+        <span>Goal</span>
+      </div>
     </section>
+
+    <section class="bot-note" aria-label="MoyaBot encouragement">
+      <svg width="80" height="80" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MoyaBot">
+        <rect x="68" y="70" width="124" height="96" rx="24" fill="#ffffff" stroke="#c9e2f5" stroke-width="8"/>
+        <circle cx="108" cy="114" r="11" fill="var(--blue)"/>
+        <circle cx="152" cy="114" r="11" fill="var(--blue)"/>
+        <rect x="102" y="136" width="56" height="10" rx="5" fill="var(--teal)"/>
+        <line x1="130" y1="70" x2="130" y2="46" stroke="#c9e2f5" stroke-width="8"/>
+        <circle cx="130" cy="40" r="8" fill="var(--teal)"/>
+      </svg>
+      <p class="bubble">Your training level shapes your destiny, Hero!</p>
+    </section>
+
+    <h1>Choose your hero level</h1>
+    <p class="sub">How hard are you willing to train?</p>
+
+    <section class="grid">
+      <button class="goal" type="button" style="--accent:#00E5A0;--fill:25%;">5 min/day
+        <div class="goal-head"><span class="emoji">🌱</span><span class="tier">Rookie</span><span class="badge">5 min/day</span></div>
+        <p class="flavor">Just getting started</p>
+        <div class="difficulty-track"><div class="difficulty-fill"></div></div>
+      </button>
+      <button class="goal" type="button" style="--accent:#3D9BE9;--fill:50%;">10 min/day
+        <div class="goal-head"><span class="emoji">⚡</span><span class="tier">Coder</span><span class="badge">10 min/day</span></div>
+        <p class="flavor">I am serious about this</p>
+        <div class="difficulty-track"><div class="difficulty-fill"></div></div>
+      </button>
+      <button class="goal" type="button" style="--accent:#FFD166;--fill:75%;">15 min/day
+        <div class="goal-head"><span class="emoji">🔥</span><span class="tier">Builder</span><span class="badge">15 min/day</span></div>
+        <p class="flavor">I build things daily</p>
+        <div class="difficulty-track"><div class="difficulty-fill"></div></div>
+      </button>
+      <button class="goal" type="button" style="--accent:#FF5C7A;--fill:100%;">20 min/day
+        <div class="goal-head"><span class="emoji">🤖</span><span class="tier">Legend</span><span class="badge">20 min/day</span></div>
+        <p class="flavor">I eat code for breakfast</p>
+        <div class="difficulty-track"><div class="difficulty-fill"></div></div>
+      </button>
+    </section>
+
+    <p class="goal-note">You can update your goal anytime from your profile</p>
   </main>
+
   <footer class="bar"><a id="continue" class="btn" href="quiz.html" aria-disabled="true">Continue</a></footer>
   <script>
     const goals = document.querySelectorAll('.goal');
