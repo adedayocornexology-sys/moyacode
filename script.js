@@ -3,52 +3,52 @@ const QUIZ_BANKS = {
   jss1: {
     title: "JSS1 · Scratch Basics",
     questions: [
-      { id: 1, question: "Which block starts the program when clicked?", options: ["When green flag clicked", "Forever", "Wait 1 second", "Stop all"], correct_idx: 0, explanation: "The green flag block is the standard way to start a Scratch script.", xp_value: 10 },
-      { id: 2, question: "Which block makes a sprite talk in a speech bubble?", options: ["Think [Hello]", "Say [Hello]", "Broadcast [Hello]", "Play sound"], correct_idx: 1, explanation: "Use the Say block to display speech text from a sprite.", xp_value: 10 },
-      { id: 3, question: "Which motion block moves sprite horizontally?", options: ["Change y by 10", "Point in direction 90", "Change x by 10", "Go to random position"], correct_idx: 2, explanation: "X controls left-right movement on Scratch stage.", xp_value: 10 },
-      { id: 4, question: "How do you repeat an action forever?", options: ["Repeat 10", "Forever", "If then", "Wait until"], correct_idx: 1, explanation: "Forever loop keeps running until the project stops.", xp_value: 10 },
-      { id: 5, question: "Which block changes how sprite looks?", options: ["Next costume", "Show variable", "Set volume", "Change size by"], correct_idx: 0, explanation: "Costumes are visual appearances; next costume cycles through them.", xp_value: 15 },
+      { id: 1, question: "Which block starts the program when clicked?", options: ["When green flag clicked", "Forever", "Wait 1 second", "Stop all"], correct_answer: "When green flag clicked", explanation: "The green flag block is the standard way to start a Scratch script.", xp_value: 10 },
+      { id: 2, question: "Which block makes a sprite talk in a speech bubble?", options: ["Think [Hello]", "Say [Hello]", "Broadcast [Hello]", "Play sound"], correct_answer: "Say [Hello]", explanation: "Use the Say block to display speech text from a sprite.", xp_value: 10 },
+      { id: 3, question: "Which motion block moves sprite horizontally?", options: ["Change y by 10", "Point in direction 90", "Change x by 10", "Go to random position"], correct_answer: "Change x by 10", explanation: "X controls left-right movement on Scratch stage.", xp_value: 10 },
+      { id: 4, question: "How do you repeat an action forever?", options: ["Repeat 10", "Forever", "If then", "Wait until"], correct_answer: "Forever", explanation: "Forever loop keeps running until the project stops.", xp_value: 10 },
+      { id: 5, question: "Which block changes how sprite looks?", options: ["Next costume", "Show variable", "Set volume", "Change size by"], correct_answer: "Next costume", explanation: "Costumes are visual appearances; next costume cycles through them.", xp_value: 15 },
     ]
   },
   jss2: {
     title: "JSS2 · Advanced Scratch",
     questions: [
-      { id: 1, question: "In Scratch, which block category contains the \"if...then...else\" block?", options: ["Motion", "Looks", "Control", "Operators"], correct_idx: 2, explanation: "Control blocks manage logic flow — loops, conditions, and script timing all live here.", xp_value: 10 },
-      { id: 2, question: "What does the \"forever\" block do in Scratch?", options: ["Runs a script once", "Stops all scripts", "Repeats blocks indefinitely until stopped", "Waits for a key press"], correct_idx: 2, explanation: "The 'forever' block creates an infinite loop. Use 'Stop all' inside it to break out.", xp_value: 10 },
-      { id: 3, question: "Which block makes a sprite say \"Hello\" for 2 seconds?", options: ["Think [Hello] for [2] seconds", "Say [Hello] for [2] seconds", "Broadcast [Hello]", "Play sound [Hello]"], correct_idx: 1, explanation: "'Say' shows a speech bubble. 'Think' shows a thought bubble — they look different on screen!", xp_value: 10 },
-      { id: 4, question: "In Scratch, what is a \"sprite\"?", options: ["The background image", "A sound file", "A character or object that can be programmed", "A block that controls timing"], correct_idx: 2, explanation: "Sprites are the actors in your Scratch project.", xp_value: 10 },
-      { id: 5, question: "What does the \"broadcast\" block do?", options: ["Makes the sprite louder", "Sends sprite to a new costume", "Sends a message other sprites can receive", "Copies a block to another sprite"], correct_idx: 2, explanation: "Broadcast allows sprites to communicate with each other.", xp_value: 15 },
+      { id: 1, question: "In Scratch, which block category contains the \"if...then...else\" block?", options: ["Motion", "Looks", "Control", "Operators"], correct_answer: "Control", explanation: "Control blocks manage logic flow — loops, conditions, and script timing all live here.", xp_value: 10 },
+      { id: 2, question: "What does the \"forever\" block do in Scratch?", options: ["Runs a script once", "Stops all scripts", "Repeats blocks indefinitely until stopped", "Waits for a key press"], correct_answer: "Repeats blocks indefinitely until stopped", explanation: "The 'forever' block creates an infinite loop. Use 'Stop all' inside it to break out.", xp_value: 10 },
+      { id: 3, question: "Which block makes a sprite say \"Hello\" for 2 seconds?", options: ["Think [Hello] for [2] seconds", "Say [Hello] for [2] seconds", "Broadcast [Hello]", "Play sound [Hello]"], correct_answer: "Say [Hello] for [2] seconds", explanation: "'Say' shows a speech bubble. 'Think' shows a thought bubble — they look different on screen!", xp_value: 10 },
+      { id: 4, question: "In Scratch, what is a \"sprite\"?", options: ["The background image", "A sound file", "A character or object that can be programmed", "A block that controls timing"], correct_answer: "A character or object that can be programmed", explanation: "Sprites are the actors in your Scratch project.", xp_value: 10 },
+      { id: 5, question: "What does the \"broadcast\" block do?", options: ["Makes the sprite louder", "Sends sprite to a new costume", "Sends a message other sprites can receive", "Copies a block to another sprite"], correct_answer: "Sends a message other sprites can receive", explanation: "Broadcast allows sprites to communicate with each other.", xp_value: 15 },
     ]
   },
   jss3: {
     title: "JSS3 · Intro to HTML",
     questions: [
-      { id: 1, question: "What does HTML stand for?", options: ["HyperText Markup Language", "HighText Machine Language", "Hyper Transfer Markup Link", "Home Tool Markup Language"], correct_idx: 0, explanation: "HTML is the language used to structure web pages.", xp_value: 10 },
-      { id: 2, question: "Which tag creates the largest heading?", options: ["<h6>", "<heading>", "<h1>", "<head>"], correct_idx: 2, explanation: "h1 is the highest-level heading.", xp_value: 10 },
-      { id: 3, question: "Which tag is used for a paragraph?", options: ["<text>", "<p>", "<para>", "<article>"], correct_idx: 1, explanation: "Paragraph text is written with the p tag.", xp_value: 10 },
-      { id: 4, question: "Which tag inserts a line break?", options: ["<br>", "<break>", "<lb>", "<line>"], correct_idx: 0, explanation: "br creates a single line break in text.", xp_value: 10 },
-      { id: 5, question: "Which tag makes text strongly important?", options: ["<strong>", "<bold>", "<em>", "<important>"], correct_idx: 0, explanation: "strong marks text as strongly important.", xp_value: 15 },
+      { id: 1, question: "What does HTML stand for?", options: ["HyperText Markup Language", "HighText Machine Language", "Hyper Transfer Markup Link", "Home Tool Markup Language"], correct_answer: "HyperText Markup Language", explanation: "HTML is the language used to structure web pages.", xp_value: 10 },
+      { id: 2, question: "Which tag creates the largest heading?", options: ["<h6>", "<heading>", "<h1>", "<head>"], correct_answer: "<h1>", explanation: "h1 is the highest-level heading.", xp_value: 10 },
+      { id: 3, question: "Which tag is used for a paragraph?", options: ["<text>", "<p>", "<para>", "<article>"], correct_answer: "<p>", explanation: "Paragraph text is written with the p tag.", xp_value: 10 },
+      { id: 4, question: "Which tag inserts a line break?", options: ["<br>", "<break>", "<lb>", "<line>"], correct_answer: "<br>", explanation: "br creates a single line break in text.", xp_value: 10 },
+      { id: 5, question: "Which tag makes text strongly important?", options: ["<strong>", "<bold>", "<em>", "<important>"], correct_answer: "<strong>", explanation: "strong marks text as strongly important.", xp_value: 15 },
     ]
   },
   ss1: {
     title: "SS1 · HTML Basics",
     questions: [
-      { id: 1, question: "What does HTML stand for?", options: ["Hyper Text Preprocessor", "Hyper Text Markup Language", "Hyper Tool Multi Language", "Hyperlink Text Markup Language"], correct_idx: 1, explanation: "HTML is the standard markup language for creating Web pages.", xp_value: 10 },
-      { id: 2, question: "Which HTML tag is used for the largest heading?", options: ["<heading>", "<h6>", "<head>", "<h1>"], correct_idx: 3, explanation: "<h1> defines the most important heading. <h6> is the least important.", xp_value: 10 },
+      { id: 1, question: "What does HTML stand for?", options: ["Hyper Text Preprocessor", "Hyper Text Markup Language", "Hyper Tool Multi Language", "Hyperlink Text Markup Language"], correct_answer: "Hyper Text Markup Language", explanation: "HTML is the standard markup language for creating Web pages.", xp_value: 10 },
+      { id: 2, question: "Which HTML tag is used for the largest heading?", options: ["<heading>", "<h6>", "<head>", "<h1>"], correct_answer: "<h1>", explanation: "<h1> defines the most important heading. <h6> is the least important.", xp_value: 10 },
     ]
   },
   ss2: {
     title: "SS2 · CSS Styling",
     questions: [
-      { id: 1, question: "What does CSS stand for?", options: ["Cascading Style Sheets", "Computer Style Sheets", "Creative Style Sheets", "Colorful Style Sheets"], correct_idx: 0, explanation: "CSS describes how HTML elements are to be displayed on screen.", xp_value: 10 },
-      { id: 2, question: "Which property is used to change the background color?", options: ["color", "bgcolor", "background-color", "bg-color"], correct_idx: 2, explanation: "The background-color property sets the background color of an element.", xp_value: 10 },
+      { id: 1, question: "What does CSS stand for?", options: ["Cascading Style Sheets", "Computer Style Sheets", "Creative Style Sheets", "Colorful Style Sheets"], correct_answer: "Cascading Style Sheets", explanation: "CSS describes how HTML elements are to be displayed on screen.", xp_value: 10 },
+      { id: 2, question: "Which property is used to change the background color?", options: ["color", "bgcolor", "background-color", "bg-color"], correct_answer: "background-color", explanation: "The background-color property sets the background color of an element.", xp_value: 10 },
     ]
   },
   ss3: {
     title: "SS3 · JavaScript Logic",
     questions: [
-      { id: 1, question: "Inside which HTML element do we put the JavaScript?", options: ["<js>", "<scripting>", "<script>", "<javascript>"], correct_idx: 2, explanation: "The <script> tag is used to embed a client-side script (JavaScript).", xp_value: 10 },
-      { id: 2, question: "How do you write 'Hello World' in an alert box?", options: ["msg('Hello World');", "alertBox('Hello World');", "msgBox('Hello World');", "alert('Hello World');"], correct_idx: 3, explanation: "The alert() method displays an alert box with a specified message.", xp_value: 15 },
+      { id: 1, question: "Inside which HTML element do we put the JavaScript?", options: ["<js>", "<scripting>", "<script>", "<javascript>"], correct_answer: "<script>", explanation: "The <script> tag is used to embed a client-side script (JavaScript).", xp_value: 10 },
+      { id: 2, question: "How do you write 'Hello World' in an alert box?", options: ["msg('Hello World');", "alertBox('Hello World');", "msgBox('Hello World');", "alert('Hello World');"], correct_answer: "alert('Hello World');", explanation: "The alert() method displays an alert box with a specified message.", xp_value: 15 },
     ]
   }
 };
@@ -92,9 +92,30 @@ let state = {
   selectedAnswer: null,
   feedbackState: "idle", 
   phase: "home", 
+  userProfile: { dream: "", motivation: "", goal: "" },
 };
 
 let autoDismissTimer = null;
+
+
+function readUserProfile() {
+  return {
+    dream: localStorage.getItem('moyacode_dream') || '',
+    motivation: localStorage.getItem('moyacode_motivation') || '',
+    goal: localStorage.getItem('moyacode_goal') || ''
+  };
+}
+
+function normalizeChoice(value) {
+  return String(value || '').trim();
+}
+
+function logScoreEntry(entry) {
+  const logKey = 'moyacode_session_log';
+  const existing = JSON.parse(localStorage.getItem(logKey) || '[]');
+  existing.push(entry);
+  localStorage.setItem(logKey, JSON.stringify(existing));
+}
 
 // ─── 3. DOM ELEMENTS ─────────────────────────────────────────────────────────
 const DOM = {
@@ -106,6 +127,7 @@ const DOM = {
   heartsDisplay: document.getElementById('hearts-display'),
   xpDisplay: document.getElementById('xp-display'),
   streakDisplay: document.getElementById('streak-display'),
+  goalIndicator: document.getElementById('goal-indicator'),
   assemblyArea: document.getElementById('assembly-area'),
   skipBtn: document.getElementById('skip-btn'),
   progressBar: document.getElementById('progress-bar'),
@@ -135,6 +157,7 @@ function goHome() {
   // CRITICAL: Stop the auto-dismiss timer if the user clicks back while the drawer is open
   clearTimeout(autoDismissTimer);
   state.phase = "home";
+  state.userProfile = readUserProfile();
   DOM.endScreen.style.display = 'none';
   DOM.quizView.style.display = 'none';
   DOM.drawer.classList.remove('open');
@@ -168,6 +191,7 @@ window.startQuiz = function(classKey) {
   state.selectedAnswer = null;
   state.feedbackState = "idle";
   state.phase = "quiz";
+  state.userProfile = readUserProfile();
 
   // Update UI headers
   if(DOM.subjectBadge) {
@@ -179,10 +203,22 @@ window.startQuiz = function(classKey) {
   DOM.endScreen.style.display = 'none';
   DOM.quizView.style.display = 'block';
   
+  if (DOM.goalIndicator) {
+    const hasGoal = Boolean(state.userProfile.goal);
+    DOM.goalIndicator.style.display = hasGoal ? 'inline-block' : 'none';
+    DOM.goalIndicator.innerText = hasGoal ? `🎯 ${state.userProfile.goal}` : '';
+  }
+
   renderGame();
 };
 
 function renderGame() {
+  if (state.currentQuestionIndex < 0 || state.currentQuestionIndex >= state.activeQuestions.length) {
+    state.phase = "complete";
+    showEndScreen();
+    return;
+  }
+
   const q = state.activeQuestions[state.currentQuestionIndex];
   
   renderHearts();
@@ -237,8 +273,9 @@ function renderOptions() {
     
     const isSelected = state.selectedAnswer === i;
     const isLocked = state.feedbackState !== "idle";
-    const isCorrect = state.feedbackState !== "idle" && i === q.correct_idx;
-    const isWrong = state.feedbackState === "incorrect" && isSelected && i !== q.correct_idx;
+    const optionText = normalizeChoice(opt);
+    const isCorrect = state.feedbackState !== "idle" && optionText === normalizeChoice(q.correct_answer);
+    const isWrong = state.feedbackState === "incorrect" && isSelected && optionText !== normalizeChoice(q.correct_answer);
 
     if (isSelected && !isLocked) btn.classList.add('selected');
     if (isCorrect) btn.classList.add('correct');
@@ -284,10 +321,22 @@ function handleSkip() {
 }
 
 function handleCheck() {
-  if (state.selectedAnswer === null || state.feedbackState !== "idle") return;
+  if (state.feedbackState !== "idle") return;
+
+  if (state.selectedAnswer === null) {
+    console.warn("No answer selected; skipping checkAnswer.");
+    return;
+  }
+
+  if (state.currentQuestionIndex < 0 || state.currentQuestionIndex >= state.activeQuestions.length) {
+    state.phase = "complete";
+    showEndScreen();
+    return;
+  }
 
   const q = state.activeQuestions[state.currentQuestionIndex];
-  const isCorrect = state.selectedAnswer === q.correct_idx;
+  const selectedOptionText = normalizeChoice(q.options[state.selectedAnswer]);
+  const isCorrect = selectedOptionText === normalizeChoice(q.correct_answer);
   const oldLives = state.currentLives;
   
   state.feedbackState = isCorrect ? "correct" : "incorrect";
@@ -299,6 +348,15 @@ function handleCheck() {
     state.currentLives -= 1;
     state.streak = 0;
   }
+
+  const xpAwarded = isCorrect ? q.xp_value : 0;
+  logScoreEntry({
+    questionId: q.id,
+    classKey: state.activeQuizKey,
+    isCorrect,
+    timestamp: new Date().toISOString(),
+    xpAwarded
+  });
 
   if (state.currentLives < oldLives && navigator.vibrate) {
     navigator.vibrate([80, 40, 80]);
@@ -366,7 +424,13 @@ function handleContinue() {
   DOM.drawer.classList.remove('open');
   
   setTimeout(() => {
-    renderGame();
+    if (DOM.goalIndicator) {
+    const hasGoal = Boolean(state.userProfile.goal);
+    DOM.goalIndicator.style.display = hasGoal ? 'inline-block' : 'none';
+    DOM.goalIndicator.innerText = hasGoal ? `🎯 ${state.userProfile.goal}` : '';
+  }
+
+  renderGame();
   }, 300);
 }
 

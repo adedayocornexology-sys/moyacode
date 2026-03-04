@@ -6,11 +6,11 @@
   <title>MoyaCode | Welcome</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --green: #58cc02;
-      --green-dark: #46a302;
+      --green: var(--teal);
+      --green-dark: var(--teal-dark);
       --text: #3d3d3d;
       --muted: #6b7280;
       --line: #e5e7eb;
@@ -20,8 +20,8 @@
 
     body {
       margin: 0;
-      background: #ffffff;
-      font-family: 'Nunito', sans-serif;
+      background: var(--bg-deep);
+      font-family: var(--font-body);
       color: var(--text);
       animation: fadeSlideUp 0.4s ease both;
     }
@@ -46,7 +46,7 @@
     .speech {
       position: relative;
       width: 100%;
-      background: #fff;
+      background: var(--bg-deep);
       border: 2px solid #ececec;
       border-radius: 20px;
       padding: 22px 24px;
@@ -62,7 +62,7 @@
       bottom: -10px;
       width: 18px;
       height: 18px;
-      background: #fff;
+      background: var(--bg-deep);
       border-right: 2px solid #ececec;
       border-bottom: 2px solid #ececec;
     }
@@ -100,7 +100,7 @@
       right: 0;
       bottom: 0;
       border-top: 1px solid var(--line);
-      background: #fff;
+      background: var(--bg-deep);
       padding: 16px;
       display: flex;
       justify-content: flex-end;
@@ -132,6 +132,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
   </style>
+  <link rel="stylesheet" href="css/tokens.css" />
 </head>
 <body>
   <main class="screen">
@@ -145,13 +146,13 @@
         <svg width="240" height="240" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Friendly robot mascot">
           <circle cx="130" cy="130" r="120" fill="#f8fcff"/>
           <rect x="68" y="70" width="124" height="96" rx="24" fill="#ffffff" stroke="#c9e2f5" stroke-width="4"/>
-          <circle cx="108" cy="114" r="11" fill="#1cb0f6"/>
-          <circle cx="152" cy="114" r="11" fill="#1cb0f6"/>
-          <rect x="102" y="136" width="56" height="10" rx="5" fill="#58cc02"/>
+          <circle cx="108" cy="114" r="11" fill="var(--blue)"/>
+          <circle cx="152" cy="114" r="11" fill="var(--blue)"/>
+          <rect x="102" y="136" width="56" height="10" rx="5" fill="var(--teal)"/>
           <rect x="84" y="172" width="92" height="44" rx="14" fill="#ffffff" stroke="#c9e2f5" stroke-width="4"/>
-          <text x="130" y="201" text-anchor="middle" font-family="Nunito, sans-serif" font-size="22" font-weight="900" fill="#4b6478">&lt;/&gt;</text>
+          <text x="130" y="201" text-anchor="middle" font-family="var(--font-display)" font-size="22" font-weight="900" fill="#4b6478">&lt;/&gt;</text>
           <line x1="130" y1="70" x2="130" y2="46" stroke="#c9e2f5" stroke-width="4"/>
-          <circle cx="130" cy="40" r="8" fill="#58cc02"/>
+          <circle cx="130" cy="40" r="8" fill="var(--teal)"/>
         </svg>
       </div>
     </section>
