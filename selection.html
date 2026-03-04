@@ -3,256 +3,714 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MoyaCode | Choose Your Path</title>
+  <title>MoyaCode | Choose Your Quest</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #f7f9fc;
-      --text: #1f2937;
-      --muted: #64748b;
-      --white: #ffffff;
-
-      --green: var(--teal);
-      --green-dark: #44a001;
-
-      --blue: #38bdf8;
-      --blue-dark: #1596cf;
-
-      --orange: #ff8f36;
-      --orange-dark: #dc7420;
-
-      --yellow: #ffd53d;
-      --yellow-dark: #d9b42f;
+      --bg-abyss: #0A0F1E;
+      --bg-deep: #0F1A2E;
+      --bg-elevated: #162440;
+      --teal: #00E5A0;
+      --teal-dark: #00B87A;
+      --teal-glow: rgba(0, 229, 160, 0.25);
+      --blue: #3D9BE9;
+      --blue-glow: rgba(61, 155, 233, 0.25);
+      --coral: #FF5C7A;
+      --coral-glow: rgba(255, 92, 122, 0.25);
+      --amber: #FFD166;
+      --amber-glow: rgba(255, 209, 102, 0.25);
+      --purple: #A78BFA;
+      --purple-glow: rgba(167, 139, 250, 0.25);
+      --text-primary: #F0F4FF;
+      --text-muted: #8B9FC4;
+      --text-disabled: #4A5C7A;
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --font-display: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      margin: 0;
-      min-height: 100vh;
       font-family: var(--font-body);
-      color: var(--text);
-      background:
-        radial-gradient(circle at 15% 10%, #ffffff 0%, #f7f9fc 45%),
-        radial-gradient(circle at 85% 90%, #eef4ff 0%, #f7f9fc 40%);
+      background: var(--bg-abyss);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-bottom: 100px;
     }
 
-    .page {
-      width: min(1100px, 92vw);
-      margin: 0 auto;
-      padding: 48px 0 64px;
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
     }
 
-    .header {
-      text-align: center;
-      margin-bottom: 34px;
+    .particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--teal);
+      opacity: 0;
+      animation: drift linear infinite;
     }
 
-    .header h1 {
-      margin: 0;
-      font-size: clamp(2rem, 4.4vw, 3.3rem);
-      line-height: 1.1;
-      font-weight: 900;
-      letter-spacing: -0.02em;
+    @keyframes drift {
+      0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+      10%  { opacity: 0.15; }
+      90%  { opacity: 0.1; }
+      100% { transform: translateY(-10vh) scale(1); opacity: 0; }
     }
 
-    .header p {
-      margin: 14px auto 0;
-      color: var(--muted);
-      font-size: clamp(1rem, 2.2vw, 1.25rem);
-      font-weight: 700;
-      max-width: 620px;
-    }
-
-    .path-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
-    }
-
-    .path-card {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-      background: var(--white);
-      border-radius: 18px;
-      padding: 24px 22px;
-      min-height: 220px;
-      text-decoration: none;
-      border: 2px solid transparent;
-      border-bottom: 7px solid;
-      box-shadow: 0 10px 26px rgba(31, 41, 55, 0.08);
-      transition: transform 0.18s ease, box-shadow 0.18s ease;
-      will-change: transform;
-    }
-
-    .path-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 16px 30px rgba(31, 41, 55, 0.14);
-    }
-
-    .path-card:active {
-      transform: translateY(-2px);
-    }
-
-    .card-top {
+    .global-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 56px;
+      background: rgba(10, 15, 30, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding: 0 24px;
+    }
+
+    .nav-wordmark {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--teal);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
       gap: 12px;
     }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 999px;
-      padding: 8px 12px;
-      font-size: 0.8rem;
-      font-weight: 900;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-      background: rgba(255, 255, 255, 0.7);
-      border: 2px solid rgba(255, 255, 255, 0.95);
-      color: #334155;
-    }
-
-    .title {
-      font-size: clamp(1.5rem, 2.8vw, 2rem);
-      font-weight: 900;
-      line-height: 1.1;
-      margin: 0;
-    }
-
-    .sub {
-      margin: 8px 0 0;
-      font-size: 1rem;
-      line-height: 1.5;
-      color: #334155;
-      font-weight: 700;
-    }
-
-    .learner-count {
-      margin-top: auto;
-      font-size: 0.95rem;
-      font-weight: 800;
-      color: #475569;
-      opacity: 0.95;
-    }
-
-    .theme-green {
-      background: linear-gradient(160deg, #f5ffe9 0%, #efffe2 100%);
-      border-color: #cdeeb1;
-      border-bottom-color: var(--green-dark);
-    }
-    .theme-green .title { color: #2f7d08; }
-
-    .theme-blue {
-      background: linear-gradient(160deg, #ebf8ff 0%, #e5f5ff 100%);
-      border-color: #bfe9ff;
-      border-bottom-color: var(--blue-dark);
-    }
-    .theme-blue .title { color: #0a6b96; }
-
-    .theme-orange {
-      background: linear-gradient(160deg, #fff3e8 0%, #ffeedf 100%);
-      border-color: #ffd7ba;
-      border-bottom-color: var(--orange-dark);
-    }
-    .theme-orange .title { color: #a55012; }
-
-    .theme-yellow {
-      background: linear-gradient(160deg, #fffce7 0%, #fff8d3 100%);
-      border-color: #ffe791;
-      border-bottom-color: var(--yellow-dark);
-    }
-    .theme-yellow .title { color: #8f7410; }
-
-    .top-nav {
+    .nav-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--bg-elevated);
+      border: 2px solid rgba(255,255,255,0.1);
       display: flex;
       align-items: center;
+      justify-content: center;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: min(1100px, 92vw);
+      margin: 0 auto;
+      padding: 40px 0 40px;
+    }
+
+    .hero-header {
+      text-align: center;
+      margin-bottom: 36px;
+      animation: heroIn 0.6s var(--spring) both;
+    }
+
+    @keyframes heroIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .moyabot-wrap {
+      display: inline-block;
       margin-bottom: 16px;
+      animation: float 4s ease-in-out infinite;
     }
 
-    .back-btn {
-      text-decoration: none;
-      font-weight: 900;
-      color: #64748b;
-      border: 2px solid #d1d5db;
-      border-bottom: 4px solid #9ca3af;
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-10px); }
+    }
+
+    .hero-header h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 10px;
+    }
+
+    .hero-header h1 span {
+      color: var(--teal);
+    }
+
+    .hero-header p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      font-weight: 500;
+    }
+
+    .stat-strip {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      animation: heroIn 0.6s var(--spring) 0.15s both;
+    }
+
+    .stat-pill {
+      padding: 8px 18px;
       border-radius: 999px;
-      padding: 8px 14px;
-      background: #fff;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      border: 1px solid;
+      letter-spacing: 0.02em;
     }
 
-    @media (max-width: 760px) {
-      .page { padding-top: 34px; }
-      .path-grid { grid-template-columns: 1fr; }
-      .path-card { min-height: 200px; }
+    .stat-pill.teal  { color: var(--teal);   border-color: rgba(0,229,160,0.3);   background: rgba(0,229,160,0.08); }
+    .stat-pill.blue  { color: var(--blue);   border-color: rgba(61,155,233,0.3);  background: rgba(61,155,233,0.08); }
+    .stat-pill.amber { color: var(--amber);  border-color: rgba(255,209,102,0.3); background: rgba(255,209,102,0.08); }
+
+    .quest-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .quest-card {
+      position: relative;
+      background: var(--bg-deep);
+      border: 2px solid var(--border-subtle);
+      border-radius: 22px;
+      padding: 28px 24px 24px;
+      cursor: pointer;
+      transition: transform 0.22s var(--spring), box-shadow 0.22s ease;
+      animation: cardIn 0.5s var(--spring) both;
+      overflow: hidden;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .quest-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 22px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .quest-card:hover {
+      transform: translateY(-6px);
+    }
+
+    .quest-card:hover::before { opacity: 1; }
+
+    .quest-card.teal   { border-bottom: 5px solid var(--teal); }
+    .quest-card.teal::before   { background: radial-gradient(circle at 50% 0%, rgba(0,229,160,0.07) 0%, transparent 70%); }
+    .quest-card.teal:hover { box-shadow: 0 16px 40px rgba(0,229,160,0.18), 0 0 0 1px rgba(0,229,160,0.15); }
+
+    .quest-card.blue   { border-bottom: 5px solid var(--blue); }
+    .quest-card.blue::before   { background: radial-gradient(circle at 50% 0%, rgba(61,155,233,0.07) 0%, transparent 70%); }
+    .quest-card.blue:hover { box-shadow: 0 16px 40px rgba(61,155,233,0.18), 0 0 0 1px rgba(61,155,233,0.15); }
+
+    .quest-card.amber  { border-bottom: 5px solid var(--amber); }
+    .quest-card.amber::before  { background: radial-gradient(circle at 50% 0%, rgba(255,209,102,0.07) 0%, transparent 70%); }
+    .quest-card.amber:hover { box-shadow: 0 16px 40px rgba(255,209,102,0.18), 0 0 0 1px rgba(255,209,102,0.15); }
+
+    .quest-card.coral  { border-bottom: 5px solid var(--coral); }
+    .quest-card.coral::before  { background: radial-gradient(circle at 50% 0%, rgba(255,92,122,0.07) 0%, transparent 70%); }
+    .quest-card.coral:hover { box-shadow: 0 16px 40px rgba(255,92,122,0.18), 0 0 0 1px rgba(255,92,122,0.15); }
+
+    .quest-card.purple { border-bottom: 5px solid var(--purple); }
+    .quest-card.purple::before { background: radial-gradient(circle at 50% 0%, rgba(167,139,250,0.07) 0%, transparent 70%); }
+    .quest-card.purple:hover { box-shadow: 0 16px 40px rgba(167,139,250,0.18), 0 0 0 1px rgba(167,139,250,0.15); }
+
+    .quest-card.green  { border-bottom: 5px solid #4ADE80; }
+    .quest-card.green::before  { background: radial-gradient(circle at 50% 0%, rgba(74,222,128,0.07) 0%, transparent 70%); }
+    .quest-card.green:hover { box-shadow: 0 16px 40px rgba(74,222,128,0.18), 0 0 0 1px rgba(74,222,128,0.15); }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(24px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .quest-card:nth-child(1) { animation-delay: 0.1s; }
+    .quest-card:nth-child(2) { animation-delay: 0.18s; }
+    .quest-card:nth-child(3) { animation-delay: 0.26s; }
+    .quest-card:nth-child(4) { animation-delay: 0.34s; }
+    .quest-card:nth-child(5) { animation-delay: 0.42s; }
+    .quest-card:nth-child(6) { animation-delay: 0.50s; }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .bot-container {
+      width: 72px;
+      height: 72px;
+      flex-shrink: 0;
+    }
+
+    .level-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      color: var(--text-muted);
+      border: 1px solid rgba(255,255,255,0.08);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .card-body { flex: 1; }
+
+    .quest-name {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+
+    .quest-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-bottom: 14px;
+    }
+
+    .difficulty {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .diff-label {
+      font-size: 0.75rem;
+      color: var(--text-disabled);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .diff-dots {
+      display: flex;
+      gap: 5px;
+    }
+
+    .diff-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      transition: background 0.2s ease;
+    }
+
+    .diff-dot.filled { background: currentColor; }
+
+    .quest-card.teal   .diff-dot.filled { color: var(--teal); }
+    .quest-card.blue   .diff-dot.filled { color: var(--blue); }
+    .quest-card.amber  .diff-dot.filled { color: var(--amber); }
+    .quest-card.coral  .diff-dot.filled { color: var(--coral); }
+    .quest-card.purple .diff-dot.filled { color: var(--purple); }
+    .quest-card.green  .diff-dot.filled { color: #4ADE80; }
+
+    .card-arrow {
+      position: absolute;
+      bottom: 22px;
+      right: 22px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: translateX(-6px);
+      transition: opacity 0.2s ease, transform 0.2s var(--spring);
+    }
+
+    .quest-card:hover .card-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .streak-bar {
+      background: var(--bg-deep);
+      border: 1px solid var(--border-subtle);
+      border-left: 3px solid var(--teal);
+      border-radius: 16px;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      animation: heroIn 0.5s var(--spring) 0.6s both;
+    }
+
+    .streak-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .streak-item .val { color: var(--teal); font-family: var(--font-display); }
+    .streak-item .val.amber { color: var(--amber); }
+
+    .streak-divider {
+      width: 1px;
+      height: 24px;
+      background: var(--border-subtle);
+    }
+
+    .bg-mesh {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(0,229,160,0.05) 0%, transparent 40%),
+        radial-gradient(circle at 85% 70%, rgba(61,155,233,0.05) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(167,139,250,0.03) 0%, transparent 60%);
+    }
+
+    @media (max-width: 700px) {
+      .quest-grid { grid-template-columns: 1fr; }
+      .hero-header h1 { font-size: 1.8rem; }
+      .streak-bar { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .streak-divider { display: none; }
     }
   </style>
-  <link rel="stylesheet" href="css/tokens.css" />
 </head>
 <body>
-  <main class="page">
-    <div class="top-nav">
-      <a class="back-btn" href="goals.html" aria-label="Go back">← Back</a>
+
+  <div class="bg-mesh"></div>
+
+  <div class="particles" id="particles"></div>
+
+  <nav class="global-nav">
+    <a href="index.html" class="nav-wordmark">MoyaCode</a>
+    <div class="nav-right">
+      <div class="nav-avatar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="8" r="4" stroke="#8B9FC4" stroke-width="2"/>
+          <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#8B9FC4" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
     </div>
-    <header class="header">
-      <h1>Choose your path, Hero!</h1>
-      <p>Join over 500 students in Owo mastering the future.</p>
+  </nav>
+
+  <main class="page">
+    <header class="hero-header">
+      <div class="moyabot-wrap">
+        <svg width="100" height="100" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="130" cy="130" r="118" fill="rgba(0,229,160,0.06)" />
+          <rect x="68" y="70" width="124" height="96" rx="24" fill="#0F1A2E" stroke="#00E5A0" stroke-width="4"/>
+          <circle cx="108" cy="112" r="12" fill="#00E5A0"/>
+          <circle cx="152" cy="112" r="12" fill="#00E5A0"/>
+          <circle cx="108" cy="112" r="5" fill="#0A0F1E"/>
+          <circle cx="152" cy="112" r="5" fill="#0A0F1E"/>
+          <rect x="102" y="133" width="56" height="10" rx="5" fill="#00E5A0"/>
+          <rect x="84" y="172" width="92" height="44" rx="14" fill="#0F1A2E" stroke="#00E5A0" stroke-width="3"/>
+          <text x="130" y="201" text-anchor="middle" font-family="monospace" font-size="20" font-weight="900" fill="#00E5A0">&lt;/&gt;</text>
+          <line x1="130" y1="70" x2="130" y2="44" stroke="#00E5A0" stroke-width="4"/>
+          <circle cx="130" cy="38" r="9" fill="#00E5A0"/>
+          <circle cx="130" cy="38" r="4" fill="#0A0F1E"/>
+        </svg>
+      </div>
+      <h1>Choose Your <span>Quest</span>, Hero</h1>
+      <p>Your coding adventure starts here. Pick your class and begin.</p>
     </header>
 
-    <section class="path-grid" aria-label="Learning path options">
-      <a class="path-card theme-green" href="loading.html?class=jss1&returnTo=selection.html">
-        <div class="card-top">
-          <span class="badge">JSS 1-2</span>
-        </div>
-        <div>
-          <h2 class="title">Logic Architect</h2>
-          <p class="sub">Master Game Design with Scratch</p>
-        </div>
-        <p class="learner-count">120 students active</p>
-      </a>
+    <div class="stat-strip">
+      <div class="stat-pill teal">⚡ Students: 500+</div>
+      <div class="stat-pill blue">🎯 Quests: 6</div>
+      <div class="stat-pill amber">📚 Questions: 90+</div>
+    </div>
 
-      <a class="path-card theme-blue" href="loading.html?class=jss3&returnTo=selection.html">
+    <section class="quest-grid">
+      <div class="quest-card teal" onclick="startQuiz('jss1')">
         <div class="card-top">
-          <span class="badge">JSS 3 - SS 1</span>
+          <div class="bot-container">
+            <svg width="72" height="72" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+              <rect x="68" y="70" width="124" height="96" rx="24" fill="#0F1A2E" stroke="#00E5A0" stroke-width="4"/>
+              <circle cx="108" cy="108" r="11" fill="#00E5A0"/><circle cx="108" cy="108" r="4" fill="#0A0F1E"/>
+              <circle cx="152" cy="108" r="11" fill="#00E5A0"/><circle cx="152" cy="108" r="4" fill="#0A0F1E"/>
+              <rect x="104" y="130" width="52" height="9" rx="4.5" fill="#00E5A0"/>
+              <line x1="130" y1="70" x2="130" y2="48" stroke="#00E5A0" stroke-width="4"/>
+              <circle cx="130" cy="42" r="7" fill="#00E5A0"/>
+              <rect x="88" y="178" width="84" height="40" rx="12" fill="#162440" stroke="#00E5A0" stroke-width="2"/>
+              <circle cx="108" cy="198" r="5" fill="#00E5A0" opacity="0.5"/>
+              <circle cx="120" cy="198" r="5" fill="#00E5A0"/>
+              <rect x="148" y="193" width="14" height="4" rx="2" fill="#00E5A0"/>
+              <rect x="153" y="188" width="4" height="14" rx="2" fill="#00E5A0"/>
+            </svg>
+          </div>
+          <span class="level-badge">JSS 1</span>
         </div>
-        <div>
-          <h2 class="title">Web Wizard</h2>
-          <p class="sub">Build your first website with HTML</p>
+        <div class="card-body">
+          <div class="quest-name">Scratch Basics</div>
+          <div class="quest-desc">Build your first game with blocks</div>
+          <div class="difficulty">
+            <span class="diff-label">Difficulty</span>
+            <div class="diff-dots">
+              <div class="diff-dot filled"></div>
+              <div class="diff-dot"></div>
+              <div class="diff-dot"></div>
+            </div>
+            <span class="diff-label">Beginner</span>
+          </div>
         </div>
-        <p class="learner-count">145 students active</p>
-      </a>
+        <div class="card-arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#F0F4FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
 
-      <a class="path-card theme-orange" href="loading.html?class=ss2&returnTo=selection.html">
+      <div class="quest-card blue" onclick="startQuiz('jss2')">
         <div class="card-top">
-          <span class="badge">SS 2</span>
+          <div class="bot-container">
+            <svg width="72" height="72" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+              <rect x="68" y="70" width="124" height="96" rx="24" fill="#0F1A2E" stroke="#3D9BE9" stroke-width="4"/>
+              <circle cx="108" cy="108" r="11" fill="#3D9BE9"/><circle cx="108" cy="108" r="4" fill="#0A0F1E"/>
+              <circle cx="152" cy="108" r="11" fill="#3D9BE9"/><circle cx="152" cy="108" r="4" fill="#0A0F1E"/>
+              <rect x="104" y="130" width="52" height="9" rx="4.5" fill="#3D9BE9"/>
+              <line x1="130" y1="70" x2="130" y2="48" stroke="#3D9BE9" stroke-width="4"/>
+              <circle cx="130" cy="42" r="7" fill="#3D9BE9"/>
+              <path d="M68 80 Q50 130 68 166 L88 166 Q80 130 80 100Z" fill="#3D9BE9" opacity="0.7"/>
+            </svg>
+          </div>
+          <span class="level-badge">JSS 2</span>
         </div>
-        <div>
-          <h2 class="title">Style Master</h2>
-          <p class="sub">Design beautiful UI with CSS</p>
+        <div class="card-body">
+          <div class="quest-name">Advanced Scratch</div>
+          <div class="quest-desc">Master game logic and animation</div>
+          <div class="difficulty">
+            <span class="diff-label">Difficulty</span>
+            <div class="diff-dots">
+              <div class="diff-dot filled"></div>
+              <div class="diff-dot filled"></div>
+              <div class="diff-dot"></div>
+            </div>
+            <span class="diff-label">Beginner+</span>
+          </div>
         </div>
-        <p class="learner-count">98 students active</p>
-      </a>
+        <div class="card-arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#F0F4FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
 
-      <a class="path-card theme-yellow" href="loading.html?class=ss3&returnTo=selection.html">
+      <div class="quest-card amber" onclick="startQuiz('jss3')">
         <div class="card-top">
-          <span class="badge">SS 3</span>
+          <div class="bot-container">
+            <svg width="72" height="72" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+              <rect x="68" y="80" width="124" height="96" rx="24" fill="#0F1A2E" stroke="#FFD166" stroke-width="4"/>
+              <circle cx="108" cy="118" r="11" fill="#FFD166"/><circle cx="108" cy="118" r="4" fill="#0A0F1E"/>
+              <circle cx="152" cy="118" r="11" fill="#FFD166"/><circle cx="152" cy="118" r="4" fill="#0A0F1E"/>
+              <rect x="104" y="140" width="52" height="9" rx="4.5" fill="#FFD166"/>
+              <line x1="130" y1="80" x2="130" y2="58" stroke="#FFD166" stroke-width="4"/>
+              <circle cx="130" cy="52" r="7" fill="#FFD166"/>
+              <ellipse cx="130" cy="56" rx="40" ry="12" fill="#FFD166"/>
+              <rect x="100" y="44" width="60" height="18" rx="9" fill="#FFD166"/>
+            </svg>
+          </div>
+          <span class="level-badge">JSS 3</span>
         </div>
-        <div>
-          <h2 class="title">Script Ninja</h2>
-          <p class="sub">Advanced logic with JavaScript</p>
+        <div class="card-body">
+          <div class="quest-name">Intro to HTML</div>
+          <div class="quest-desc">Build your very first webpage</div>
+          <div class="difficulty">
+            <span class="diff-label">Difficulty</span>
+            <div class="diff-dots">
+              <div class="diff-dot filled"></div>
+              <div class="diff-dot filled"></div>
+              <div class="diff-dot"></div>
+            </div>
+            <span class="diff-label">Intermediate</span>
+          </div>
         </div>
-        <p class="learner-count">137 students active</p>
-      </a>
+        <div class="card-arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#F0F4FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+
+      <div class="quest-card coral" onclick="startQuiz('ss1')">
+        <div class="card-top">
+          <div class="bot-container">
+            <svg width="72" height="72" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+              <rect x="68" y="70" width="124" height="96" rx="24" fill="#0F1A2E" stroke="#FF5C7A" stroke-width="4"/>
+              <circle cx="108" cy="108" r="11" fill="#FF5C7A"/><circle cx="108" cy="108" r="4" fill="#0A0F1E"/>
+              <circle cx="152" cy="108" r="11" fill="#FF5C7A"/><circle cx="152" cy="108" r="4" fill="#0A0F1E"/>
+              <rect x="104" y="130" width="52" height="9" rx="4.5" fill="#FF5C7A"/>
+              <line x1="130" y1="70" x2="130" y2="48" stroke="#FF5C7A" stroke-width="4"/>
+              <circle cx="130" cy="42" r="7" fill="#FF5C7A"/>
+              <ellipse cx="130" cy="48" rx="46" ry="14" fill="#FF5C7A"/>
+              <rect x="96" y="34" width="68" height="20" rx="10" fill="#FF5C7A"/>
+              <line x1="52" y1="70" x2="52" y2="170" stroke="#FF5C7A" stroke-width="3" opacity="0.5"/>
+              <line x1="208" y1="70" x2="208" y2="170" stroke="#FF5C7A" stroke-width="3" opacity="0.5"/>
+              <line x1="52" y1="110" x2="68" y2="110" stroke="#FF5C7A" stroke-width="3" opacity="0.5"/>
+              <line x1="192" y1="110" x2="208" y2="110" stroke="#FF5C7A" stroke-width="3" opacity="0.5"/>
+            </svg>
+          </div>
+          <span class="level-badge">SS 1</span>
+        </div>
+        <div class="card-body">
+          <div class="quest-name">Advanced HTML</div>
+          <div class="quest-desc">Structure web pages like a pro</div>
+          <div class="difficulty">
+            <span class="diff-label">Difficulty</span>
+            <div class="diff-dots">
+              <div class="diff-dot filled"></div>
+              <div class="diff-dot filled"></div>
+              <div class="diff-dot"></div>
+            </div>
+            <span class="diff-label">Intermediate</span>
+          </div>
+        </div>
+        <div class="card-arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#F0F4FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+
+      <div class="quest-card purple" onclick="startQuiz('ss2')">
+        <div class="card-top">
+          <div class="bot-container">
+            <svg width="72" height="72" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+              <rect x="68" y="70" width="124" height="96" rx="24" fill="#0F1A2E" stroke="#A78BFA" stroke-width="4"/>
+              <circle cx="108" cy="108" r="11" fill="#A78BFA"/><circle cx="108" cy="108" r="4" fill="#0A0F1E"/>
+              <circle cx="152" cy="108" r="11" fill="#A78BFA"/><circle cx="152" cy="108" r="4" fill="#0A0F1E"/>
+              <rect x="104" y="130" width="52" height="9" rx="4.5" fill="#A78BFA"/>
+              <line x1="130" y1="70" x2="130" y2="48" stroke="#A78BFA" stroke-width="4"/>
+              <circle cx="130" cy="42" r="7" fill="#A78BFA"/>
+              <rect x="190" y="80" width="10" height="50" rx="5" fill="#A78BFA"/>
+              <ellipse cx="195" cy="138" rx="8" ry="14" fill="#A78BFA" opacity="0.8"/>
+              <ellipse cx="195" cy="148" rx="5" ry="6" fill="#FFD166"/>
+            </svg>
+          </div>
+          <span class="level-badge">SS 2</span>
+        </div>
+        <div class="card-body">
+          <div class="quest-name">CSS Styling</div>
+          <div class="quest-desc">Make the web beautiful</div>
+          <div class="difficulty">
+            <span class="diff-label">Difficulty</span>
+            <div class="diff-dots">
+              <div class="diff-dot filled"></div>
+              <div class="diff-dot filled"></div>
+              <div class="diff-dot filled"></div>
+            </div>
+            <span class="diff-label">Advanced</span>
+          </div>
+        </div>
+        <div class="card-arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#F0F4FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+
+      <div class="quest-card green" onclick="startQuiz('ss3')">
+        <div class="card-top">
+          <div class="bot-container">
+            <svg width="72" height="72" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#4ADE80"/>
+                  <stop offset="100%" stop-color="#00B87A"/>
+                </radialGradient>
+              </defs>
+              <rect x="68" y="70" width="124" height="96" rx="24" fill="#0F1A2E" stroke="#4ADE80" stroke-width="4"/>
+              <circle cx="108" cy="108" r="14" fill="url(#eyeGlow)" opacity="0.9"/>
+              <circle cx="108" cy="108" r="6" fill="#0A0F1E"/>
+              <circle cx="152" cy="108" r="14" fill="url(#eyeGlow)" opacity="0.9"/>
+              <circle cx="152" cy="108" r="6" fill="#0A0F1E"/>
+              <rect x="104" y="130" width="52" height="9" rx="4.5" fill="#4ADE80"/>
+              <line x1="130" y1="70" x2="130" y2="48" stroke="#4ADE80" stroke-width="4"/>
+              <circle cx="130" cy="42" r="7" fill="#4ADE80"/>
+              <path d="M54 80 L44 105 L54 105 L44 130" stroke="#4ADE80" stroke-width="3" stroke-linecap="round" fill="none"/>
+              <path d="M206 80 L216 105 L206 105 L216 130" stroke="#4ADE80" stroke-width="3" stroke-linecap="round" fill="none"/>
+            </svg>
+          </div>
+          <span class="level-badge">SS 3</span>
+        </div>
+        <div class="card-body">
+          <div class="quest-name">JavaScript Logic</div>
+          <div class="quest-desc">Bring your code to life</div>
+          <div class="difficulty">
+            <span class="diff-label">Difficulty</span>
+            <div class="diff-dots">
+              <div class="diff-dot filled"></div>
+              <div class="diff-dot filled"></div>
+              <div class="diff-dot filled"></div>
+            </div>
+            <span class="diff-label">Advanced</span>
+          </div>
+        </div>
+        <div class="card-arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#F0F4FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+
     </section>
+
+    <div class="streak-bar">
+      <div class="streak-item">
+        <span>🔥</span>
+        <span>Streak:</span>
+        <span class="val">0 days</span>
+      </div>
+      <div class="streak-divider"></div>
+      <div class="streak-item">
+        <span>⚡</span>
+        <span>Total XP:</span>
+        <span class="val">0</span>
+      </div>
+      <div class="streak-divider"></div>
+      <div class="streak-item">
+        <span>🏆</span>
+        <span>Quests done:</span>
+        <span class="val amber">0</span>
+      </div>
+    </div>
+
   </main>
+
+  <script>
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 28; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.animationDuration = (8 + Math.random() * 14) + 's';
+      p.style.animationDelay = (Math.random() * 12) + 's';
+      p.style.width = p.style.height = (2 + Math.random() * 3) + 'px';
+      if (Math.random() > 0.7) p.style.background = '#3D9BE9';
+      if (Math.random() > 0.85) p.style.background = '#FFD166';
+      container.appendChild(p);
+    }
+
+    function startQuiz(classKey) {
+      window.location.href = 'loading.html?class=' + classKey;
+    }
+  </script>
 </body>
 </html>
