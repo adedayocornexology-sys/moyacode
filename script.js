@@ -71,7 +71,7 @@ const WRONG_COMMENTS = [
 ];
 
 
-function shuffle(items) {
+window.shuffle = function shuffle(items) {
   const copy = [...items];
   for (let i = copy.length - 1; i > 0; i -= 1) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -170,7 +170,7 @@ window.startQuiz = function(classKey) {
   
   state.activeQuizKey = classKey;
   state.activeQuestions = selectedQuiz.questions.map((question) => {
-    const shuffledOptions = shuffle(
+    const shuffledOptions = window.shuffle(
       question.options.map((optionText, optionIndex) => ({
         optionText,
         isCorrect: optionIndex === question.correct_idx,
