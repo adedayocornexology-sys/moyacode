@@ -43,7 +43,7 @@ const moyaQuestions = {
   ]
 };
 
-const state = { classKey: 'jss2', questions: [], index: 0, lives: 3, placed: [], bank: [] };
+const state = { classKey: 'jss2', questions: [], index: 0, lives: 3, placed: [], bank: [], userProfile: { dream: '', motivation: '', goal: '' } };
 
 const dom = {
   closeBtn: document.getElementById('close-btn'),
@@ -160,9 +160,19 @@ function skipQuestion() {
   nextQuestion();
 }
 
+function getUserProfile() {
+  return {
+    dream: localStorage.getItem('moyacode_dream') || '',
+    motivation: localStorage.getItem('moyacode_motivation') || '',
+    goal: localStorage.getItem('moyacode_goal') || ''
+  };
+}
+
 function init() {
   const params = new URLSearchParams(window.location.search);
   const classKey = (params.get('class') || 'jss2').toLowerCase();
+  const returnTo = params.get('returnTo') || 'selection.html';
+  state.userProfile = getUserProfile();
   state.classKey = moyaQuestions[classKey] ? classKey : 'jss2';
   state.questions = moyaQuestions[state.classKey];
   state.index = 0;
@@ -170,7 +180,7 @@ function init() {
   state.placed = [];
   state.bank = shuffle(getCurrent().options);
 
-  dom.closeBtn.addEventListener('click', () => (window.location.href = 'selection.html'));
+  dom.closeBtn.addEventListener('click', () => (window.location.href = returnTo));
   dom.skip.addEventListener('click', skipQuestion);
   dom.check.addEventListener('click', checkAnswer);
   dom.nextBtn.addEventListener('click', nextQuestion);

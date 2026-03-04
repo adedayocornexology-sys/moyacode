@@ -233,14 +233,25 @@
   <script>
     const options = document.querySelectorAll('.option');
     const continueBtn = document.getElementById('continue-btn');
+    let selectedMotivation = '';
 
     options.forEach((card) => {
       card.addEventListener('click', () => {
         options.forEach((item) => item.classList.remove('selected'));
         card.classList.add('selected');
+        selectedMotivation = card.innerText.trim();
         continueBtn.classList.add('enabled');
         continueBtn.setAttribute('aria-disabled', 'false');
       });
+    });
+
+    continueBtn.addEventListener('click', (event) => {
+      if (!selectedMotivation) {
+        event.preventDefault();
+        return;
+      }
+
+      localStorage.setItem('moyacode_motivation', selectedMotivation);
     });
   </script>
 </body>

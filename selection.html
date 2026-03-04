@@ -170,6 +170,26 @@
     }
     .theme-yellow .title { color: #8f7410; }
 
+    .top-nav {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      font-weight: 900;
+      color: #64748b;
+      border: 2px solid #d1d5db;
+      border-bottom: 4px solid #9ca3af;
+      border-radius: 999px;
+      padding: 8px 14px;
+      background: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     @media (max-width: 760px) {
       .page { padding-top: 34px; }
       .path-grid { grid-template-columns: 1fr; }
@@ -179,13 +199,16 @@
 </head>
 <body>
   <main class="page">
+    <div class="top-nav">
+      <a class="back-btn" href="goals.html" aria-label="Go back">← Back</a>
+    </div>
     <header class="header">
       <h1>Choose your path, Hero!</h1>
       <p>Join over 500 students in Owo mastering the future.</p>
     </header>
 
     <section class="path-grid" aria-label="Learning path options">
-      <a class="path-card theme-green" href="goals.html">
+      <a class="path-card theme-green" href="loading.html?class=jss1&returnTo=selection.html">
         <div class="card-top">
           <span class="badge">JSS 1-2</span>
         </div>
@@ -196,7 +219,7 @@
         <p class="learner-count">120 students active</p>
       </a>
 
-      <a class="path-card theme-blue" href="goals.html">
+      <a class="path-card theme-blue" href="loading.html?class=jss3&returnTo=selection.html">
         <div class="card-top">
           <span class="badge">JSS 3 - SS 1</span>
         </div>
@@ -207,7 +230,7 @@
         <p class="learner-count">145 students active</p>
       </a>
 
-      <a class="path-card theme-orange" href="goals.html">
+      <a class="path-card theme-orange" href="loading.html?class=ss2&returnTo=selection.html">
         <div class="card-top">
           <span class="badge">SS 2</span>
         </div>
@@ -218,7 +241,7 @@
         <p class="learner-count">98 students active</p>
       </a>
 
-      <a class="path-card theme-yellow" href="goals.html">
+      <a class="path-card theme-yellow" href="loading.html?class=ss3&returnTo=selection.html">
         <div class="card-top">
           <span class="badge">SS 3</span>
         </div>
