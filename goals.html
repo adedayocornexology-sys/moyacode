@@ -8,19 +8,158 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
-    *{box-sizing:border-box}body{margin:0;font-family:var(--font-body);background:var(--bg-deep);color:#3f3f46;padding-bottom:110px}
-    .wrap{max-width:860px;margin:0 auto;padding:18px}
-    .progress{height:8px;background:#eceff3;border-radius:999px;overflow:hidden;margin:8px 0 20px}.fill{width:35%;height:100%;background:var(--teal)}
-    h1{
-      font-family: var(--font-display);margin:0 0 8px;font-size:2rem}.sub{margin:0 0 20px;color:#71717a;font-weight:700}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .goal{padding:18px;border-radius:16px;border:2px solid #d7dde6;border-bottom:4px solid #aeb8c4;background:var(--bg-deep);cursor:pointer;font-weight:800;text-align:left}
-    .goal small{display:block;color:#6b7280;font-weight:700}.goal.selected{border-color:var(--blue);border-bottom-color:#1596cf;color:var(--blue);box-shadow:0 0 0 3px rgba(28,176,246,.15)}
-    .bar{position:fixed;left:0;right:0;bottom:0;border-top:1px solid #e5e7eb;background:var(--bg-deep);padding:16px;display:flex;justify-content:flex-end}
-    .btn{min-width:180px;padding:14px 24px;border-radius:16px;border:2px solid #d1d5db;border-bottom:4px solid #a8afb8;background:#cfd4db;color:#fff;text-decoration:none;text-transform:uppercase;font-weight:900;pointer-events:none;display:inline-flex;justify-content:center}
-    .btn.on{background:var(--teal);border-color:#55bf02;border-bottom-color:var(--teal-dark);pointer-events:auto}
-    @media (max-width:760px){.grid{grid-template-columns:1fr}}
-  
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      background: #0A0F1E;
+      color: #fff;
+      padding-bottom: 120px;
+      animation: fadeSlideUp 0.4s ease both;
+    }
+    .wrap { width: min(980px, 92vw); margin: 0 auto; padding: 22px 0 34px; }
+
+    .steps { margin: 6px 0 30px; }
+    .step-line {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .connector { height: 4px; background: rgba(255,255,255,0.16); border-radius: 999px; }
+    .step-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 3px solid #00E5A0;
+      background: transparent;
+      justify-self: center;
+    }
+    .step-dot.done { background: #00E5A0; }
+    .step-dot.current {
+      box-shadow: 0 0 0 0 rgba(0,229,160,0.7);
+      animation: pulseGlow 1.6s infinite;
+    }
+    .step-labels {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      color: #8B9FC4;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .bot-note { display: flex; align-items: center; gap: 16px; margin-bottom: 26px; }
+    .bubble {
+      position: relative;
+      background: #0F1A2E;
+      border: 2px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 16px 18px;
+      color: #fff;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .bubble::before {
+      content: '';
+      position: absolute;
+      left: -10px;
+      top: 28px;
+      width: 14px;
+      height: 14px;
+      transform: rotate(45deg);
+      background: #0F1A2E;
+      border-left: 2px solid rgba(255,255,255,0.06);
+      border-bottom: 2px solid rgba(255,255,255,0.06);
+    }
+
+    h1 { margin: 0 0 8px; font-size: clamp(2rem, 4vw, 2.6rem); font-family: var(--font-display); }
+    .sub { margin: 0 0 22px; color: #8B9FC4; font-weight: 700; }
+
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .goal {
+      min-height: 160px;
+      padding: 28px;
+      border-radius: 20px;
+      border: 2px solid rgba(255,255,255,0.08);
+      border-bottom: 4px solid var(--accent);
+      background: #0F1A2E;
+      cursor: pointer;
+      color: #fff;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .goal-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .goal .emoji { font-size: 1.6rem; }
+    .goal .tier { font-weight: 900; font-size: 1.25rem; font-family: var(--font-display); }
+    .goal .badge {
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .goal .flavor { color: #C6D4F0; font-weight: 700; margin: 0; }
+    .difficulty-track { height: 6px; background: rgba(255,255,255,0.1); border-radius: 999px; overflow: hidden; margin-top: auto; }
+    .difficulty-fill { height: 100%; border-radius: 999px; width: var(--fill); background: var(--accent); }
+
+    .goal.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent), 0 0 24px var(--accent);
+    }
+
+    .goal-note { margin: 18px 0 0; text-align: center; color: #8B9FC4; font-weight: 600; }
+
+    .bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      background: #0A0F1E;
+      padding: 16px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .btn {
+      width: 100%;
+      max-width: 280px;
+      height: 56px;
+      border-radius: 16px;
+      border: 2px solid #707680;
+      background: #8a8f98;
+      color: #2c2f36;
+      text-decoration: none;
+      text-transform: uppercase;
+      font-weight: 900;
+      letter-spacing: .02em;
+      pointer-events: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn.on {
+      background: #00E5A0;
+      color: #000;
+      border-color: #00E5A0;
+      pointer-events: auto;
+    }
+
+    @media (max-width: 820px) {
+      .grid { grid-template-columns: 1fr; }
+      .bot-note { align-items: flex-start; }
+    }
+
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 0 0 rgba(0,229,160,0.72); }
+      70% { box-shadow: 0 0 0 12px rgba(0,229,160,0); }
+      100% { box-shadow: 0 0 0 0 rgba(0,229,160,0); }
+    }
+
     @keyframes fadeSlideUp {
       from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
@@ -30,16 +169,62 @@
 </head>
 <body>
   <main class="wrap">
-    <div class="progress"><div class="fill"></div></div>
-    <h1>Set your daily coding goal</h1>
-    <p class="sub">Choose the pace that fits your routine.</p>
-    <section class="grid">
-      <button class="goal" type="button">5 min/day<small>Warm up habit</small></button>
-      <button class="goal" type="button">10 min/day<small>Steady progress</small></button>
-      <button class="goal" type="button">15 min/day<small>Fast momentum</small></button>
-      <button class="goal" type="button">20 min/day<small>Power learner</small></button>
+    <section class="steps" aria-label="Onboarding progress">
+      <div class="step-line">
+        <div class="step-dot done" aria-hidden="true"></div>
+        <div class="connector" aria-hidden="true"></div>
+        <div class="step-dot done" aria-hidden="true"></div>
+        <div class="connector" aria-hidden="true"></div>
+        <div class="step-dot current" aria-hidden="true"></div>
+      </div>
+      <div class="step-labels">
+        <span>Discovery</span>
+        <span>Motivation</span>
+        <span>Goal</span>
+      </div>
     </section>
+
+    <section class="bot-note" aria-label="MoyaBot encouragement">
+      <svg width="80" height="80" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MoyaBot">
+        <rect x="68" y="70" width="124" height="96" rx="24" fill="#ffffff" stroke="#c9e2f5" stroke-width="8"/>
+        <circle cx="108" cy="114" r="11" fill="var(--blue)"/>
+        <circle cx="152" cy="114" r="11" fill="var(--blue)"/>
+        <rect x="102" y="136" width="56" height="10" rx="5" fill="var(--teal)"/>
+        <line x1="130" y1="70" x2="130" y2="46" stroke="#c9e2f5" stroke-width="8"/>
+        <circle cx="130" cy="40" r="8" fill="var(--teal)"/>
+      </svg>
+      <p class="bubble">Your training level shapes your destiny, Hero!</p>
+    </section>
+
+    <h1>Choose your hero level</h1>
+    <p class="sub">How hard are you willing to train?</p>
+
+    <section class="grid">
+      <button class="goal" type="button" style="--accent:#00E5A0;--fill:25%;">5 min/day
+        <div class="goal-head"><span class="emoji">🌱</span><span class="tier">Rookie</span><span class="badge">5 min/day</span></div>
+        <p class="flavor">Just getting started</p>
+        <div class="difficulty-track"><div class="difficulty-fill"></div></div>
+      </button>
+      <button class="goal" type="button" style="--accent:#3D9BE9;--fill:50%;">10 min/day
+        <div class="goal-head"><span class="emoji">⚡</span><span class="tier">Coder</span><span class="badge">10 min/day</span></div>
+        <p class="flavor">I am serious about this</p>
+        <div class="difficulty-track"><div class="difficulty-fill"></div></div>
+      </button>
+      <button class="goal" type="button" style="--accent:#FFD166;--fill:75%;">15 min/day
+        <div class="goal-head"><span class="emoji">🔥</span><span class="tier">Builder</span><span class="badge">15 min/day</span></div>
+        <p class="flavor">I build things daily</p>
+        <div class="difficulty-track"><div class="difficulty-fill"></div></div>
+      </button>
+      <button class="goal" type="button" style="--accent:#FF5C7A;--fill:100%;">20 min/day
+        <div class="goal-head"><span class="emoji">🤖</span><span class="tier">Legend</span><span class="badge">20 min/day</span></div>
+        <p class="flavor">I eat code for breakfast</p>
+        <div class="difficulty-track"><div class="difficulty-fill"></div></div>
+      </button>
+    </section>
+
+    <p class="goal-note">You can update your goal anytime from your profile</p>
   </main>
+
   <footer class="bar"><a id="continue" class="btn" href="quiz.html" aria-disabled="true">Continue</a></footer>
   <script>
     const goals = document.querySelectorAll('.goal');
