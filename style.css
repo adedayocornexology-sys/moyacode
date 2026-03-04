@@ -40,6 +40,7 @@ body {
   margin-bottom: 40px;
 }
 .home-header h1 {
+  font-family: var(--font-display);
   font-size: 28px;
   font-weight: 900;
   color: #fff;
@@ -56,7 +57,7 @@ body {
   gap: 16px;
 }
 .class-card {
-  background: #16162a;
+  background: var(--bg-abyss);
   border: 2px solid #2d2d50;
   border-radius: 20px;
   padding: 24px;
@@ -68,7 +69,7 @@ body {
   gap: 8px;
 }
 .class-card:hover {
-  background: #1e1e36;
+  background: var(--bg-abyss);
   border-color: #4f46e5;
   transform: translateY(-2px);
 }
@@ -102,7 +103,7 @@ body {
 
 .xp-row { display: flex; gap: 8px; align-items: center; }
 .xp-badge {
-  background: #1e1b4b;
+  background: var(--bg-abyss);
   border: 1px solid #4f46e5;
   color: #a5b4fc;
   border-radius: 20px;
@@ -123,7 +124,7 @@ body {
 /* Progress */
 .progress-track {
   height: 10px;
-  background: #1e1e2e;
+  background: var(--bg-abyss);
   border-radius: 99px;
   overflow: hidden;
   margin-bottom: 6px;
@@ -144,7 +145,7 @@ body {
 
 /* Question */
 .question-card {
-  background: #16162a;
+  background: var(--bg-abyss);
   border: 1px solid #2d2d50;
   border-radius: 20px;
   padding: 24px 20px;
@@ -190,7 +191,7 @@ body {
   cursor: pointer;
   transition: all 0.18s ease;
   min-height: 56px;
-  background: #1e1e2e;
+  background: var(--bg-abyss);
   border: 2px solid #3b3b5c;
   font-family: inherit;
 }
@@ -206,7 +207,7 @@ body {
   height: 30px;
   min-width: 30px;
   border-radius: 50%;
-  background: #2d2d50;
+  background: var(--bg-abyss);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -227,7 +228,7 @@ body {
   border: none;
   transition: all 0.2s ease;
   letter-spacing: 0.02em;
-  background: #2d2d44;
+  background: var(--bg-abyss);
   color: #6b6b8a;
   cursor: not-allowed;
   transform: scale(0.98);
@@ -265,7 +266,7 @@ body {
   pointer-events: auto;
 }
 .drawer.theme-correct { background: linear-gradient(135deg, #059669, #10b981); }
-.drawer.theme-incorrect { background: linear-gradient(135deg, #dc2626, #ef4444); }
+.drawer.theme-incorrect { background: linear-gradient(135deg, var(--coral), var(--coral)); }
 
 .drawer-emoji { font-size: 52px; margin-bottom: 8px; }
 .drawer-title { font-size: 22px; font-weight: 800; margin: 0 0 8px; color: #fff; }
@@ -286,7 +287,7 @@ body {
   width: 100%;
   padding: 15px;
   border-radius: 14px;
-  background: #fff;
+  background: var(--bg-deep);
   color: #111;
   font-size: 16px;
   font-weight: 800;
@@ -310,7 +311,7 @@ body {
 .end-sub { font-size: 15px; color: #94a3b8; max-width: 300px; line-height: 1.6; }
 .stats-row { display: flex; gap: 12px; margin-top: 8px; }
 .stat-card {
-  background: #16162a;
+  background: var(--bg-abyss);
   border: 1px solid #2d2d50;
   border-radius: 16px;
   padding: 16px 20px;
