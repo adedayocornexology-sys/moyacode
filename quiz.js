@@ -71,14 +71,30 @@ function shuffle(arr) {
 
 function getCurrent() { return state.questions[state.index]; }
 
-function renderHeader() {
+function renderHeader(previousLives = state.lives) {
   const pct = Math.round((state.index / state.questions.length) * 100);
   dom.progressFill.style.width = `${pct}%`;
-  dom.hearts.textContent = `❤️ ${state.lives}`;
+
+  const currentLives = Math.max(0, state.lives);
+  const oldLives = Math.max(0, previousLives);
+  const drawHearts = (count, poppingIndex = -1) => {
+    dom.hearts.innerHTML = `<span class="hearts-row">${Array.from({ length: count }, (_, i) => `<span class="heart${i === poppingIndex ? ' pop' : ''}">❤️</span>`).join('')}</span>`;
+  };
+
+  if (currentLives < oldLives && oldLives > 0) {
+    drawHearts(oldLives, oldLives - 1);
+    setTimeout(() => drawHearts(currentLives), 250);
+    return;
+  }
+
+  drawHearts(currentLives);
 }
 
 function renderQuestion() {
   const q = getCurrent();
+  dom.qText.classList.remove('refreshed');
+  void dom.qText.offsetWidth;
+  dom.qText.classList.add('refreshed');
   dom.qText.textContent = q.q;
   dom.assembly.innerHTML = '';
   dom.bank.innerHTML = '';
@@ -149,8 +165,9 @@ function nextQuestion() {
 
 function checkAnswer() {
   const ok = isCorrect();
+  const oldLives = state.lives;
   if (!ok) state.lives -= 1;
-  renderHeader();
+  renderHeader(oldLives);
   openDrawer(ok);
 }
 

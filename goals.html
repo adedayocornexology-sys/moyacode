@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
   <style>
-    *{box-sizing:border-box}body{margin:0;font-family:'Nunito',sans-serif;background:#fff;color:#3f3f46;padding-bottom:110px}
+    *{box-sizing:border-box}body{margin:0;font-family:'Nunito',sans-serif;background:#fff;color:#3f3f46;padding-bottom:110px;animation:fadeSlideUp .4s ease both}
     .wrap{max-width:860px;margin:0 auto;padding:18px}
     .progress{height:8px;background:#eceff3;border-radius:999px;overflow:hidden;margin:8px 0 20px}.fill{width:35%;height:100%;background:#58cc02}
     h1{margin:0 0 8px;font-size:2rem}.sub{margin:0 0 20px;color:#71717a;font-weight:700}
@@ -19,6 +19,11 @@
     .btn{min-width:180px;padding:14px 24px;border-radius:16px;border:2px solid #d1d5db;border-bottom:4px solid #a8afb8;background:#cfd4db;color:#fff;text-decoration:none;text-transform:uppercase;font-weight:900;pointer-events:none;display:inline-flex;justify-content:center}
     .btn.on{background:#58cc02;border-color:#55bf02;border-bottom-color:#46a302;pointer-events:auto}
     @media (max-width:760px){.grid{grid-template-columns:1fr}}
+  
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
