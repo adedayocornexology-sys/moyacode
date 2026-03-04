@@ -23,6 +23,7 @@
       background: var(--bg-deep);
       font-family: var(--font-body);
       color: var(--text);
+      animation: fadeSlideUp 0.4s ease both;
     }
 
     .screen {
@@ -125,6 +126,11 @@
 
     .continue-btn:hover { filter: brightness(.98); }
     .continue-btn:active { transform: translateY(2px); border-bottom-width: 2px; }
+  
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
   <link rel="stylesheet" href="css/tokens.css" />
 </head>

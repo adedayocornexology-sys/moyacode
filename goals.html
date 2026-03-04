@@ -20,6 +20,11 @@
     .btn{min-width:180px;padding:14px 24px;border-radius:16px;border:2px solid #d1d5db;border-bottom:4px solid #a8afb8;background:#cfd4db;color:#fff;text-decoration:none;text-transform:uppercase;font-weight:900;pointer-events:none;display:inline-flex;justify-content:center}
     .btn.on{background:var(--teal);border-color:#55bf02;border-bottom-color:var(--teal-dark);pointer-events:auto}
     @media (max-width:760px){.grid{grid-template-columns:1fr}}
+  
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
   <link rel="stylesheet" href="css/tokens.css" />
 </head>

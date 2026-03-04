@@ -19,3 +19,5 @@
 .skip-btn{color:#7b8794}.check-btn{background:#e5e5e5;color:#8a8a8a;border-color:#d2d2d2;border-bottom-color:#b8b8b8;min-width:180px}.check-btn.active{background:var(--teal);color:#fff;border-color:#56c202;border-bottom-color:var(--teal-dark)}
 .xp-row,.xp-badge,.streak-badge{display:none!important}
 @media (max-width:760px){.class-grid,.options-grid{grid-template-columns:1fr}.question-text{font-size:1.55rem}.app-shell{padding:14px 14px 120px}}
+
+@keyframes heartPop{0%{transform:scale(1);opacity:1}40%{transform:scale(1.3);opacity:1}100%{transform:scale(0);opacity:0}}
