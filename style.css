@@ -1,4 +1,9 @@
-@import url('css/tokens.css');
+:root {
+  --bg-deep: #0d0d1a;
+  --teal: #1cb0f6;
+  --font-body: Inter, 'Segoe UI', sans-serif;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -6,7 +11,7 @@
 }
 
 body {
-  background: var(--bg-abyss);
+  background: var(--bg-deep);
   font-family: var(--font-body);
   margin: 0;
 }
@@ -192,8 +197,9 @@ body {
 }
 .option-btn:disabled { cursor: not-allowed; }
 .option-btn.selected { background: #312e81; border: 2px solid #818cf8; }
-.option-btn.correct { background: #064e3b; border: 2px solid #10b981; }
-.option-btn.wrong { background: #7f1d1d; border: 2px solid var(--coral); }
+.option-btn.correct { background: color-mix(in srgb, var(--teal) 20%, #064e3b); border: 2px solid var(--teal); }
+.option-btn.wrong { background: #7f1d1d; border: 2px solid #ef4444; }
+.option-btn.wrong { animation: shakeX 0.25s ease; }
 .option-btn.locked { opacity: 0.5; }
 
 .option-letter {

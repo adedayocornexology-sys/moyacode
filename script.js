@@ -70,6 +70,16 @@ const WRONG_COMMENTS = [
   "Even the best coders miss sometimes. E go better!",
 ];
 
+
+function shuffle(items) {
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
 // ─── 2. STATE ────────────────────────────────────────────────────────────────
 let state = {
   activeQuizKey: null,
@@ -159,10 +169,20 @@ window.startQuiz = function(classKey) {
   const selectedQuiz = QUIZ_BANKS[classKey];
   
   state.activeQuizKey = classKey;
-  state.activeQuestions = selectedQuiz.questions.map((question) => ({
-    ...question,
-    options: shuffle([...question.options])
-  }));
+  state.activeQuestions = selectedQuiz.questions.map((question) => {
+    const shuffledOptions = shuffle(
+      question.options.map((optionText, optionIndex) => ({
+        optionText,
+        isCorrect: optionIndex === question.correct_idx,
+      }))
+    );
+
+    return {
+      ...question,
+      options: shuffledOptions.map(({ optionText }) => optionText),
+      correct_idx: shuffledOptions.findIndex(({ isCorrect }) => isCorrect),
+    };
+  });
   state.currentQuestionIndex = 0;
   state.currentLives = MAX_LIVES;
   state.score = 0;
