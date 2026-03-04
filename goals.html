@@ -42,8 +42,26 @@
   </main>
   <footer class="bar"><a id="continue" class="btn" href="quiz.html" aria-disabled="true">Continue</a></footer>
   <script>
-    const goals=document.querySelectorAll('.goal');const btn=document.getElementById('continue');
-    goals.forEach(g=>g.addEventListener('click',()=>{goals.forEach(x=>x.classList.remove('selected'));g.classList.add('selected');btn.classList.add('on');btn.setAttribute('aria-disabled','false');}));
+    const goals = document.querySelectorAll('.goal');
+    const btn = document.getElementById('continue');
+    let selectedGoal = '';
+
+    goals.forEach((goal) => goal.addEventListener('click', () => {
+      goals.forEach((item) => item.classList.remove('selected'));
+      goal.classList.add('selected');
+      selectedGoal = goal.childNodes[0].textContent.trim();
+      btn.classList.add('on');
+      btn.setAttribute('aria-disabled', 'false');
+    }));
+
+    btn.addEventListener('click', (event) => {
+      if (!selectedGoal) {
+        event.preventDefault();
+        return;
+      }
+
+      localStorage.setItem('moyacode_goal', selectedGoal);
+    });
   </script>
 </body>
 </html>

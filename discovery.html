@@ -232,14 +232,25 @@
   <script>
     const choices = document.querySelectorAll('.choice');
     const continueBtn = document.getElementById('continue-btn');
+    let selectedDream = '';
 
     choices.forEach((card) => {
       card.addEventListener('click', () => {
         choices.forEach((item) => item.classList.remove('selected'));
         card.classList.add('selected');
+        selectedDream = card.innerText.trim();
         continueBtn.classList.add('enabled');
         continueBtn.setAttribute('aria-disabled', 'false');
       });
+    });
+
+    continueBtn.addEventListener('click', (event) => {
+      if (!selectedDream) {
+        event.preventDefault();
+        return;
+      }
+
+      localStorage.setItem('moyacode_dream', selectedDream);
     });
   </script>
 </body>

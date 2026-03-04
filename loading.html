@@ -123,9 +123,10 @@
   <script>
     const params = new URLSearchParams(window.location.search);
     const selectedClass = params.get('class') || '';
+    const returnTo = params.get('returnTo') || 'selection.html';
 
     setTimeout(() => {
-      window.location.href = 'lesson.html?class=' + encodeURIComponent(selectedClass);
+      window.location.href = `lesson.html?class=${encodeURIComponent(selectedClass)}&returnTo=${encodeURIComponent(returnTo)}`;
     }, 3500);
   </script>
 </body>
