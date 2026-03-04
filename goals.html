@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
-    *{box-sizing:border-box}body{margin:0;font-family:var(--font-body);background:var(--bg-deep);color:#3f3f46;padding-bottom:110px}
+    *{box-sizing:border-box}body{margin:0;font-family:var(--font-body);background:var(--bg-abyss);color:#3f3f46;padding-bottom:110px}
     .wrap{max-width:860px;margin:0 auto;padding:18px}
     .progress{height:8px;background:#eceff3;border-radius:999px;overflow:hidden;margin:8px 0 20px}.fill{width:35%;height:100%;background:var(--teal)}
     h1{
@@ -25,10 +25,12 @@
       from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
     }
+  .home-link{position:fixed;top:14px;left:14px;z-index:120;display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border-radius:999px;border:1px solid rgba(255,255,255,0.16);background:rgba(15,26,46,0.9);color:#F0F4FF;font-weight:800;text-decoration:none;backdrop-filter:blur(4px)}.home-link:hover{background:rgba(22,36,64,0.95)}
   </style>
   <link rel="stylesheet" href="css/tokens.css" />
 </head>
 <body>
+  <a class="home-link" href="index.html" aria-label="Go to homepage">← Home</a>
   <main class="wrap">
     <div class="progress"><div class="fill"></div></div>
     <h1>Set your daily coding goal</h1>

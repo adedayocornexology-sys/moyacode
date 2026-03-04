@@ -25,7 +25,7 @@
       margin: 0;
       font-family: var(--font-body);
       color: var(--text);
-      background: var(--bg-deep);
+      background: var(--bg-abyss);
       padding-bottom: 110px;
     }
 
@@ -197,10 +197,33 @@
       from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
     }
+  
+    .home-link {
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      z-index: 120;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(15,26,46,0.9);
+      color: #F0F4FF;
+      font-weight: 800;
+      text-decoration: none;
+      backdrop-filter: blur(4px);
+    }
+
+    .home-link:hover {
+      background: rgba(22,36,64,0.95);
+    }
   </style>
   <link rel="stylesheet" href="css/tokens.css" />
 </head>
 <body>
+  <a class="home-link" href="index.html" aria-label="Go to homepage">← Home</a>
   <div class="progress-wrap">
     <div class="progress-track" aria-label="Onboarding progress">
       <div class="progress-fill"></div>
