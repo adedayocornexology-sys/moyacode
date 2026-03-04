@@ -67,6 +67,10 @@
     </footer>
   </div>
 
-  <script src="script.js"></script>
+  <script src="js/quiz-engine.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    initEngine({ questionType: "mcq", classKey: params.get("class"), containerSelector: "#app-shell" });
+  </script>
 </body>
 </html>

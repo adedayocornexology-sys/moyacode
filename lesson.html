@@ -33,11 +33,13 @@
     .drawer{position:fixed;left:0;right:0;bottom:0;max-width:900px;margin:0 auto;background:#22c55e;color:#fff;border-radius:20px 20px 0 0;padding:18px;transform:translateY(110%);transition:transform .25s ease;z-index:40;text-align:center}
     .drawer.bad{background:#ef4444}.drawer.open{transform:translateY(0)}
     .drawer h3{margin:0 0 6px}.drawer p{margin:0 0 12px}.next{width:100%;padding:12px;border:none;border-radius:12px;font-weight:900}
+    .page.loading{opacity:.65;pointer-events:none}
+    .engine-error{color:#dc2626;font-weight:800;margin:6px 0 12px}
     @media (max-width:720px){.q{font-size:1.2rem}.chip{font-size:.95rem}}
   </style>
 </head>
 <body>
-  <main class="page">
+  <main class="page" id="app-shell">
     <header class="top">
       <button class="x-btn" id="close-btn">✕</button>
       <div class="track"><div class="fill" id="progress-fill"></div></div>
@@ -68,6 +70,10 @@
     <button class="next" id="next-btn">CONTINUE</button>
   </div>
 
-  <script src="quiz.js"></script>
+  <script src="js/quiz-engine.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    initEngine({ questionType: "assembly", classKey: (params.get("class") || "jss2"), containerSelector: "#app-shell" });
+  </script>
 </body>
 </html>

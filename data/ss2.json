@@ -1,0 +1,14 @@
+{
+  "title": "SS2 · CSS Styling",
+  "questions": [
+    { "id": 1, "question": "What does CSS stand for?", "options": ["Cascading Style Sheets", "Computer Style Sheets", "Creative Style Sheets", "Colorful Style Sheets"], "correct_idx": 0, "explanation": "CSS describes how HTML elements are to be displayed on screen.", "xp_value": 10 },
+    { "id": 2, "question": "Which property is used to change the background color?", "options": ["color", "bgcolor", "background-color", "bg-color"], "correct_idx": 2, "explanation": "The background-color property sets the background color of an element.", "xp_value": 10 }
+  ],
+  "assemblyQuestions": [
+    { "q": "What does CSS stand for?", "answer": ["Cascading", "Style", "Sheets"], "options": ["Cascading", "Style", "Sheets", "Computer", "System"] },
+    { "q": "How do you change the background color?", "answer": ["background-color:"], "options": ["background-color:", "bg-color:", "color:", "back:"] },
+    { "q": "Which symbol targets an ID in CSS?", "answer": ["#"], "options": ["#", ".", "*", "@"] },
+    { "q": "How do you change the size of your text?", "answer": ["font-size:"], "options": ["font-size:", "text-size:", "size:", "font:"] },
+    { "q": "Which symbol targets a Class in CSS?", "answer": ["."], "options": [".", "#", "*", ">"] }
+  ]
+}

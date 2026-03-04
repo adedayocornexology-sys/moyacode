@@ -1,0 +1,14 @@
+{
+  "title": "SS1 · HTML Basics",
+  "questions": [
+    { "id": 1, "question": "What does HTML stand for?", "options": ["Hyper Text Preprocessor", "Hyper Text Markup Language", "Hyper Tool Multi Language", "Hyperlink Text Markup Language"], "correct_idx": 1, "explanation": "HTML is the standard markup language for creating Web pages.", "xp_value": 10 },
+    { "id": 2, "question": "Which HTML tag is used for the largest heading?", "options": ["<heading>", "<h6>", "<head>", "<h1>"], "correct_idx": 3, "explanation": "<h1> defines the most important heading. <h6> is the least important.", "xp_value": 10 }
+  ],
+  "assemblyQuestions": [
+    { "q": "Which tag creates a numbered list?", "answer": ["<ol>"], "options": ["<ol>", "<ul>", "<li>", "<list>"] },
+    { "q": "What attribute tells an image where to load from?", "answer": ["src="], "options": ["src=", "href=", "link=", "source="] },
+    { "q": "Which tag creates a dropdown menu?", "answer": ["<select>"], "options": ["<select>", "<dropdown>", "<option>", "<menu>"] },
+    { "q": "What tag defines a row in a table?", "answer": ["<tr>"], "options": ["<tr>", "<td>", "<th>", "<row>"] },
+    { "q": "Which tag is used for the bottom of a website?", "answer": ["<footer>"], "options": ["<footer>", "<bottom>", "<end>", "<base>"] }
+  ]
+}

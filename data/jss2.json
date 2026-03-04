@@ -1,0 +1,17 @@
+{
+  "title": "JSS2 · Advanced Scratch",
+  "questions": [
+    { "id": 1, "question": "In Scratch, which block category contains the \"if...then...else\" block?", "options": ["Motion", "Looks", "Control", "Operators"], "correct_idx": 2, "explanation": "Control blocks manage logic flow — loops, conditions, and script timing all live here.", "xp_value": 10 },
+    { "id": 2, "question": "What does the \"forever\" block do in Scratch?", "options": ["Runs a script once", "Stops all scripts", "Repeats blocks indefinitely until stopped", "Waits for a key press"], "correct_idx": 2, "explanation": "The 'forever' block creates an infinite loop. Use 'Stop all' inside it to break out.", "xp_value": 10 },
+    { "id": 3, "question": "Which block makes a sprite say \"Hello\" for 2 seconds?", "options": ["Think [Hello] for [2] seconds", "Say [Hello] for [2] seconds", "Broadcast [Hello]", "Play sound [Hello]"], "correct_idx": 1, "explanation": "'Say' shows a speech bubble. 'Think' shows a thought bubble — they look different on screen!", "xp_value": 10 },
+    { "id": 4, "question": "In Scratch, what is a \"sprite\"?", "options": ["The background image", "A sound file", "A character or object that can be programmed", "A block that controls timing"], "correct_idx": 2, "explanation": "Sprites are the actors in your Scratch project.", "xp_value": 10 },
+    { "id": 5, "question": "What does the \"broadcast\" block do?", "options": ["Makes the sprite louder", "Sends sprite to a new costume", "Sends a message other sprites can receive", "Copies a block to another sprite"], "correct_idx": 2, "explanation": "Broadcast allows sprites to communicate with each other.", "xp_value": 15 }
+  ],
+  "assemblyQuestions": [
+    { "q": "Which category has the if...then...else block?", "answer": ["Control"], "options": ["Control", "Motion", "Looks", "Operators"] },
+    { "q": "How do you send a hidden message to sprites?", "answer": ["Broadcast", "message"], "options": ["Broadcast", "message", "Say", "Wait", "Variable"] },
+    { "q": "What is used to keep track of a score?", "answer": ["Make", "a", "Variable"], "options": ["Make", "a", "Variable", "List", "Operator", "Clone"] },
+    { "q": "How do you duplicate a sprite while running?", "answer": ["Create", "clone", "of", "myself"], "options": ["Create", "clone", "of", "myself", "Duplicate", "Copy"] },
+    { "q": "Which block checks if two items collide?", "answer": ["Touching", "pointer?"], "options": ["Touching", "pointer?", "Distance", "Color", "Ask"] }
+  ]
+}
