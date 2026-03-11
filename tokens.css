@@ -1,0 +1,46 @@
+:root {
+  --c-teal: #00E5A0;
+  --c-teal-mid: #00B87A;
+  --c-teal-dim: rgba(0, 229, 160, 0.15);
+  --c-teal-faint: rgba(0, 229, 160, 0.07);
+  --c-blue: #60A5FA;
+  --c-blue-dim: rgba(96, 165, 250, 0.12);
+  --c-coral: #FB7185;
+  --c-coral-dim: rgba(251, 113, 133, 0.12);
+  --c-amber: #FCD34D;
+  --c-amber-dim: rgba(252, 211, 77, 0.12);
+
+  --bg-0: #030712;
+  --bg-1: #060D1F;
+  --bg-2: #0A1628;
+  --bg-3: #0F1F38;
+  --bg-4: #162644;
+
+  --glass: rgba(10, 22, 40, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.07);
+  --glass-hi: rgba(255, 255, 255, 0.12);
+  --glass-shine: rgba(255, 255, 255, 0.03);
+
+  --t-100: #F8FAFF;
+  --t-200: #CBD5F0;
+  --t-400: #7A8FAD;
+  --t-600: #3D506A;
+  --t-700: #243350;
+
+  --f-display: 'Bricolage Grotesque', sans-serif;
+  --f-body: 'Space Grotesk', sans-serif;
+  --f-mono: 'DM Mono', monospace;
+
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --dur-fast: 150ms;
+  --dur-mid: 250ms;
+  --dur-slow: 400ms;
+
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-8: 32px; --sp-10: 40px;
+  --sp-12: 48px; --sp-16: 64px; --sp-20: 80px; --sp-24: 96px;
+
+  --r-sm: 8px; --r-md: 12px; --r-lg: 16px;
+  --r-xl: 20px; --r-2xl: 24px; --r-3xl: 32px;
+}
