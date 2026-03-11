@@ -1,16 +1,1 @@
-:root {
-  --teal: #2dd4bf;
-  --teal-dark: #0d9488;
-  --blue: #38bdf8;
-  --coral: #fb7185;
-  --bg-deep: #f5fbff;
-  --bg-abyss: #070b14;
-  --font-body: 'DM Sans', 'Segoe UI', sans-serif;
-  --font-display: 'Syne', 'DM Sans', sans-serif;
-
-  /* Backward-compatible aliases */
-  --green: var(--teal);
-  --green-dark: var(--teal-dark);
-  --blue-dark: var(--blue);
-  --white: var(--bg-deep);
-}
+@import url('../tokens.css');
