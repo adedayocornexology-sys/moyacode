@@ -43,4 +43,18 @@
 
   --r-sm: 8px; --r-md: 12px; --r-lg: 16px;
   --r-xl: 20px; --r-2xl: 24px; --r-3xl: 32px;
+
+  /* Backward-compatibility aliases for untouched legacy pages */
+  --teal: var(--c-teal);
+  --teal-dark: var(--c-teal-mid);
+  --blue: var(--c-blue);
+  --coral: var(--c-coral);
+  --amber: var(--c-amber);
+
+  --bg-abyss: var(--bg-0);
+  --bg-deep: var(--bg-1);
+  --bg-elevated: var(--bg-3);
+
+  --font-body: var(--f-body);
+  --font-display: var(--f-display);
 }
