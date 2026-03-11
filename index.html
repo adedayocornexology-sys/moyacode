@@ -104,12 +104,18 @@
     .cta-p{color:var(--t-400);max-width:520px;margin:0 auto var(--sp-8);line-height:1.7}
 
     footer{position:relative;z-index:1;border-top:1px solid var(--glass-border);background:rgba(6,13,31,.6);padding:var(--sp-8) 0}
-    .footer-inner{width:min(1160px,90vw);margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap}
-    .footer-links{display:flex;gap:var(--sp-2);flex-wrap:wrap}
-    .footer-links a{color:var(--t-600);text-decoration:none}
+    .footer-inner{width:min(1160px,90vw);margin:0 auto;display:grid;gap:var(--sp-4)}
+    .footer-top{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4);flex-wrap:wrap}
+    .footer-links{display:flex;gap:var(--sp-4);flex-wrap:wrap}
+    .footer-links a{color:var(--t-600);text-decoration:none;font-weight:500;transition:color var(--dur-fast) var(--ease)}
+    .footer-links a:hover{color:var(--t-200)}
+    .footer-brand{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--sp-4);flex-wrap:wrap;border-top:1px solid var(--glass-border);padding-top:var(--sp-4)}
+    .brand-stack{display:grid;gap:8px}
+    .brand-note{color:var(--t-600);font-size:.95rem}
+    .footer-status{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:var(--c-teal-faint);border:1px solid rgba(0,229,160,.25);color:var(--c-teal);font-weight:600}
 
     @media (max-width:960px){.hero-grid{grid-template-columns:1fr}.track-grid{grid-template-columns:1fr 1fr}.col-3,.col-4,.col-5,.col-7{grid-column:span 12}.nav-center{display:none}}
-    @media (max-width:600px){.track-grid{grid-template-columns:1fr 1fr}.hero-actions{flex-direction:column;align-items:stretch}}
+    @media (max-width:600px){.track-grid{grid-template-columns:1fr 1fr}.hero-actions{flex-direction:column;align-items:stretch}.footer-links{gap:var(--sp-2)}}
   </style>
 </head>
 <body>
@@ -197,8 +203,16 @@
 
   <footer>
     <div class="footer-inner">
-      <div><a href="index.html" class="logo"><span class="logo-mark">↕</span>MoyaCode</a><p style="color:var(--t-600);margin-top:8px">Built in Owo · For the next generation of African developers.</p></div>
-      <nav class="footer-links"><a href="#">About</a><a href="#">For Schools</a><a href="#">Terms</a><a href="#">Privacy</a></nav>
+      <div class="footer-top">
+        <nav class="footer-links"><a href="#">About</a><a href="#">For Schools</a><a href="#">Terms</a><a href="#">Privacy</a></nav>
+      </div>
+      <div class="footer-brand">
+        <div class="brand-stack">
+          <a href="index.html" class="logo"><span class="logo-mark">↕</span>MoyaCode</a>
+          <p class="brand-note">Built in Owo · For the next generation of African developers.</p>
+        </div>
+        <div class="footer-status"><span class="pill-dot"></span>Free to Learn</div>
+      </div>
     </div>
   </footer>
 
