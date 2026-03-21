@@ -371,6 +371,21 @@ function showEndScreen() {
 
   if (passed) saveProgress(classKey);
 
+// ─── END SCREEN ───────────────────────────────────────────────────────────────
+function showEndScreen() {
+  DOM.quizView.style.display  = "none";
+  DOM.drawer.classList.remove("open");
+  DOM.endScreen.style.display = "flex";
+
+  const total      = state.activeQuestions.length;
+  const passed     = state.score / total >= PASS_THRESHOLD;
+  const classKey   = state.activeQuizKey;
+  const quiz       = QUIZ_BANKS[classKey];
+  const nextKey    = quiz?.next;
+  const nextQuiz   = nextKey ? QUIZ_BANKS[nextKey] : null;
+  const isLastQuest = !nextKey;
+
+  // ── Game over (ran out of hearts) ──
   if (state.phase === "gameover") {
     setText(DOM.endEmoji, "💔");
     setText(DOM.endTitle, "Out of hearts");
