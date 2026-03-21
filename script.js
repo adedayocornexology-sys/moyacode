@@ -371,21 +371,6 @@ function showEndScreen() {
 
   if (passed) saveProgress(classKey);
 
-// ─── END SCREEN ───────────────────────────────────────────────────────────────
-function showEndScreen() {
-  DOM.quizView.style.display  = "none";
-  DOM.drawer.classList.remove("open");
-  DOM.endScreen.style.display = "flex";
-
-  const total      = state.activeQuestions.length;
-  const passed     = state.score / total >= PASS_THRESHOLD;
-  const classKey   = state.activeQuizKey;
-  const quiz       = QUIZ_BANKS[classKey];
-  const nextKey    = quiz?.next;
-  const nextQuiz   = nextKey ? QUIZ_BANKS[nextKey] : null;
-  const isLastQuest = !nextKey;
-
-  // ── Game over (ran out of hearts) ──
   if (state.phase === "gameover") {
     setText(DOM.endEmoji, "💔");
     setText(DOM.endTitle, "Out of hearts");
@@ -475,4 +460,16 @@ if (DOM.closeBtn)    DOM.closeBtn.addEventListener("click",    goHome);
 if (DOM.skipBtn)     DOM.skipBtn.addEventListener("click",     handleSkip);
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
-goHome();
+function initQuizPage() {
+  const params   = new URLSearchParams(window.location.search);
+  const classKey = (params.get("class") || "").toLowerCase();
+
+  if (classKey && QUIZ_BANKS[classKey]) {
+    window.startQuiz(classKey);
+    return;
+  }
+
+  goHome();
+}
+
+initQuizPage();
