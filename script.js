@@ -259,12 +259,23 @@ function renderOptions() {
       + (isWrong               ? " wrong"    : "")
       + (isLocked              ? " locked"   : "");
 
-    btn.innerHTML = `
-      <span class="option-letter">${LTR[i]}</span>
-      <span class="option-text">${opt}</span>
-      ${isCorrect ? '<span class="option-icon">✅</span>' : ""}
-      ${isWrong   ? '<span class="option-icon">❌</span>' : ""}
-    `;
+    const letter = document.createElement("span");
+    letter.className = "option-letter";
+    letter.textContent = LTR[i];
+
+    const textSpan = document.createElement("span");
+    textSpan.className = "option-text";
+    textSpan.textContent = opt;
+
+    btn.appendChild(letter);
+    btn.appendChild(textSpan);
+
+    if (isCorrect || isWrong) {
+      const icon = document.createElement("span");
+      icon.className = "option-icon";
+      icon.textContent = isCorrect ? "✅" : "❌";
+      btn.appendChild(icon);
+    }
 
     if (!locked) {
       btn.addEventListener("click", () => {
