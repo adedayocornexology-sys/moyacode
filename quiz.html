@@ -61,7 +61,18 @@
     @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 
     /* ── End screen ── */
-    #end-screen{display:none;flex-direction:column;align-items:center;text-align:center;gap:20px;padding:60px 20px;min-height:60vh;justify-content:center}
+    #end-screen{display:none;flex-direction:column;align-items:center;text-align:center;gap:20px;padding:60px 20px;min-height:60vh;justify-content:center;position:relative;overflow:hidden}
+    .end-shell{width:min(760px,100%);display:flex;flex-direction:column;align-items:center;gap:16px;position:relative;z-index:1}
+    .end-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--glass-hi);font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t-200)}
+    .end-journey{max-width:560px;color:var(--t-200);font-size:.96rem;line-height:1.7}
+    .end-highlight{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:min(100%,560px)}
+    .end-highlight-card{padding:14px 16px;border-radius:var(--r-lg);background:rgba(255,255,255,.04);border:1px solid var(--glass-border);text-align:left}
+    .end-highlight-card strong{display:block;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--t-600);margin-bottom:6px}
+    .end-highlight-card span{font-size:.95rem;font-weight:700;color:var(--t-100)}
+    .confetti-burst{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+    .confetti{position:absolute;top:-10%;width:10px;height:18px;border-radius:999px;opacity:.9;animation:confetti-fall 2200ms linear forwards}
+    @keyframes confetti-fall{0%{transform:translate3d(0,-10vh,0) rotate(0deg)}100%{transform:translate3d(var(--drift),78vh,0) rotate(540deg);opacity:0}}
+    @media(max-width:640px){.end-highlight{grid-template-columns:1fr}}
 
     /* ── Home view (quest selector) ── */
     #home-view{display:flex;flex-direction:column;align-items:center;gap:var(--sp-6);padding:var(--sp-8) 0}
@@ -242,11 +253,17 @@
 
     <!-- ══ END SCREEN ═════════════════════════════════════════════════════════ -->
     <div id="end-screen">
-      <div id="end-emoji" style="font-size:3.5rem"></div>
-      <h2 id="end-title" style="font-family:var(--f-display);font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;letter-spacing:-.03em"></h2>
-      <p id="end-sub" style="color:var(--t-400);font-size:.95rem;line-height:1.6;max-width:420px"></p>
-      <div id="end-stats" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"></div>
-      <button id="restart-btn" class="btn-primary" style="margin-top:8px">Back to Quests 📚</button>
+      <div class="confetti-burst" id="confetti-burst" aria-hidden="true"></div>
+      <div class="end-shell">
+        <div class="end-badge" id="end-badge">Quest Summary</div>
+        <div id="end-emoji" style="font-size:3.5rem"></div>
+        <h2 id="end-title" style="font-family:var(--f-display);font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;letter-spacing:-.03em"></h2>
+        <p id="end-sub" style="color:var(--t-400);font-size:.95rem;line-height:1.6;max-width:420px"></p>
+        <p id="end-journey" class="end-journey"></p>
+        <div id="end-highlight" class="end-highlight"></div>
+        <div id="end-stats" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"></div>
+        <button id="restart-btn" class="btn-primary" style="margin-top:8px">Back to Quests 📚</button>
+      </div>
     </div>
 
   </main>

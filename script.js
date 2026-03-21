@@ -116,6 +116,22 @@ function el(id)       { return document.getElementById(id); }
 function setText(e,t) { if (e) e.textContent = t; }
 function setHTML(e,h) { if (e) e.innerHTML   = h; }
 function setDisp(e,v) { if (e) e.style.display = v; }
+function escapeHTML(v) {
+  return String(v || "").replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+  })[char]);
+}
+function readProfile() {
+  return {
+    dream: localStorage.getItem("moyacode_dream") || "",
+    motivation: localStorage.getItem("moyacode_motivation") || "",
+    goal: localStorage.getItem("moyacode_goal") || "",
+  };
+}
 
 function saveProgress(key) {
   localStorage.setItem(`moyacode_progress_${key}`, "complete");
@@ -156,11 +172,15 @@ const DOM = {
   xpEarned:      el("xp-earned"),
   continueBtn:   el("continue-btn"),
   // end screen
+  endBadge:      el("end-badge"),
   endEmoji:      el("end-emoji"),
   endTitle:      el("end-title"),
   endSub:        el("end-sub"),
+  endJourney:    el("end-journey"),
+  endHighlight:  el("end-highlight"),
   endStats:      el("end-stats"),
   restartBtn:    el("restart-btn"),
+  confettiBurst: el("confetti-burst"),
 };
 
 // ─── START QUIZ ───────────────────────────────────────────────────────────────
@@ -369,6 +389,7 @@ function handleSkip() {
 
 // ─── END SCREEN ───────────────────────────────────────────────────────────────
 function showEndScreen() {
+  setDisp(DOM.homeView,  "none");
   setDisp(DOM.quizView,  "none");
   if (DOM.drawer) DOM.drawer.classList.remove("open");
   setDisp(DOM.endScreen, "flex");
@@ -379,25 +400,37 @@ function showEndScreen() {
   const quiz       = QUIZ_BANKS[classKey];
   const nextKey    = quiz?.next || null;
   const isLast     = !nextKey;
+  const livesLeft  = Math.max(0, state.currentLives);
+  const profile    = readProfile();
 
   if (passed) saveProgress(classKey);
+  renderConfetti(passed);
 
   if (state.phase === "gameover") {
+    setText(DOM.endBadge, "Quest Debrief");
     setText(DOM.endEmoji, "💔");
     setText(DOM.endTitle, "Out of hearts");
     setText(DOM.endSub,   "No worries — every champion falls first. Try again!");
+    setText(DOM.endJourney, `You fought through ${quiz.title}, earned ${state.xp} XP, and reached a best streak of ${state.streak}. One more run and you'll be sharper.`);
+    setHTML(DOM.endHighlight, buildEndHighlights({ quiz, nextKey, profile, livesLeft, passed }));
     setText(DOM.restartBtn, "Try Again 🔄");
     if (DOM.restartBtn) DOM.restartBtn.onclick = () => window.startQuiz(classKey);
   } else if (passed) {
-    setText(DOM.endEmoji, "🏆");
+    setText(DOM.endBadge, isLast ? "Legend Status" : "Quest Complete");
+    setText(DOM.endEmoji, isLast ? "👑" : "🏆");
     setText(DOM.endTitle, isLast ? "You cleared ALL quests!" : `${quiz.title} — Cleared! ✅`);
     setText(DOM.endSub,   isLast ? "You completed the full MoyaCode curriculum. You are a Legend." : `Next up: ${QUIZ_BANKS[nextKey].title}`);
+    setText(DOM.endJourney, buildJourneyRecap({ quiz, nextKey, profile, livesLeft, passed, isLast }));
+    setHTML(DOM.endHighlight, buildEndHighlights({ quiz, nextKey, profile, livesLeft, passed, isLast }));
     setText(DOM.restartBtn, "Back to Quests 📚");
     if (DOM.restartBtn) DOM.restartBtn.onclick = goHome;
   } else {
+    setText(DOM.endBadge, "Almost There");
     setText(DOM.endEmoji, "😅");
     setText(DOM.endTitle, "So close — try once more!");
     setText(DOM.endSub,   `You scored ${state.score}/${total}. You need ${Math.ceil(total * PASS_THRESHOLD)} to pass.`);
+    setText(DOM.endJourney, buildJourneyRecap({ quiz, nextKey, profile, livesLeft, passed, isLast }));
+    setHTML(DOM.endHighlight, buildEndHighlights({ quiz, nextKey, profile, livesLeft, passed, isLast }));
     setText(DOM.restartBtn, "Try Again 🔄");
     if (DOM.restartBtn) DOM.restartBtn.onclick = () => window.startQuiz(classKey);
   }
@@ -406,6 +439,7 @@ function showEndScreen() {
     <div class="stat-card"><span class="stat-num">${state.score}/${total}</span><span class="stat-label">Score</span></div>
     <div class="stat-card"><span class="stat-num">${state.xp}</span><span class="stat-label">XP Earned</span></div>
     <div class="stat-card"><span class="stat-num">${state.streak}🔥</span><span class="stat-label">Streak</span></div>
+    <div class="stat-card"><span class="stat-num">${livesLeft}</span><span class="stat-label">Hearts Left</span></div>
     ${passed ? '<div class="stat-card stat-pass"><span class="stat-num">✅</span><span class="stat-label">Passed</span></div>' : ""}
   `);
 
@@ -413,6 +447,49 @@ function showEndScreen() {
 }
 
 // ─── ACTION BUTTONS ───────────────────────────────────────────────────────────
+function buildJourneyRecap({ quiz, nextKey, profile, livesLeft, passed, isLast }) {
+  const dream = profile.dream || "your coding dream";
+  const motivation = profile.motivation || "your next big goal";
+  const goal = profile.goal || "daily practice";
+
+  if (passed && isLast) {
+    return `From ${dream} to ${motivation}, you stayed consistent with ${goal} and just wrapped the full journey with ${livesLeft} hearts left. That is real main-character energy.`;
+  }
+
+  if (passed) {
+    return `You powered through ${quiz.title}, stayed true to ${goal}, and kept your eyes on ${dream}. That win unlocks ${QUIZ_BANKS[nextKey].title} next.`;
+  }
+
+  return `You are still on the path to ${dream}. This round built your reflexes, and your ${goal} commitment plus ${motivation} mindset will help you crush the next attempt.`;
+}
+
+function buildEndHighlights({ quiz, nextKey, profile, livesLeft, passed, isLast }) {
+  const cards = [
+    `<div class="end-highlight-card"><strong>Quest</strong><span>${escapeHTML(quiz.title)}</span></div>`,
+    `<div class="end-highlight-card"><strong>Goal Mode</strong><span>${escapeHTML(profile.goal || "Not set yet")}</span></div>`,
+    `<div class="end-highlight-card"><strong>Why You Started</strong><span>${escapeHTML(profile.motivation || profile.dream || "Keep exploring")}</span></div>`,
+    `<div class="end-highlight-card"><strong>${escapeHTML(passed ? (isLast ? "Legend Status" : "Unlocked Next") : "Hearts Left")}</strong><span>${escapeHTML(passed ? (isLast ? "Curriculum Complete" : QUIZ_BANKS[nextKey].title) : `${livesLeft} hearts standing`)}</span></div>`,
+  ];
+  return cards.join("");
+}
+
+function renderConfetti(active) {
+  if (!DOM.confettiBurst) return;
+  DOM.confettiBurst.innerHTML = "";
+  if (!active) return;
+
+  const colors = ["#00E5A0", "#60A5FA", "#FCD34D", "#FB7185", "#A78BFA"];
+  for (let i = 0; i < 18; i++) {
+    const piece = document.createElement("span");
+    piece.className = "confetti";
+    piece.style.left = `${Math.random() * 100}%`;
+    piece.style.background = colors[i % colors.length];
+    piece.style.animationDelay = `${Math.random() * 0.35}s`;
+    piece.style.setProperty("--drift", `${(Math.random() - 0.5) * 90}px`);
+    DOM.confettiBurst.appendChild(piece);
+  }
+}
+
 function renderActionButtons(passed, classKey, nextKey, isLast) {
   const existing = el("end-actions");
   if (existing) existing.remove();
