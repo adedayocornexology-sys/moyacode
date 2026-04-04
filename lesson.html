@@ -664,7 +664,14 @@ function renderContentBlocks(step, stepIndex) {
   const container = el('step-content'); let delayClass = 1;
   const sectionLabel = document.createElement('div'); sectionLabel.className = 'section-eyebrow step-animated';
   sectionLabel.textContent = stepIndex === state.totalSteps - 1 ? 'Final Step' : 'Reading'; container.appendChild(sectionLabel);
-  step.sections.forEach((section) => {
+  const sections = Array.isArray(step.sections) ? step.sections : [];
+  if (sections.length === 0) {
+    const empty = document.createElement('p');
+    empty.className = 'lesson-prose step-animated';
+    empty.textContent = 'Lesson content for this topic is coming soon.';
+    container.appendChild(empty);
+  }
+  sections.forEach((section) => {
     const animClass = 'step-animated-' + Math.min(delayClass++, 5); let node;
     if (section.type === 'prose') { node = document.createElement('p'); node.className = 'lesson-prose ' + animClass; node.textContent = section.text; }
     else if (section.type === 'callout') {
