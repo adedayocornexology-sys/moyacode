@@ -223,12 +223,22 @@
     .xp-val { font-family: var(--f-display); font-size: .92rem; font-weight: 800; color: var(--c-teal); }
     .xp-bonus { font-size: .65rem; font-weight: 700; color: var(--c-teal); opacity: .75; }
     .lesson-main {
-      margin-left: 272px;
+      margin-left: 0;
       padding: 40px 52px 120px;
       display: flex;
       flex-direction: column;
       gap: 28px;
-      max-width: 860px;
+      width: 100%;
+      min-width: 0;
+      max-width: 980px;
+    }
+    #step-content {
+      width: 100%;
+      max-width: 760px;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
     }
     .lesson-topbar {
       display: flex;
@@ -474,7 +484,7 @@
     @media (max-width: 860px) {
       .sidebar { transform: translateX(-100%); transition: transform var(--dur-mid) var(--ease); }
       .sidebar.open { transform: translateX(0); }
-      .lesson-main { margin-left: 0; padding: 24px 20px 120px; }
+      .lesson-main { margin-left: 0; padding: 24px 20px 120px; max-width: 100%; width: 100%; }
       .bottom-nav { left: 0; padding: 14px 20px; }
       .mob-menu-btn { display: flex !important; }
     }
