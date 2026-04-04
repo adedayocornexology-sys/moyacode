@@ -10,8 +10,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Bricolage+Grotesque:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
-  <!-- Puter.js — Nano Banana 2 image generation, no API key needed -->
-  <script src="https://js.puter.com/v2/"></script>
 
   <style>
     :root {
@@ -111,14 +109,8 @@
     .stat-chip { display: flex; align-items: center; gap: var(--sp-2); padding: 8px 14px; border-radius: var(--r-md); background: var(--glass); border: 1px solid var(--glass-border); backdrop-filter: blur(12px); font-size: 0.82rem; color: var(--t-400); font-weight: 500; }
     .stat-chip strong { color: var(--t-100); font-weight: 700; }
     .hero-right { position: relative; animation: reveal-up var(--dur-slow) var(--spring) 120ms both; }
-    .ai-frame { position: relative; border-radius: var(--r-3xl); overflow: hidden; border: 1px solid var(--glass-hi); background: var(--bg-2); aspect-ratio: 4/5; box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset, 0 32px 80px rgba(0,0,0,0.6), 0 0 60px rgba(0,229,160,0.06); }
-    .ai-frame.loading::before { content: ''; position: absolute; inset: 0; background: linear-gradient(110deg,var(--bg-2) 30%,rgba(255,255,255,0.04) 50%,var(--bg-2) 70%); background-size: 200% 100%; animation: shimmer 1.5s ease-in-out infinite; }
-    @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
-    .ai-loading-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); display: flex; flex-direction: column; align-items: center; gap: var(--sp-3); color: var(--t-600); font-size: 0.8rem; font-family: var(--f-mono); text-align: center; z-index: 2; pointer-events: none; }
-    .ai-loading-label svg { animation: spin 2s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    #hero-ai-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: var(--r-3xl); opacity: 0; transition: opacity 600ms var(--ease); }
-    #hero-ai-img.loaded { opacity: 1; }
+    .hero-frame { position: relative; border-radius: var(--r-3xl); overflow: hidden; border: 1px solid var(--glass-hi); background: var(--bg-2); aspect-ratio: 4/5; box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset, 0 32px 80px rgba(0,0,0,0.6), 0 0 60px rgba(0,229,160,0.06); }
+    .hero-illustration { width: 100%; height: 100%; display: block; object-fit: cover; }
     .frame-chrome { position: absolute; top: 0; left: 0; right: 0; height: 40px; z-index: 3; background: linear-gradient(to bottom, rgba(10,22,40,0.7), transparent); display: flex; align-items: center; padding: 0 16px; gap: 6px; }
     .chrome-dot { width: 8px; height: 8px; border-radius: 50%; }
     .cd-red { background: #FF5F57; } .cd-amber { background: #FFBD2E; } .cd-green { background: #28C840; }
@@ -261,10 +253,21 @@
         <div class="stat-row"><div class="stat-chip"><strong>500+</strong>&nbsp;Students</div><div class="stat-chip"><strong>6</strong>&nbsp;Quests</div><div class="stat-chip"><strong>100%</strong>&nbsp;Free</div></div>
       </div>
       <div class="hero-right">
-        <div class="ai-frame loading" id="ai-frame" role="img" aria-label="AI-generated illustration of MoyaCode hero character"><div class="frame-chrome" aria-hidden="true"><div class="chrome-dot cd-red"></div><div class="chrome-dot cd-amber"></div><div class="chrome-dot cd-green"></div></div><div class="ai-loading-label" id="loading-label" aria-live="polite">Generating hero image<br>with Nano Banana 2…</div><img id="hero-ai-img" alt="MoyaCode hero" /></div>
+        <div class="hero-frame" role="img" aria-label="MoyaCode hero illustration">
+          <div class="frame-chrome" aria-hidden="true"><div class="chrome-dot cd-red"></div><div class="chrome-dot cd-amber"></div><div class="chrome-dot cd-green"></div></div>
+          <svg class="hero-illustration" viewBox="0 0 480 600" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="bg-grad" cx="50%" cy="40%" r="65%"><stop offset="0%" stop-color="#0A1628"/><stop offset="100%" stop-color="#030712"/></radialGradient></defs>
+            <rect width="480" height="600" fill="url(#bg-grad)"/>
+            <circle cx="240" cy="240" r="90" fill="#8B5E3C"/><ellipse cx="240" cy="165" rx="88" ry="58" fill="#1A0A00"/>
+            <rect x="120" y="340" width="240" height="230" rx="48" fill="#0F1F38" stroke="rgba(0,229,160,.2)"/>
+            <circle cx="210" cy="245" r="12" fill="#60A5FA"/><circle cx="270" cy="245" r="12" fill="#60A5FA"/>
+            <path d="M220 282 Q240 296 260 282" stroke="#6B3E1A" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <rect x="42" y="200" width="90" height="34" rx="8" fill="rgba(10,22,40,.9)" stroke="rgba(0,229,160,.35)"/><text x="56" y="222" font-family="DM Mono" font-size="14" fill="#00E5A0">&lt;h1&gt;</text>
+            <rect x="340" y="190" width="110" height="34" rx="8" fill="rgba(10,22,40,.9)" stroke="rgba(96,165,250,.35)"/><text x="352" y="212" font-family="DM Mono" font-size="12" fill="#60A5FA">let xp = 0;</text>
+          </svg>
+        </div>
         <div class="xp-float"><div class="xp-label">Your XP</div><div class="xp-value">680</div><div class="xp-bar-track"><div class="xp-bar-fill"></div></div></div>
         <div class="streak-float"><div class="streak-icon"></div><div class="streak-info"><div class="streak-val">5 Days</div><div class="streak-sub">Streak</div></div></div>
-        <div class="frame-badge"><div class="frame-badge-dot"></div>Built by Nano Banana 2</div>
       </div>
     </div>
   </section>
@@ -289,29 +292,5 @@
   <section class="cta-section"><div class="cta-card"><div class="cta-glow"></div><h2 class="cta-h2">Ready to write your<br><span style="color:var(--c-teal)">first line of code?</span></h2><p class="cta-p">Join hundreds of students in Owo already building their future. Free, fun, and it actually works.</p><div class="cta-actions"><a href="welcome.html" class="btn-primary">Start for Free</a><a href="#" class="btn-outline">MoyaCode for Schools</a></div></div></section>
 
   <footer role="contentinfo"><div class="footer-inner"><div class="footer-left"><a href="#" class="logo" aria-label="MoyaCode home"><div class="logo-mark" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 6l4-4 4 4M8 18l4 4 4-4M3 12h18" stroke="#030712" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>MoyaCode</a><span class="footer-tagline">Built in Owo · For the next generation of African developers.</span></div><nav class="footer-links" aria-label="Footer navigation"><a href="#">About</a><a href="#">For Schools</a><a href="#">Terms</a><a href="#">Privacy</a></nav><div class="footer-status" role="status" aria-label="Platform status: free to learn"><div class="pill-dot" aria-hidden="true"></div>Free to Learn</div></div></footer>
-
-  <script>
-    (async function generateHeroImage() {
-      const frame = document.getElementById('ai-frame');
-      const img   = document.getElementById('hero-ai-img');
-      const label = document.getElementById('loading-label');
-
-      const prompt = `An Afrofuturist teenage coding hero character, dark neon aesthetic. A young Nigerian boy wearing a futuristic hoodie with glowing teal circuit patterns. He holds glowing code symbols and HTML brackets. Background: deep dark navy blue with soft teal and blue light leaks. Style: clean digital illustration, cinematic, high detail, dark mode UI aesthetic. Aspect ratio: 4:5 portrait. No text in image.`;
-
-      try {
-        const generatedImg = await puter.ai.txt2img(prompt, { model: 'gemini-3.1-flash-image-preview' });
-        if (generatedImg && generatedImg.src) {
-          img.src = generatedImg.src;
-          img.onload = () => { img.classList.add('loaded'); frame.classList.remove('loading'); if (label) label.style.display = 'none'; };
-        } else {
-          throw new Error('No image returned');
-        }
-      } catch (err) {
-        frame.classList.remove('loading');
-        if (label) label.innerHTML = `<span style="color:var(--t-600); font-size:0.75rem;">MoyaBot</span>`;
-        console.warn('Nano Banana 2 image generation:', err.message);
-      }
-    })();
-  </script>
 </body>
 </html>

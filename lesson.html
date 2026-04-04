@@ -478,6 +478,8 @@
       .bottom-nav { left: 0; padding: 14px 20px; }
       .mob-menu-btn { display: flex !important; }
     }
+    .sidebar-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:499; }
+    .sidebar-backdrop.visible { display:block; }
     .mob-menu-btn {
       display: none;
       align-items: center;
@@ -538,6 +540,7 @@
       </div>
     </div>
   </aside>
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
   <main class="lesson-main" id="lesson-main" role="main">
     <div class="lesson-topbar">
       <div class="eyebrow" id="step-eyebrow">Step 1 of 5</div>
@@ -573,6 +576,23 @@
 const LESSON_SEEN_KEY = 'moyacode_lesson_seen_';
 const XP_KEY = 'moyacode_xp';
 const state = { classKey:'', returnTo:'selection.html', lesson:null, stepIndex:0, totalSteps:0, seenBefore:false };
+
+function openSidebar() {
+  el('sidebar').classList.add('open');
+  el('sidebar-close').style.display = 'flex';
+  const back = el('sidebar-backdrop');
+  if (back) back.classList.add('visible');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSidebar() {
+  el('sidebar').classList.remove('open');
+  el('sidebar-close').style.display = 'none';
+  const back = el('sidebar-backdrop');
+  if (back) back.classList.remove('visible');
+  document.body.style.overflow = '';
+}
+
 function init() {
   const params = new URLSearchParams(window.location.search);
   const classKey = (params.get('class') || 'jss3').toLowerCase();
@@ -590,8 +610,10 @@ function init() {
   el('ask-bot-btn').href = 'quiz.html?class=' + classKey;
   if (state.seenBefore) el('skip-shortcut').classList.add('visible');
   buildSidebarSteps(); buildNavDots(); renderStep(0);
-  el('mob-menu-btn').addEventListener('click', () => { el('sidebar').classList.add('open'); el('sidebar-close').style.display = 'flex'; });
-  el('sidebar-close').addEventListener('click', () => { el('sidebar').classList.remove('open'); el('sidebar-close').style.display = 'none'; });
+  el('mob-menu-btn').addEventListener('click', openSidebar);
+  el('sidebar-close').addEventListener('click', closeSidebar);
+  const back = el('sidebar-backdrop');
+  if (back) back.addEventListener('click', closeSidebar);
 }
 function buildSidebarSteps() {
   const container = el('sb-steps'); container.innerHTML = '';
@@ -600,7 +622,7 @@ function buildSidebarSteps() {
     btn.className = 'sb-step'; btn.role = 'listitem';
     btn.setAttribute('aria-label', 'Go to step ' + (i + 1) + ': ' + step.title);
     btn.innerHTML = `<div class="step-num"><span>${i + 1}</span></div><div class="step-info"><div class="step-title-text">${escHtml(step.title)}</div><div class="step-mins">${step.readMins} min read</div></div>`;
-    btn.addEventListener('click', () => { goToStep(i); el('sidebar').classList.remove('open'); });
+    btn.addEventListener('click', () => { goToStep(i); closeSidebar(); });
     container.appendChild(btn);
   });
 }
