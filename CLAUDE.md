@@ -43,8 +43,10 @@ There is no backend and no real authentication yet.
 4. `motivation.html` (save motivation) → `goals.html`
 5. `goals.html` (save goal) → `selection.html`
 6. `selection.html` → `loading.html?class=...`
-7. `loading.html` → `quiz.html?class=...&returnTo=...`
-8. `quiz.html` loads `script.js`, which reads params + profile + quiz bank and runs the session.
+7. `loading.html` → `lesson.html?class=...&returnTo=...`
+8. `lesson.html` loads `lessons.js` and runs the lesson engine per class.
+9. `lesson.html` launches `quiz.html?class=...&returnTo=...`
+10. `quiz.html` loads `script.js`, which reads params + profile + quiz bank and runs the session.
 
 ### Data flow today (all client-side)
 - Storage keys used for profile:

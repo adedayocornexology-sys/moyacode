@@ -34,7 +34,8 @@ The current user journey is:
 5. `goals.html` → Pick your goal
 6. `selection.html` → Choose class/quest
 7. `loading.html` → Shows loading + coding tip
-8. `quiz.html` → Main quiz experience powered by `script.js`
+8. `lesson.html` → Step-by-step lesson experience powered by `lessons.js`
+9. `quiz.html` → Main quiz experience powered by `script.js`
 
 ---
 
