@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Watcher — Activity Review</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body, system-ui, sans-serif);
+      background: var(--color-bg, #0f0f14);
+      color: var(--color-text, #e8e8f0);
+      min-height: 100dvh;
+      padding: 1.5rem 1rem 4rem;
+    }
+
+    .page-header {
+      max-width: 960px;
+      margin: 0 auto 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .page-header h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .page-header .badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-primary, #7c6fea);
+      background: color-mix(in srgb, var(--color-primary, #7c6fea) 12%, transparent);
+      border: 1px solid color-mix(in srgb, var(--color-primary, #7c6fea) 30%, transparent);
+      padding: 0.25rem 0.6rem;
+      border-radius: 99px;
+    }
+
+    .meta {
+      font-size: 0.8rem;
+      color: var(--color-text-muted, #888);
+      margin-bottom: 2rem;
+      max-width: 960px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ── Totals bar ── */
+    .totals-bar {
+      max-width: 960px;
+      margin: 0 auto 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .stat-chip {
+      background: var(--color-surface, #1a1a24);
+      border: 1px solid var(--color-border, #2a2a38);
+      border-radius: var(--radius-md, 10px);
+      padding: 0.6rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      min-width: 120px;
+    }
+
+    .stat-chip .label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--color-text-muted, #888);
+    }
+
+    .stat-chip .value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--color-text, #e8e8f0);
+    }
+
+    /* ── Courses grid ── */
+    .courses-section {
+      max-width: 960px;
+      margin: 0 auto 2rem;
+    }
+
+    .section-heading {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-text-muted, #888);
+      margin-bottom: 0.75rem;
+    }
+
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .course-card {
+      background: var(--color-surface, #1a1a24);
+      border: 1px solid var(--color-border, #2a2a38);
+      border-radius: var(--radius-md, 10px);
+      padding: 0.85rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .course-card.completed {
+      border-color: color-mix(in srgb, var(--color-correct, #4caf7d) 40%, transparent);
+    }
+
+    .course-card.in-progress {
+      border-color: color-mix(in srgb, var(--color-primary, #7c6fea) 40%, transparent);
+    }
+
+    .course-card .course-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .course-card .course-title .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: var(--color-text-muted, #555);
+    }
+
+    .course-card.completed .status-dot   { background: var(--color-correct, #4caf7d); }
+    .course-card.in-progress .status-dot { background: var(--color-primary, #7c6fea); }
+
+    .course-card .course-stats {
+      font-size: 0.75rem;
+      color: var(--color-text-muted, #888);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    /* ── Summary panels ── */
+    .summaries {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 640px) {
+      .summaries { grid-template-columns: 1fr; }
+    }
+
+    .summary-panel {
+      background: var(--color-surface, #1a1a24);
+      border: 1px solid var(--color-border, #2a2a38);
+      border-radius: var(--radius-md, 10px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .summary-panel-header {
+      padding: 0.85rem 1rem 0.7rem;
+      border-bottom: 1px solid var(--color-border, #2a2a38);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .summary-panel-header h2 {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .btn-copy {
+      font-size: 0.72rem;
+      font-weight: 600;
+      background: none;
+      border: 1px solid var(--color-border, #2a2a38);
+      color: var(--color-text-muted, #888);
+      padding: 0.3rem 0.7rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .btn-copy:hover { color: var(--color-text, #e8e8f0); border-color: var(--color-text, #e8e8f0); }
+    .btn-copy.copied { color: var(--color-correct, #4caf7d); border-color: var(--color-correct, #4caf7d); }
+
+    .summary-text {
+      padding: 1rem;
+      font-family: monospace;
+      font-size: 0.78rem;
+      line-height: 1.65;
+      white-space: pre-wrap;
+      word-break: break-word;
+      flex: 1;
+      overflow-y: auto;
+      color: var(--color-text, #e8e8f0);
+    }
+
+    /* ── Toolbar ── */
+    .toolbar {
+      max-width: 960px;
+      margin: 0 auto 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-refresh {
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: var(--color-primary, #7c6fea);
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1.1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .btn-refresh:hover { opacity: 0.85; }
+
+    .generated-at {
+      font-size: 0.72rem;
+      color: var(--color-text-muted, #888);
+    }
+
+    /* ── Empty state ── */
+    .empty-state {
+      max-width: 960px;
+      margin: 3rem auto;
+      text-align: center;
+      color: var(--color-text-muted, #888);
+    }
+
+    .empty-state p { font-size: 0.9rem; line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+<header class="page-header">
+  <h1>Watcher <span style="font-weight:400;opacity:0.4">·</span> Activity Review</h1>
+  <span class="badge">Admin</span>
+</header>
+
+<div class="toolbar">
+  <button class="btn-refresh" id="btnRefresh">↻ Refresh</button>
+  <span class="generated-at" id="generatedAt"></span>
+</div>
+
+<div id="emptyState" class="empty-state" hidden>
+  <p>No activity logged yet.<br>
+  Have a student complete at least one quiz question, then refresh.</p>
+</div>
+
+<div id="content">
+  <div class="totals-bar" id="totalsBar"></div>
+
+  <div class="courses-section">
+    <div class="section-heading">Courses</div>
+    <div class="courses-grid" id="coursesGrid"></div>
+  </div>
+
+  <div class="summaries">
+    <div class="summary-panel">
+      <div class="summary-panel-header">
+        <h2>Parent Report</h2>
+        <button class="btn-copy" data-target="parentText">Copy</button>
+      </div>
+      <pre class="summary-text" id="parentText"></pre>
+    </div>
+
+    <div class="summary-panel">
+      <div class="summary-panel-header">
+        <h2>Student Reflection</h2>
+        <button class="btn-copy" data-target="studentText">Copy</button>
+      </div>
+      <pre class="summary-text" id="studentText"></pre>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import {
+    buildActivityRecord,
+    renderParentReport,
+    renderStudentReflection,
+  } from "./js/watcher.js";
+
+  function pct(r) { return Math.round(r * 100) + "%"; }
+
+  function dayLabel(n) {
+    if (n === null || n === undefined) return "—";
+    if (n === 0) return "today";
+    if (n === 1) return "yesterday";
+    return `${n} days ago`;
+  }
+
+  function fmtDate(iso) {
+    if (!iso) return "—";
+    return new Date(iso).toLocaleDateString("en-NG", {
+      day: "numeric", month: "short", year: "numeric",
+      hour: "2-digit", minute: "2-digit",
+    });
+  }
+
+  function render() {
+    const record = buildActivityRecord();
+    const { totals, courses, generatedAt } = record;
+    const COURSE_ORDER = ["jss1", "jss2", "jss3", "ss1", "ss2", "ss3"];
+
+    document.getElementById("generatedAt").textContent =
+      `Generated ${fmtDate(generatedAt)}`;
+
+    const hasActivity = totals.questionsAnswered > 0;
+    document.getElementById("emptyState").hidden = hasActivity;
+    document.getElementById("content").style.visibility = hasActivity ? "" : "hidden";
+
+    // ── Totals bar ──
+    const stats = [
+      { label: "Courses done",  value: `${totals.coursesCompleted} / 6` },
+      { label: "XP earned",     value: totals.totalXP },
+      { label: "Questions",     value: totals.questionsAnswered },
+      { label: "Accuracy",      value: pct(totals.overallAccuracy) },
+      { label: "Active days",   value: totals.activeDays },
+      { label: "Last active",   value: dayLabel(totals.daysSinceLastActive) },
+    ];
+
+    document.getElementById("totalsBar").innerHTML = stats
+      .map(s => `<div class="stat-chip"><span class="label">${s.label}</span><span class="value">${s.value}</span></div>`)
+      .join("");
+
+    // ── Courses grid ──
+    document.getElementById("coursesGrid").innerHTML = COURSE_ORDER.map(key => {
+      const c = courses[key];
+      const cls = c.completed ? "completed" : c.questionsAnswered > 0 ? "in-progress" : "";
+      const statsStr = c.questionsAnswered > 0
+        ? `<span>${c.correctAnswers}/${c.questionsAnswered} correct</span><span>${pct(c.accuracy)}</span><span>${c.xpEarned} XP</span>`
+        : `<span>Not started</span>`;
+
+      return `
+        <div class="course-card ${cls}">
+          <div class="course-title">
+            <span class="status-dot"></span>
+            ${c.title}
+          </div>
+          <div class="course-stats">${statsStr}</div>
+        </div>`;
+    }).join("");
+
+    // ── Summaries ──
+    document.getElementById("parentText").textContent  = renderParentReport(record);
+    document.getElementById("studentText").textContent = renderStudentReflection(record);
+  }
+
+  // Copy buttons
+  document.querySelectorAll(".btn-copy").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const text = document.getElementById(btn.dataset.target).textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = "Copied!";
+        btn.classList.add("copied");
+        setTimeout(() => { btn.textContent = "Copy"; btn.classList.remove("copied"); }, 2000);
+      });
+    });
+  });
+
+  document.getElementById("btnRefresh").addEventListener("click", render);
+
+  render();
+</script>
+
+</body>
+</html>
