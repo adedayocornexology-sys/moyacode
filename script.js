@@ -486,7 +486,7 @@ function showEndScreen() {
     saveProgress(classKey);
     if (nextKey) logHandoff(classKey, nextKey);
   }
-  renderConfetti(passed);
+  renderConfetti(passed, passed && isLast);
 
   if (state.phase === "gameover") {
     setText(DOM.endBadge, "Quest Debrief");
@@ -558,19 +558,20 @@ function buildEndHighlights({ quiz, nextKey, profile, livesLeft, passed, isLast 
   return cards.join("");
 }
 
-function renderConfetti(active) {
+function renderConfetti(active, isGrad) {
   if (!DOM.confettiBurst) return;
   DOM.confettiBurst.innerHTML = "";
   if (!active) return;
-
-  const colors = ["#00E5A0", "#60A5FA", "#FCD34D", "#FB7185", "#A78BFA"];
-  for (let i = 0; i < 18; i++) {
+  const count  = isGrad ? 42 : 18;
+  const colors = ["#00E5A0","#60A5FA","#FCD34D","#FB7185","#A78BFA","#34D399"];
+  for (let i = 0; i < count; i++) {
     const piece = document.createElement("span");
     piece.className = "confetti";
     piece.style.left = `${Math.random() * 100}%`;
     piece.style.background = colors[i % colors.length];
-    piece.style.animationDelay = `${Math.random() * 0.35}s`;
-    piece.style.setProperty("--drift", `${(Math.random() - 0.5) * 90}px`);
+    piece.style.animationDelay = `${Math.random() * (isGrad ? 0.7 : 0.35)}s`;
+    piece.style.setProperty("--drift", `${(Math.random() - 0.5) * (isGrad ? 130 : 90)}px`);
+    if (isGrad) piece.style.animationDuration = `${1800 + Math.random() * 1200}ms`;
     DOM.confettiBurst.appendChild(piece);
   }
 }
@@ -592,20 +593,42 @@ function renderActionButtons(passed, classKey, nextKey, isLast) {
   }
 
   if (passed && isLast) {
-    const a = document.createElement("a");
-    a.className = "btn-primary end-next-btn";
-    a.href = "bootcamp.html";
-    a.textContent = "Upgrade to Pro — Get a Real Tutor 🚀";
-    wrap.appendChild(a);
+    const today   = new Date();
+    const dateStr = today.toLocaleDateString("en-NG", { day:"numeric", month:"long", year:"numeric" });
+    const cert = document.createElement("div");
+    cert.className = "cert-card";
+    cert.id = "certificate";
+    cert.innerHTML = `
+      <span class="cert-seal">🎓</span>
+      <div class="cert-org">MoyaCode Academy</div>
+      <div class="cert-presents">This certifies that</div>
+      <input class="cert-name-input" id="cert-name" placeholder="Type your name here" maxlength="40" />
+      <div class="cert-name-hint">Tap to add your name before sharing</div>
+      <div class="cert-completed">has successfully completed the</div>
+      <div class="cert-program">Full Stack Developer Curriculum</div>
+      <div class="cert-courses">Scratch · HTML · CSS · JavaScript</div>
+      <div class="cert-divider"></div>
+      <div class="cert-footer">
+        <div class="cert-sig">MoyaCode Faculty</div>
+        <div class="cert-date">${escapeHTML(dateStr)}</div>
+      </div>
+    `;
+    wrap.appendChild(cert);
   }
 
   const share = document.createElement("button");
   share.className = "btn-outline end-share-btn";
-  share.textContent = "📲 Share Result on WhatsApp";
+  share.textContent = passed && isLast ? "🎓 Share Certificate on WhatsApp" : "📲 Share Result on WhatsApp";
   share.addEventListener("click", () => {
     const quiz  = QUIZ_BANKS[classKey];
     const total = state.activeQuestions.length;
-    const msg   = `${passed?"🏆":"💪"} I ${passed?"passed":"attempted"} the ${quiz.title} quest on MoyaCode — ${state.score}/${total} (${state.xp} XP)!\n\nFree coding platform for Nigerian secondary school students.\n🔗 https://adedayocornexology-sys.github.io/moyacode/`;
+    let msg;
+    if (passed && isLast) {
+      const name = (document.getElementById("cert-name")?.value.trim()) || "A MoyaCode student";
+      msg = `🎓 ${name} just graduated from MoyaCode!\n\nI completed the full curriculum:\n✅ Scratch (JSS1–JSS2)\n✅ HTML (JSS3–SS1)\n✅ CSS (SS2)\n✅ JavaScript (SS3)\n\nFree coding education for Nigerian secondary school students.\n🔗 https://adedayocornexology-sys.github.io/moyacode/`;
+    } else {
+      msg = `${passed?"🏆":"💪"} I ${passed?"passed":"attempted"} the ${quiz.title} quest on MoyaCode — ${state.score}/${total} (${state.xp} XP)!\n\nFree coding platform for Nigerian secondary school students.\n🔗 https://adedayocornexology-sys.github.io/moyacode/`;
+    }
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
   });
   wrap.appendChild(share);
