@@ -136,6 +136,36 @@ function readProfile() {
 function saveProgress(key) {
   localStorage.setItem(`moyacode_progress_${key}`, "complete");
 }
+
+// ─── AGENT MAP (Faculty) ──────────────────────────────────────────────────────
+const AGENT_MAP = {
+  jss1: { name: "Tolu",  role: "Scratch",     emoji: "🎮" },
+  jss2: { name: "Tolu",  role: "Scratch",     emoji: "🎮" },
+  jss3: { name: "Chidi", role: "HTML",        emoji: "🌐" },
+  ss1:  { name: "Chidi", role: "HTML",        emoji: "🌐" },
+  ss2:  { name: "Amaka", role: "CSS",         emoji: "🎨" },
+  ss3:  { name: "Emeka", role: "JavaScript",  emoji: "⚡" },
+};
+
+function getAgentHandoff(fromKey, toKey) {
+  const from = AGENT_MAP[fromKey];
+  const to   = AGENT_MAP[toKey];
+  if (!from || !to || from.name === to.name) return null;
+  return `${from.emoji} From ${from.name}: You've finished ${from.role}. Passing you to ${to.emoji} ${to.name} for ${to.role}.`;
+}
+
+function logHandoff(fromKey, toKey) {
+  const from = AGENT_MAP[fromKey];
+  const to   = AGENT_MAP[toKey];
+  if (!from || !to || from.name === to.name) return;
+  try {
+    const k   = "moyacode_handoffs";
+    const log = JSON.parse(localStorage.getItem(k) || "[]");
+    log.push({ fromKey, toKey, fromAgent: from.name, toAgent: to.name, timestamp: new Date().toISOString() });
+    localStorage.setItem(k, JSON.stringify(log));
+  } catch {}
+}
+
 function logScore(entry) {
   try {
     const k   = "moyacode_session_log";
@@ -403,7 +433,10 @@ function showEndScreen() {
   const livesLeft  = Math.max(0, state.currentLives);
   const profile    = readProfile();
 
-  if (passed) saveProgress(classKey);
+  if (passed) {
+    saveProgress(classKey);
+    if (nextKey) logHandoff(classKey, nextKey);
+  }
   renderConfetti(passed);
 
   if (state.phase === "gameover") {
@@ -419,7 +452,10 @@ function showEndScreen() {
     setText(DOM.endBadge, isLast ? "Legend Status" : "Quest Complete");
     setText(DOM.endEmoji, isLast ? "👑" : "🏆");
     setText(DOM.endTitle, isLast ? "You cleared ALL quests!" : `${quiz.title} — Cleared! ✅`);
-    setText(DOM.endSub,   isLast ? "You completed the full MoyaCode curriculum. You are a Legend." : `Next up: ${QUIZ_BANKS[nextKey].title}`);
+    const handoffMsg = !isLast ? getAgentHandoff(classKey, nextKey) : null;
+    setText(DOM.endSub, isLast
+      ? "You completed the full MoyaCode curriculum. You are a Legend."
+      : handoffMsg || `Next up: ${QUIZ_BANKS[nextKey].title}`);
     setText(DOM.endJourney, buildJourneyRecap({ quiz, nextKey, profile, livesLeft, passed, isLast }));
     setHTML(DOM.endHighlight, buildEndHighlights({ quiz, nextKey, profile, livesLeft, passed, isLast }));
     setText(DOM.restartBtn, "Back to Quests 📚");

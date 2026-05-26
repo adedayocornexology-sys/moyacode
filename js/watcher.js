@@ -25,6 +25,12 @@ function readLog() {
   } catch { return []; }
 }
 
+function readHandoffs() {
+  try {
+    return JSON.parse(localStorage.getItem("moyacode_handoffs") || "[]");
+  } catch { return []; }
+}
+
 // ─── ACTIVITY RECORD ──────────────────────────────────────────────────────────
 // The single structured record the two templates render from.
 export function buildActivityRecord() {
@@ -66,11 +72,13 @@ export function buildActivityRecord() {
   const questionsAnswered = log.length;
   const correctAnswers    = log.filter(e => e.isCorrect).length;
   const totalXP           = log.reduce((s, e) => s + (e.xpAwarded || 0), 0);
+  const handoffs          = readHandoffs();
 
   return {
     generatedAt: now.toISOString(),
     student,
     courses,
+    handoffs,
     totals: {
       coursesCompleted:  COURSE_ORDER.filter(k => courses[k].completed).length,
       coursesStarted:    COURSE_ORDER.filter(k => courses[k].questionsAnswered > 0).length,
@@ -79,6 +87,7 @@ export function buildActivityRecord() {
       totalXP,
       overallAccuracy:   questionsAnswered ? correctAnswers / questionsAnswered : 0,
       activeDays:        activeDates.size,
+      handoffCount:      handoffs.length,
       firstSeen,
       lastSeen,
       daysSinceLastActive,
