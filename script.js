@@ -99,6 +99,8 @@ let state = {
   selectedAnswer:       null,
   feedbackState:        "idle",
   phase:                "home",
+  hintUsed:             false,
+  hintEliminated:       null,
 };
 let autoDismissTimer = null;
 
@@ -134,7 +136,12 @@ function readProfile() {
 }
 
 function saveProgress(key) {
-  localStorage.setItem(`moyacode_progress_${key}`, "complete");
+  localStorage.setItem(`moyacode_progress_${key}`, JSON.stringify({
+    score:     state.score,
+    xp:        state.xp,
+    completed: true,
+    updatedAt: new Date().toISOString(),
+  }));
   window.MOYADB?.markCourseComplete(key, { score: state.score, xp: state.xp });
 }
 
@@ -203,6 +210,7 @@ const DOM = {
   teacherComment:el("teacher-comment"),
   xpEarned:      el("xp-earned"),
   continueBtn:   el("continue-btn"),
+  hintBtn:       el("hint-btn"),
   // end screen
   endBadge:      el("end-badge"),
   endEmoji:      el("end-emoji"),
@@ -270,10 +278,14 @@ function renderGame() {
     DOM.questionText.textContent = q.question;
   }
 
+  state.hintUsed       = false;
+  state.hintEliminated = null;
+
   setText(DOM.assemblyArea, "");
   renderHearts();
   renderOptions();
   updateCheckBtn();
+  updateHintBtn();
 }
 
 // ─── HEARTS ──────────────────────────────────────────────────────────────────
@@ -299,17 +311,19 @@ function renderOptions() {
   DOM.optionsGrid.innerHTML = "";
 
   q.options.forEach((opt, i) => {
-    const isSelected = state.selectedAnswer === i;
-    const isCorrect  = locked && normalize(opt) === normalize(q.correct_answer);
-    const isWrong    = locked && isSelected && normalize(opt) !== normalize(q.correct_answer);
-    const isLocked   = locked && !isSelected && !isCorrect;
+    const isSelected   = state.selectedAnswer === i;
+    const isCorrect    = locked && normalize(opt) === normalize(q.correct_answer);
+    const isWrong      = locked && isSelected && normalize(opt) !== normalize(q.correct_answer);
+    const isLocked     = locked && !isSelected && !isCorrect;
+    const isEliminated = !locked && state.hintEliminated === i;
 
     const btn = document.createElement("button");
     btn.className = "option-btn"
-      + (isSelected && !locked ? " selected" : "")
-      + (isCorrect             ? " correct"  : "")
-      + (isWrong               ? " wrong"    : "")
-      + (isLocked              ? " locked"   : "");
+      + (isSelected && !locked ? " selected"   : "")
+      + (isCorrect             ? " correct"    : "")
+      + (isWrong               ? " wrong"      : "")
+      + (isLocked              ? " locked"     : "")
+      + (isEliminated          ? " eliminated" : "");
 
     const letter = document.createElement("span");
     letter.className = "option-letter";
@@ -329,7 +343,7 @@ function renderOptions() {
       btn.appendChild(icon);
     }
 
-    if (!locked) {
+    if (!locked && !isEliminated) {
       btn.addEventListener("click", () => {
         state.selectedAnswer = i;
         setText(DOM.assemblyArea, opt);
@@ -347,6 +361,36 @@ function updateCheckBtn() {
   const on = state.selectedAnswer !== null && state.feedbackState === "idle";
   DOM.checkBtn.disabled = !on;
   DOM.checkBtn.classList.toggle("active", on);
+}
+
+// ─── HINT ─────────────────────────────────────────────────────────────────────
+function updateHintBtn() {
+  if (!DOM.hintBtn) return;
+  const disabled = state.hintUsed || state.feedbackState !== "idle";
+  DOM.hintBtn.disabled = disabled;
+  DOM.hintBtn.classList.toggle("used", state.hintUsed);
+  DOM.hintBtn.textContent = state.hintUsed ? "Hint used" : "💡 Hint";
+}
+
+function handleHint() {
+  if (state.hintUsed || state.feedbackState !== "idle") return;
+  const q = state.activeQuestions[state.currentQuestionIndex];
+
+  // Indices of wrong options, excluding whatever the student already selected
+  const candidates = q.options
+    .map((opt, i) => ({ opt, i }))
+    .filter(({ opt, i }) =>
+      normalize(opt) !== normalize(q.correct_answer) && i !== state.selectedAnswer
+    )
+    .map(({ i }) => i);
+
+  if (!candidates.length) return;
+
+  state.hintEliminated = candidates[Math.floor(Math.random() * candidates.length)];
+  state.hintUsed = true;
+
+  renderOptions();
+  updateHintBtn();
 }
 
 // ─── CHECK ANSWER ─────────────────────────────────────────────────────────────
@@ -394,6 +438,7 @@ function showFeedback(isCorrect, q) {
 
   setText(DOM.continueBtn, isCorrect ? "Next Question →" : "Try Again");
   DOM.drawer.classList.add("open");
+  updateHintBtn();
 
   clearTimeout(autoDismissTimer);
   autoDismissTimer = setTimeout(handleContinue, FEEDBACK_DELAY);
@@ -586,6 +631,7 @@ if (DOM.restartBtn)  DOM.restartBtn.addEventListener("click",  goHome);
 if (DOM.backBtn)     DOM.backBtn.addEventListener("click",     goHome);
 if (DOM.closeBtn)    DOM.closeBtn.addEventListener("click",    goHome);
 if (DOM.skipBtn)     DOM.skipBtn.addEventListener("click",     handleSkip);
+if (DOM.hintBtn)     DOM.hintBtn.addEventListener("click",     handleHint);
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 function initQuizPage() {
