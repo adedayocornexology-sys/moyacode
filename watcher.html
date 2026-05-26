@@ -44,15 +44,6 @@
       border-radius: 99px;
     }
 
-    .meta {
-      font-size: 0.8rem;
-      color: var(--color-text-muted, #888);
-      margin-bottom: 2rem;
-      max-width: 960px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
     /* ── Totals bar ── */
     .totals-bar {
       max-width: 960px;
@@ -117,13 +108,8 @@
       gap: 0.35rem;
     }
 
-    .course-card.completed {
-      border-color: color-mix(in srgb, var(--color-correct, #4caf7d) 40%, transparent);
-    }
-
-    .course-card.in-progress {
-      border-color: color-mix(in srgb, var(--color-primary, #7c6fea) 40%, transparent);
-    }
+    .course-card.completed  { border-color: color-mix(in srgb, var(--color-correct, #4caf7d) 40%, transparent); }
+    .course-card.in-progress { border-color: color-mix(in srgb, var(--color-primary, #7c6fea) 40%, transparent); }
 
     .course-card .course-title {
       font-size: 0.85rem;
@@ -134,8 +120,7 @@
     }
 
     .course-card .course-title .status-dot {
-      width: 7px;
-      height: 7px;
+      width: 7px; height: 7px;
       border-radius: 50%;
       flex-shrink: 0;
       background: var(--color-text-muted, #555);
@@ -155,7 +140,7 @@
     /* ── Summary panels ── */
     .summaries {
       max-width: 960px;
-      margin: 0 auto;
+      margin: 0 auto 2rem;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1rem;
@@ -172,7 +157,11 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      transition: border-color 0.2s;
     }
+
+    .summary-panel.decision-approved { border-color: color-mix(in srgb, var(--color-correct, #4caf7d) 60%, transparent); }
+    .summary-panel.decision-rejected { border-color: color-mix(in srgb, #ef5350 60%, transparent); opacity: 0.6; }
 
     .summary-panel-header {
       padding: 0.85rem 1rem 0.7rem;
@@ -180,6 +169,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 0.5rem;
     }
 
     .summary-panel-header h2 {
@@ -187,6 +177,12 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.07em;
+    }
+
+    .summary-panel-header .header-actions {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
     }
 
     .btn-copy {
@@ -201,7 +197,7 @@
       transition: color 0.15s, border-color 0.15s;
     }
 
-    .btn-copy:hover { color: var(--color-text, #e8e8f0); border-color: var(--color-text, #e8e8f0); }
+    .btn-copy:hover  { color: var(--color-text, #e8e8f0); border-color: var(--color-text, #e8e8f0); }
     .btn-copy.copied { color: var(--color-correct, #4caf7d); border-color: var(--color-correct, #4caf7d); }
 
     .summary-text {
@@ -209,11 +205,53 @@
       font-family: monospace;
       font-size: 0.78rem;
       line-height: 1.65;
-      white-space: pre-wrap;
-      word-break: break-word;
       flex: 1;
-      overflow-y: auto;
+      resize: none;
+      background: transparent;
+      border: none;
       color: var(--color-text, #e8e8f0);
+      outline: none;
+      min-height: 320px;
+    }
+
+    /* ── Panel footer (approve/reject) ── */
+    .summary-panel-footer {
+      padding: 0.65rem 1rem;
+      border-top: 1px solid var(--color-border, #2a2a38);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-approve, .btn-reject {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.35rem 0.9rem;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: opacity 0.15s;
+    }
+
+    .btn-approve {
+      background: color-mix(in srgb, var(--color-correct, #4caf7d) 18%, transparent);
+      border-color: color-mix(in srgb, var(--color-correct, #4caf7d) 40%, transparent);
+      color: var(--color-correct, #4caf7d);
+    }
+
+    .btn-reject {
+      background: color-mix(in srgb, #ef5350 12%, transparent);
+      border-color: color-mix(in srgb, #ef5350 30%, transparent);
+      color: #ef7070;
+    }
+
+    .btn-approve:hover, .btn-reject:hover { opacity: 0.75; }
+    .btn-approve:disabled, .btn-reject:disabled { opacity: 0.35; cursor: default; }
+
+    .decision-note {
+      font-size: 0.7rem;
+      color: var(--color-text-muted, #888);
+      margin-left: auto;
     }
 
     /* ── Toolbar ── */
@@ -253,6 +291,84 @@
     }
 
     .empty-state p { font-size: 0.9rem; line-height: 1.6; }
+
+    /* ── Decision log ── */
+    .decision-log-section {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .decision-log-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+
+    .btn-clear-log {
+      font-size: 0.68rem;
+      font-weight: 600;
+      background: none;
+      border: 1px solid var(--color-border, #2a2a38);
+      color: var(--color-text-muted, #888);
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn-clear-log:hover { color: #ef7070; border-color: #ef5350; }
+
+    .decision-log-empty {
+      font-size: 0.78rem;
+      color: var(--color-text-muted, #555);
+      padding: 1rem 0;
+    }
+
+    .decision-entries {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .decision-entry {
+      background: var(--color-surface, #1a1a24);
+      border: 1px solid var(--color-border, #2a2a38);
+      border-radius: var(--radius-md, 10px);
+      padding: 0.75rem 1rem;
+      display: grid;
+      grid-template-columns: auto auto 1fr auto;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .decision-entry .entry-action {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .entry-action.approved { background: color-mix(in srgb, var(--color-correct, #4caf7d) 18%, transparent); color: var(--color-correct, #4caf7d); }
+    .entry-action.edited   { background: color-mix(in srgb, #ffc107 15%, transparent); color: #ffc107; }
+    .entry-action.rejected { background: color-mix(in srgb, #ef5350 12%, transparent); color: #ef7070; }
+
+    .decision-entry .entry-target {
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .decision-entry .entry-meta {
+      font-size: 0.72rem;
+      color: var(--color-text-muted, #888);
+    }
+
+    .decision-entry .entry-time {
+      font-size: 0.68rem;
+      color: var(--color-text-muted, #666);
+      text-align: right;
+    }
   </style>
 </head>
 <body>
@@ -281,21 +397,46 @@
   </div>
 
   <div class="summaries">
-    <div class="summary-panel">
+    <!-- Parent Report -->
+    <div class="summary-panel" id="panelParent">
       <div class="summary-panel-header">
         <h2>Parent Report</h2>
-        <button class="btn-copy" data-target="parentText">Copy</button>
+        <div class="header-actions">
+          <button class="btn-copy" data-target="parentText">Copy</button>
+        </div>
       </div>
-      <pre class="summary-text" id="parentText"></pre>
+      <textarea class="summary-text" id="parentText" spellcheck="false"></textarea>
+      <div class="summary-panel-footer">
+        <button class="btn-approve" data-panel="parent">Approve</button>
+        <button class="btn-reject"  data-panel="parent">Reject</button>
+        <span class="decision-note" id="noteParent"></span>
+      </div>
     </div>
 
-    <div class="summary-panel">
+    <!-- Student Reflection -->
+    <div class="summary-panel" id="panelStudent">
       <div class="summary-panel-header">
         <h2>Student Reflection</h2>
-        <button class="btn-copy" data-target="studentText">Copy</button>
+        <div class="header-actions">
+          <button class="btn-copy" data-target="studentText">Copy</button>
+        </div>
       </div>
-      <pre class="summary-text" id="studentText"></pre>
+      <textarea class="summary-text" id="studentText" spellcheck="false"></textarea>
+      <div class="summary-panel-footer">
+        <button class="btn-approve" data-panel="student">Approve</button>
+        <button class="btn-reject"  data-panel="student">Reject</button>
+        <span class="decision-note" id="noteStudent"></span>
+      </div>
     </div>
+  </div>
+
+  <!-- Decision log -->
+  <div class="decision-log-section">
+    <div class="decision-log-header">
+      <div class="section-heading" style="margin-bottom:0">Decision log</div>
+      <button class="btn-clear-log" id="btnClearLog">Clear log</button>
+    </div>
+    <div id="decisionLogContent"></div>
   </div>
 </div>
 
@@ -306,6 +447,12 @@
     renderStudentReflection,
   } from "./js/watcher.js";
 
+  const DECISIONS_KEY = "moyacode_watcher_decisions";
+
+  // Original generated texts — used to detect edits
+  const originals = { parent: "", student: "" };
+
+  // ── Helpers ──────────────────────────────────────────────────────────────────
   function pct(r) { return Math.round(r * 100) + "%"; }
 
   function dayLabel(n) {
@@ -323,19 +470,123 @@
     });
   }
 
+  function fmtShort(iso) {
+    if (!iso) return "";
+    return new Date(iso).toLocaleTimeString("en-NG", {
+      month: "short", day: "numeric",
+      hour: "2-digit", minute: "2-digit",
+    });
+  }
+
+  // ── Decision storage ──────────────────────────────────────────────────────────
+  function loadDecisions() {
+    try { return JSON.parse(localStorage.getItem(DECISIONS_KEY) || "[]"); }
+    catch { return []; }
+  }
+
+  function saveDecision(target, action, originalText, finalText, snapshot) {
+    const decisions = loadDecisions();
+    decisions.unshift({
+      id:           Date.now(),
+      decidedAt:    new Date().toISOString(),
+      target,       // "parent" | "student"
+      action,       // "approved" | "edited" | "rejected"
+      originalText,
+      finalText,    // null if rejected
+      wasEdited:    action === "edited",
+      snapshot,     // { coursesCompleted, totalXP, questionsAnswered }
+    });
+    localStorage.setItem(DECISIONS_KEY, JSON.stringify(decisions));
+    renderDecisionLog();
+  }
+
+  // ── Decision log UI ───────────────────────────────────────────────────────────
+  function renderDecisionLog() {
+    const decisions = loadDecisions();
+    const el = document.getElementById("decisionLogContent");
+
+    if (decisions.length === 0) {
+      el.innerHTML = `<p class="decision-log-empty">No decisions recorded yet. Approve or reject a summary above to log your first decision.</p>`;
+      return;
+    }
+
+    el.innerHTML = `<div class="decision-entries">${
+      decisions.map(d => {
+        const targetLabel = d.target === "parent" ? "Parent Report" : "Student Reflection";
+        const meta = d.snapshot
+          ? `${d.snapshot.coursesCompleted} courses · ${d.snapshot.totalXP} XP · ${d.snapshot.questionsAnswered} Qs`
+          : "";
+        return `
+          <div class="decision-entry">
+            <span class="entry-action ${d.action}">${d.action}</span>
+            <span class="entry-target">${targetLabel}</span>
+            <span class="entry-meta">${meta}</span>
+            <span class="entry-time">${fmtShort(d.decidedAt)}</span>
+          </div>`;
+      }).join("")
+    }</div>`;
+  }
+
+  // ── Decision handlers ─────────────────────────────────────────────────────────
+  function handleDecision(panel, action) {
+    const textareaId = panel === "parent" ? "parentText" : "studentText";
+    const panelEl    = document.getElementById(panel === "parent" ? "panelParent" : "panelStudent");
+    const noteEl     = document.getElementById(panel === "parent" ? "noteParent" : "noteStudent");
+    const approveBtn = panelEl.querySelector(".btn-approve");
+    const rejectBtn  = panelEl.querySelector(".btn-reject");
+
+    const currentText  = document.getElementById(textareaId).value;
+    const originalText = originals[panel];
+    const wasEdited    = currentText.trim() !== originalText.trim();
+
+    const resolvedAction = action === "approve" && wasEdited ? "edited" : action === "approve" ? "approved" : "rejected";
+    const finalText      = resolvedAction === "rejected" ? null : currentText;
+
+    // Build snapshot from latest record
+    let snapshot = null;
+    try {
+      const { totals } = buildActivityRecord();
+      snapshot = {
+        coursesCompleted:  totals.coursesCompleted,
+        totalXP:           totals.totalXP,
+        questionsAnswered: totals.questionsAnswered,
+      };
+    } catch {}
+
+    saveDecision(panel, resolvedAction, originalText, finalText, snapshot);
+
+    // Visual state
+    panelEl.classList.remove("decision-approved", "decision-rejected");
+    panelEl.classList.add(resolvedAction === "rejected" ? "decision-rejected" : "decision-approved");
+    approveBtn.disabled = true;
+    rejectBtn.disabled  = true;
+
+    const labels = { approved: "Approved ✓", edited: "Approved with edits ✓", rejected: "Rejected ✗" };
+    noteEl.textContent = labels[resolvedAction];
+  }
+
+  // ── Main render ───────────────────────────────────────────────────────────────
   function render() {
     const record = buildActivityRecord();
     const { totals, courses, generatedAt } = record;
     const COURSE_ORDER = ["jss1", "jss2", "jss3", "ss1", "ss2", "ss3"];
 
-    document.getElementById("generatedAt").textContent =
-      `Generated ${fmtDate(generatedAt)}`;
+    document.getElementById("generatedAt").textContent = `Generated ${fmtDate(generatedAt)}`;
 
     const hasActivity = totals.questionsAnswered > 0;
     document.getElementById("emptyState").hidden = hasActivity;
     document.getElementById("content").style.visibility = hasActivity ? "" : "hidden";
 
-    // ── Totals bar ──
+    // Reset panel states on refresh
+    ["panelParent", "panelStudent"].forEach(id => {
+      const p = document.getElementById(id);
+      p.classList.remove("decision-approved", "decision-rejected");
+      p.querySelectorAll(".btn-approve, .btn-reject").forEach(b => b.disabled = false);
+    });
+    document.getElementById("noteParent").textContent  = "";
+    document.getElementById("noteStudent").textContent = "";
+
+    // Totals bar
     const stats = [
       { label: "Courses done",  value: `${totals.coursesCompleted} / 6` },
       { label: "XP earned",     value: totals.totalXP },
@@ -349,9 +600,9 @@
       .map(s => `<div class="stat-chip"><span class="label">${s.label}</span><span class="value">${s.value}</span></div>`)
       .join("");
 
-    // ── Courses grid ──
+    // Courses grid
     document.getElementById("coursesGrid").innerHTML = COURSE_ORDER.map(key => {
-      const c = courses[key];
+      const c   = courses[key];
       const cls = c.completed ? "completed" : c.questionsAnswered > 0 ? "in-progress" : "";
       const statsStr = c.questionsAnswered > 0
         ? `<span>${c.correctAnswers}/${c.questionsAnswered} correct</span><span>${pct(c.accuracy)}</span><span>${c.xpEarned} XP</span>`
@@ -359,23 +610,27 @@
 
       return `
         <div class="course-card ${cls}">
-          <div class="course-title">
-            <span class="status-dot"></span>
-            ${c.title}
-          </div>
+          <div class="course-title"><span class="status-dot"></span>${c.title}</div>
           <div class="course-stats">${statsStr}</div>
         </div>`;
     }).join("");
 
-    // ── Summaries ──
-    document.getElementById("parentText").textContent  = renderParentReport(record);
-    document.getElementById("studentText").textContent = renderStudentReflection(record);
+    // Summaries — populate textareas and save originals
+    const parentText  = renderParentReport(record);
+    const studentText = renderStudentReflection(record);
+
+    document.getElementById("parentText").value  = parentText;
+    document.getElementById("studentText").value = studentText;
+    originals.parent  = parentText;
+    originals.student = studentText;
   }
+
+  // ── Event listeners ───────────────────────────────────────────────────────────
 
   // Copy buttons
   document.querySelectorAll(".btn-copy").forEach(btn => {
     btn.addEventListener("click", () => {
-      const text = document.getElementById(btn.dataset.target).textContent;
+      const text = document.getElementById(btn.dataset.target).value;
       navigator.clipboard.writeText(text).then(() => {
         btn.textContent = "Copied!";
         btn.classList.add("copied");
@@ -384,9 +639,27 @@
     });
   });
 
+  // Approve / Reject
+  document.querySelectorAll(".btn-approve").forEach(btn => {
+    btn.addEventListener("click", () => handleDecision(btn.dataset.panel, "approve"));
+  });
+  document.querySelectorAll(".btn-reject").forEach(btn => {
+    btn.addEventListener("click", () => handleDecision(btn.dataset.panel, "reject"));
+  });
+
+  // Refresh
   document.getElementById("btnRefresh").addEventListener("click", render);
 
+  // Clear log
+  document.getElementById("btnClearLog").addEventListener("click", () => {
+    if (confirm("Clear the entire decision log? This cannot be undone.")) {
+      localStorage.removeItem(DECISIONS_KEY);
+      renderDecisionLog();
+    }
+  });
+
   render();
+  renderDecisionLog();
 </script>
 
 </body>
