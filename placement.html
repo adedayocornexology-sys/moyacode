@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MoyaCode | Find Your Path</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --c-teal:#00E5A0;--c-teal-mid:#00B87A;--c-teal-dim:rgba(0,229,160,0.15);--c-teal-faint:rgba(0,229,160,0.07);
+      --c-blue:#60A5FA;--c-blue-dim:rgba(96,165,250,0.12);
+      --c-coral:#FB7185;--c-coral-dim:rgba(251,113,133,0.12);
+      --c-amber:#FCD34D;--c-amber-dim:rgba(252,211,77,0.12);
+      --bg-0:#030712;--bg-1:#060D1F;--bg-2:#0A1628;--bg-3:#0F1F38;
+      --glass:rgba(10,22,40,0.6);--glass-border:rgba(255,255,255,0.07);--glass-hi:rgba(255,255,255,0.12);
+      --t-100:#F8FAFF;--t-200:#CBD5F0;--t-400:#7A8FAD;--t-600:#3D506A;
+      --f-display:'Bricolage Grotesque',sans-serif;--f-body:'Space Grotesk',sans-serif;
+      --ease:cubic-bezier(0.4,0,0.2,1);--spring:cubic-bezier(0.34,1.4,0.64,1);
+      --dur-fast:150ms;--dur-mid:250ms;--dur-slow:400ms;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{height:100%}
+    body{
+      font-family:var(--f-body);background:var(--bg-0);color:var(--t-100);
+      -webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;
+    }
+
+    /* Background */
+    .bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+    .orb{position:absolute;border-radius:50%;filter:blur(120px);will-change:transform}
+    .orb-1{width:800px;height:800px;background:radial-gradient(circle,rgba(0,229,160,0.14) 0%,transparent 65%);top:-25%;left:-15%;animation:oa 25s ease-in-out infinite}
+    .orb-2{width:600px;height:600px;background:radial-gradient(circle,rgba(96,165,250,0.10) 0%,transparent 65%);top:15%;right:-10%;animation:ob 30s ease-in-out infinite}
+    .orb-3{width:500px;height:500px;background:radial-gradient(circle,rgba(251,113,133,0.07) 0%,transparent 65%);bottom:0;left:30%;animation:oc 22s ease-in-out infinite}
+    @keyframes oa{0%,100%{transform:translate(0,0)}40%{transform:translate(60px,-50px)}70%{transform:translate(-20px,40px)}}
+    @keyframes ob{0%,100%{transform:translate(0,0)}50%{transform:translate(-80px,60px)}}
+    @keyframes oc{0%,100%{transform:translate(0,0)}60%{transform:translate(50px,-30px)}}
+
+    /* Progress bar */
+    .prog-bar{position:fixed;top:0;left:0;right:0;z-index:999;height:3px;background:rgba(255,255,255,0.06)}
+    .prog-fill{height:100%;background:linear-gradient(90deg,var(--c-teal),var(--c-blue));width:5%;transition:width .5s var(--ease)}
+
+    /* Nav */
+    .nav{position:fixed;top:12px;left:0;right:0;z-index:900;pointer-events:none}
+    .nav-inner{width:min(1160px,92vw);margin:0 auto;background:rgba(6,13,31,0.8);backdrop-filter:blur(24px) saturate(180%);border:1px solid var(--glass-hi);border-radius:20px;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;pointer-events:all}
+    .logo{display:flex;align-items:center;gap:8px;text-decoration:none;font-family:var(--f-display);font-size:1.05rem;font-weight:800;color:var(--t-100);letter-spacing:-0.03em}
+    .logo-mark{width:26px;height:26px;border-radius:8px;background:var(--c-teal);display:flex;align-items:center;justify-content:center}
+    .nav-step{font-size:.75rem;font-weight:600;color:var(--t-600)}
+
+    /* Screens wrapper */
+    .screens{position:relative;z-index:1;padding-top:80px;padding-bottom:40px;min-height:100vh}
+
+    /* Individual screen */
+    .screen{
+      display:none;flex-direction:column;
+      width:min(480px,92vw);margin:0 auto;
+      padding:28px 0 32px;min-height:calc(100vh - 120px);
+    }
+    .screen.active{display:flex;animation:slideIn .38s var(--spring) both}
+    @keyframes slideIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
+
+    /* Screen typography */
+    .eyebrow{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--c-teal);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+    .eyebrow::before{content:'';display:block;width:14px;height:1.5px;background:var(--c-teal);border-radius:999px;flex-shrink:0}
+    .s-h1{font-family:var(--f-display);font-size:clamp(1.9rem,5.5vw,2.6rem);font-weight:800;letter-spacing:-.04em;line-height:1;color:var(--t-100);margin-bottom:10px}
+    .s-h2{font-family:var(--f-display);font-size:clamp(1.5rem,4.5vw,2rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;color:var(--t-100);margin-bottom:10px}
+    .s-p{color:var(--t-400);font-size:.9rem;line-height:1.65;margin-bottom:20px}
+
+    /* ── Faculty grid (screen 0) ── */
+    .fac-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0 28px}
+    .fc{
+      display:flex;flex-direction:column;align-items:center;text-align:center;
+      padding:18px 10px;border-radius:18px;
+      border:1px solid var(--glass-border);background:var(--glass);
+      backdrop-filter:blur(16px);overflow:hidden;position:relative;
+    }
+    .fc::after{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--glass-hi),transparent)}
+    .fc-emoji{font-size:2rem;line-height:1;margin-bottom:8px}
+    .fc-name{font-family:var(--f-display);font-size:1rem;font-weight:800;color:var(--t-100);margin-bottom:3px}
+    .fc-role{font-size:.68rem;color:var(--t-400);line-height:1.3;margin-bottom:8px}
+    .fc-badge{font-size:.62rem;font-weight:700;letter-spacing:.06em;padding:2px 8px;border-radius:999px;text-transform:uppercase}
+    .fc-teal{border-color:rgba(0,229,160,.18)}
+    .fc-teal .fc-badge{background:var(--c-teal-dim);color:var(--c-teal)}
+    .fc-blue{border-color:rgba(96,165,250,.18)}
+    .fc-blue .fc-badge{background:var(--c-blue-dim);color:var(--c-blue)}
+    .fc-amber{border-color:rgba(252,211,77,.18)}
+    .fc-amber .fc-badge{background:var(--c-amber-dim);color:var(--c-amber)}
+    .fc-coral{border-color:rgba(251,113,133,.18)}
+    .fc-coral .fc-badge{background:var(--c-coral-dim);color:var(--c-coral)}
+
+    /* ── Option list (screens 1 + 2) ── */
+    .opt-list{display:flex;flex-direction:column;gap:9px;margin:18px 0}
+    .opt{
+      display:flex;align-items:center;gap:12px;
+      padding:14px 16px;border-radius:14px;
+      border:1px solid var(--glass-border);background:var(--glass);
+      backdrop-filter:blur(16px);
+      font-family:var(--f-body);color:var(--t-200);text-align:left;
+      cursor:pointer;transition:transform var(--dur-mid) var(--spring),border-color var(--dur-mid) var(--ease),box-shadow var(--dur-mid) var(--ease);
+      min-height:60px;position:relative;overflow:hidden;
+    }
+    .opt::after{content:'';position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,var(--glass-hi),transparent)}
+    .opt:hover:not(:disabled){transform:translateY(-2px);border-color:rgba(255,255,255,.12)}
+    .opt.selected{border-color:rgba(0,229,160,.4);box-shadow:0 0 0 2px rgba(0,229,160,.09),0 6px 24px rgba(0,229,160,.06);transform:translateY(-1px)}
+    .opt:disabled{opacity:.5;cursor:not-allowed}
+    .opt-icon{width:38px;height:38px;border-radius:10px;background:var(--bg-2);border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;font-family:var(--f-body);font-weight:700;color:var(--c-teal);letter-spacing:0}
+    .opt-text strong{display:block;font-size:.9rem;font-weight:700;color:var(--t-100);line-height:1.2}
+    .opt-text span{font-size:.76rem;color:var(--t-400);margin-top:2px;display:block}
+    .opt-arrow{margin-left:auto;color:var(--t-600);flex-shrink:0;font-size:.85rem}
+
+    /* ── Dream grid (screen 3) ── */
+    .dream-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:16px 0 20px}
+    .dream-btn{
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:14px 8px;border-radius:14px;
+      border:1px solid var(--glass-border);background:var(--glass);
+      backdrop-filter:blur(16px);
+      font-family:var(--f-body);font-size:.74rem;font-weight:600;color:var(--t-400);
+      cursor:pointer;gap:7px;transition:transform var(--dur-mid) var(--spring),border-color var(--dur-mid) var(--ease),color var(--dur-fast) var(--ease);
+      min-height:76px;
+    }
+    .dream-btn:hover{transform:translateY(-2px);color:var(--t-100)}
+    .dream-btn.selected{border-color:rgba(0,229,160,.4);box-shadow:0 0 0 2px rgba(0,229,160,.09);color:var(--t-100);transform:translateY(-1px)}
+    .dream-emoji{font-size:1.5rem;line-height:1}
+
+    /* ── Result screen (screen 4) ── */
+    .result-wrap{display:flex;flex-direction:column;align-items:center;text-align:center;flex:1;padding-top:20px}
+    .result-badge{
+      width:92px;height:92px;border-radius:22px;background:var(--bg-2);
+      border:1px solid var(--glass-border);
+      display:flex;align-items:center;justify-content:center;font-size:2.8rem;
+      margin-bottom:18px;animation:popIn .5s var(--spring) .05s both;
+    }
+    @keyframes popIn{from{opacity:0;transform:scale(.65)}to{opacity:1;transform:scale(1)}}
+    .result-label{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t-400);margin-bottom:4px;animation:fadeUp .4s var(--spring) .15s both}
+    .result-agent{font-family:var(--f-display);font-size:2.2rem;font-weight:800;letter-spacing:-.04em;color:var(--t-100);margin-bottom:10px;animation:fadeUp .4s var(--spring) .2s both}
+    .result-chip{display:inline-flex;align-items:center;padding:5px 14px;border-radius:999px;border:1px solid var(--glass-border);background:var(--bg-2);font-size:.78rem;font-weight:700;color:var(--t-200);margin-bottom:20px;animation:fadeUp .4s var(--spring) .25s both}
+    .result-intro{color:var(--t-400);font-size:.88rem;line-height:1.7;max-width:360px;margin:0 auto 28px;animation:fadeUp .4s var(--spring) .3s both}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .result-cta-wrap{width:100%;animation:fadeUp .4s var(--spring) .35s both}
+
+    /* Color glow variants */
+    .result-badge[data-color="teal"]{box-shadow:0 0 48px rgba(0,229,160,.18),0 8px 32px rgba(0,0,0,.4)}
+    .result-badge[data-color="blue"]{box-shadow:0 0 48px rgba(96,165,250,.18),0 8px 32px rgba(0,0,0,.4)}
+    .result-badge[data-color="amber"]{box-shadow:0 0 48px rgba(252,211,77,.18),0 8px 32px rgba(0,0,0,.4)}
+    .result-badge[data-color="coral"]{box-shadow:0 0 48px rgba(251,113,133,.18),0 8px 32px rgba(0,0,0,.4)}
+
+    /* ── Buttons ── */
+    .btn-primary{
+      display:flex;align-items:center;justify-content:center;gap:8px;
+      width:100%;padding:14px 24px;border-radius:14px;
+      background:var(--c-teal);color:var(--bg-0);
+      font-family:var(--f-body);font-weight:700;font-size:.95rem;
+      border:none;cursor:pointer;
+      box-shadow:0 0 32px rgba(0,229,160,.32),0 4px 12px rgba(0,229,160,.18);
+      transition:transform var(--dur-fast) var(--spring),box-shadow var(--dur-mid) var(--ease),opacity var(--dur-fast) var(--ease);
+    }
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 48px rgba(0,229,160,.48),0 8px 20px rgba(0,229,160,.28)}
+    .btn-primary:active{transform:translateY(0)}
+    .btn-primary:disabled,.btn-dim{opacity:.3;cursor:not-allowed;pointer-events:none}
+    .screen-foot{margin-top:auto;padding-top:20px}
+    .skip-link{display:block;text-align:center;margin-top:14px;font-size:.78rem;color:var(--t-600);text-decoration:none;transition:color var(--dur-fast) var(--ease)}
+    .skip-link:hover{color:var(--t-400)}
+
+    @media(max-width:360px){
+      .dream-grid{grid-template-columns:repeat(2,1fr)}
+      .fac-grid{gap:8px}
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-canvas" aria-hidden="true">
+  <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+</div>
+
+<div class="prog-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="5">
+  <div class="prog-fill" id="progFill"></div>
+</div>
+
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-mark">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M8 6l4-4 4 4M8 18l4 4 4-4M3 12h18" stroke="#030712" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      MoyaCode
+    </a>
+    <span class="nav-step" id="navStep">Placement</span>
+  </div>
+</nav>
+
+<div class="screens">
+
+  <!-- ── SCREEN 0: Faculty intro ── -->
+  <div class="screen active" id="s0" role="main">
+    <div class="eyebrow">Your MoyaCode Faculty</div>
+    <h1 class="s-h1">Four specialists.<br/>One is yours.</h1>
+    <p class="s-p">Each agent owns a track of the curriculum. Answer 2 questions and we'll place you with the right one.</p>
+
+    <div class="fac-grid" aria-label="Teaching faculty">
+      <div class="fc fc-teal">
+        <div class="fc-emoji" aria-hidden="true">🎮</div>
+        <div class="fc-name">Tolu</div>
+        <div class="fc-role">Scratch &amp; Visual Programming</div>
+        <div class="fc-badge">JSS1 · JSS2</div>
+      </div>
+      <div class="fc fc-blue">
+        <div class="fc-emoji" aria-hidden="true">🌐</div>
+        <div class="fc-name">Chidi</div>
+        <div class="fc-role">HTML &amp; Web Structure</div>
+        <div class="fc-badge">JSS3 · SS1</div>
+      </div>
+      <div class="fc fc-amber">
+        <div class="fc-emoji" aria-hidden="true">🎨</div>
+        <div class="fc-name">Amaka</div>
+        <div class="fc-role">CSS Styling</div>
+        <div class="fc-badge">SS2</div>
+      </div>
+      <div class="fc fc-coral">
+        <div class="fc-emoji" aria-hidden="true">⚡</div>
+        <div class="fc-name">Emeka</div>
+        <div class="fc-role">JavaScript Logic</div>
+        <div class="fc-badge">SS3</div>
+      </div>
+    </div>
+
+    <div class="screen-foot">
+      <button class="btn-primary" onclick="advance(1)">Find my starting point →</button>
+    </div>
+  </div>
+
+  <!-- ── SCREEN 1: Experience ── -->
+  <div class="screen" id="s1">
+    <div class="eyebrow">Placement · Question 1 of 2</div>
+    <h2 class="s-h2">Have you ever written code before?</h2>
+    <p class="s-p">Be honest — there is no wrong answer. We place you where you'll grow fastest.</p>
+
+    <div class="opt-list" id="expOpts" role="radiogroup" aria-label="Coding experience level">
+      <button class="opt" data-val="never" onclick="selectExp(this)" role="radio" aria-checked="false">
+        <div class="opt-icon" aria-hidden="true">🌱</div>
+        <div class="opt-text">
+          <strong>Never — starting from zero</strong>
+          <span>No coding experience at all</span>
+        </div>
+        <span class="opt-arrow" aria-hidden="true">→</span>
+      </button>
+      <button class="opt" data-val="little" onclick="selectExp(this)" role="radio" aria-checked="false">
+        <div class="opt-icon" aria-hidden="true">🧩</div>
+        <div class="opt-text">
+          <strong>A little — tried Scratch or similar</strong>
+          <span>Played around but didn't go deep</span>
+        </div>
+        <span class="opt-arrow" aria-hidden="true">→</span>
+      </button>
+      <button class="opt" data-val="html" onclick="selectExp(this)" role="radio" aria-checked="false">
+        <div class="opt-icon" aria-hidden="true">🌐</div>
+        <div class="opt-text">
+          <strong>Yes — I know some HTML or CSS</strong>
+          <span>I've built or edited web pages</span>
+        </div>
+        <span class="opt-arrow" aria-hidden="true">→</span>
+      </button>
+      <button class="opt" data-val="javascript" onclick="selectExp(this)" role="radio" aria-checked="false">
+        <div class="opt-icon" aria-hidden="true">⚡</div>
+        <div class="opt-text">
+          <strong>Yes — I know JavaScript basics</strong>
+          <span>Variables, functions, the DOM</span>
+        </div>
+        <span class="opt-arrow" aria-hidden="true">→</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── SCREEN 2: Diagnostic ── -->
+  <div class="screen" id="s2">
+    <div class="eyebrow" id="diagCounter">Diagnostic · 1 of 3</div>
+    <h2 class="s-h2" id="diagQ">Loading…</h2>
+    <div class="opt-list" id="diagOpts" role="radiogroup" aria-label="Diagnostic question options"></div>
+  </div>
+
+  <!-- ── SCREEN 3: Dream ── -->
+  <div class="screen" id="s3">
+    <div class="eyebrow">Placement · Question 2 of 2</div>
+    <h2 class="s-h2">What do you most want to build?</h2>
+    <p class="s-p">Your agent will weave this into every lesson introduction and handoff.</p>
+
+    <div class="dream-grid" role="radiogroup" aria-label="Coding dream">
+      <button class="dream-btn" data-dream="Build Games" onclick="pickDream(this)" role="radio" aria-checked="false">
+        <span class="dream-emoji" aria-hidden="true">🎮</span>
+        <span>Build Games</span>
+      </button>
+      <button class="dream-btn" data-dream="Create Websites" onclick="pickDream(this)" role="radio" aria-checked="false">
+        <span class="dream-emoji" aria-hidden="true">🌐</span>
+        <span>Create Websites</span>
+      </button>
+      <button class="dream-btn" data-dream="Design Mobile Apps" onclick="pickDream(this)" role="radio" aria-checked="false">
+        <span class="dream-emoji" aria-hidden="true">📱</span>
+        <span>Mobile Apps</span>
+      </button>
+      <button class="dream-btn" data-dream="Work with AI" onclick="pickDream(this)" role="radio" aria-checked="false">
+        <span class="dream-emoji" aria-hidden="true">🤖</span>
+        <span>Work with AI</span>
+      </button>
+      <button class="dream-btn" data-dream="Grow my Career" onclick="pickDream(this)" role="radio" aria-checked="false">
+        <span class="dream-emoji" aria-hidden="true">💼</span>
+        <span>Grow Career</span>
+      </button>
+      <button class="dream-btn" data-dream="Just Curious" onclick="pickDream(this)" role="radio" aria-checked="false">
+        <span class="dream-emoji" aria-hidden="true">✨</span>
+        <span>Just Curious</span>
+      </button>
+    </div>
+
+    <div class="screen-foot">
+      <button class="btn-primary btn-dim" id="dreamNext" onclick="finalize()" disabled>
+        See my result →
+      </button>
+    </div>
+  </div>
+
+  <!-- ── SCREEN 4: Result ── -->
+  <div class="screen" id="s4">
+    <div class="result-wrap">
+      <div class="result-badge" id="rEmoji" data-color="teal" aria-label="Your agent">🎮</div>
+      <div class="result-label">Your guide is</div>
+      <div class="result-agent" id="rName">Tolu</div>
+      <div class="result-chip" id="rChip">JSS1 · Scratch Basics</div>
+      <p class="result-intro" id="rIntro"></p>
+      <div class="result-cta-wrap">
+        <button class="btn-primary" id="rCTA" onclick="startJourney()">Start with Tolu →</button>
+        <a class="skip-link" href="selection.html">Browse all courses instead</a>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /screens -->
+
+<script>
+// ── State ───────────────────────────────────────────────
+let cur = 0, experience = null, dream = null, placedCourse = null;
+let diagIdx = 0, diagScore = 0, diagBank = [];
+
+// ── Course data ─────────────────────────────────────────
+const COURSES = {
+  jss1:{ agent:'Tolu',  emoji:'🎮', label:'JSS1 · Scratch Basics',  color:'teal'  },
+  jss2:{ agent:'Tolu',  emoji:'🎮', label:'JSS2 · Advanced Scratch', color:'teal'  },
+  jss3:{ agent:'Chidi', emoji:'🌐', label:'JSS3 · Intro to HTML',    color:'blue'  },
+  ss1: { agent:'Chidi', emoji:'🌐', label:'SS1 · Advanced HTML',     color:'blue'  },
+  ss2: { agent:'Amaka', emoji:'🎨', label:'SS2 · CSS Styling',       color:'amber' },
+  ss3: { agent:'Emeka', emoji:'⚡', label:'SS3 · JavaScript Logic',  color:'coral' },
+};
+
+// ── Agent intro messages ────────────────────────────────
+const INTROS = {
+  jss1: d => `I'm Tolu. You're in exactly the right place.${d ? ` Your goal to ${d.toLowerCase()} starts with understanding how code thinks.` : ''} Scratch uses blocks — no typing, no syntax errors. Just logic. By the end, you'll have real programs running. Let's go.`,
+  jss2: d => `I'm Tolu. You've got the basics — time to make them serious. Advanced Scratch covers broadcasts, sprite cloning, and game logic.${d ? ` The building blocks for ${d.toLowerCase()}.` : ''} This track makes you a real Scratch programmer.`,
+  jss3: d => `I'm Chidi. Every website you've visited started with HTML. JSS3 takes you from a blank file to a real, structured page with headings, links, and images.${d ? ` That foundation is everything for what you want to build.` : ''} Let's open a file.`,
+  ss1:  d => `I'm Chidi. You know basic HTML. SS1 goes professional — semantic tags, forms, and accessibility. ${d ? `The kind of structure that makes ${d.toLowerCase()} work correctly.` : 'The structure real products are built on.'}`,
+  ss2:  d => `I'm Amaka. You write solid HTML. Now let's make it look like something. CSS controls every colour, font, spacing, and layout on the web.${d ? ` That's how you make ${d.toLowerCase()} feel like a real product.` : ''} This is where pages stop being documents and start being experiences.`,
+  ss3:  d => `I'm Emeka. You're ready for the final track. JavaScript makes pages come alive — buttons that respond, logic that runs, data that changes.${d ? ` Everything it takes to ${d.toLowerCase()} runs on this.` : ''} Let's bring it to life.`,
+};
+
+// ── Diagnostic question banks ───────────────────────────
+const SCRATCH_Q = [
+  { q:'What does a "repeat 10" block do in Scratch?', opts:['Runs the blocks inside it 10 times','Makes the sprite jump 10 steps','Plays a sound 10 times','Waits for 10 seconds'], correct:0 },
+  { q:'In Scratch, what makes your program start running?', opts:['Clicking the green flag','Pressing the spacebar','Dragging a sprite to centre','Clicking the red stop button'], correct:0 },
+  { q:'Which type of Scratch block reacts to things like key presses or clicks?', opts:['Event blocks','Motion blocks','Sound blocks','Operator blocks'], correct:0 },
+];
+const HTML_Q = [
+  { q:'What does an <h1> tag do on a web page?', opts:['Creates the main page heading','Makes all text bold','Creates a clickable link','Adds a horizontal line'], correct:0 },
+  { q:'Which HTML tag creates a clickable link?', opts:['<a>','<link>','<url>','<nav>'], correct:0 },
+  { q:'In CSS, which property sets the text colour?', opts:['color','font-color','text-fill','foreground'], correct:0 },
+];
+
+// ── Navigation ──────────────────────────────────────────
+const PROG_PCTS = [5, 22, 50, 72, 100];
+const STEP_LABELS = ['Placement','Question 1 of 2','Diagnostic','Question 2 of 2','Your Result'];
+
+function advance(n) {
+  document.getElementById('s' + cur).classList.remove('active');
+  const next = document.getElementById('s' + n);
+  next.classList.add('active');
+  cur = n;
+  document.getElementById('progFill').style.width = (PROG_PCTS[n] || 5) + '%';
+  document.querySelector('.prog-bar').setAttribute('aria-valuenow', PROG_PCTS[n] || 5);
+  document.getElementById('navStep').textContent = STEP_LABELS[n] || '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Screen 1: experience ────────────────────────────────
+function selectExp(btn) {
+  document.querySelectorAll('#expOpts .opt').forEach(b => {
+    b.classList.remove('selected');
+    b.setAttribute('aria-checked','false');
+    b.disabled = true;
+  });
+  btn.classList.add('selected');
+  btn.setAttribute('aria-checked','true');
+  experience = btn.dataset.val;
+
+  setTimeout(() => {
+    if (experience === 'never') {
+      placedCourse = 'jss1'; advance(3);
+    } else if (experience === 'javascript') {
+      placedCourse = 'ss3'; advance(3);
+    } else {
+      diagBank  = experience === 'little' ? SCRATCH_Q : HTML_Q;
+      diagIdx   = 0;
+      diagScore = 0;
+      renderDiag();
+      advance(2);
+    }
+  }, 320);
+}
+
+// ── Screen 2: diagnostic ────────────────────────────────
+function renderDiag() {
+  const q = diagBank[diagIdx];
+  document.getElementById('diagCounter').textContent = `Diagnostic · ${diagIdx + 1} of ${diagBank.length}`;
+  document.getElementById('diagQ').textContent = q.q;
+  const container = document.getElementById('diagOpts');
+  container.innerHTML = '';
+  ['A','B','C','D'].forEach((lbl, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.setAttribute('role','radio');
+    btn.setAttribute('aria-checked','false');
+    btn.innerHTML = `<div class="opt-icon">${lbl}</div><div class="opt-text"><strong>${q.opts[i]}</strong></div>`;
+    btn.onclick = () => answerDiag(btn, i, q.correct);
+    container.appendChild(btn);
+  });
+}
+
+function answerDiag(btn, chosen, correct) {
+  document.querySelectorAll('#diagOpts .opt').forEach(b => {
+    b.disabled = true;
+    b.style.pointerEvents = 'none';
+  });
+  btn.classList.add('selected');
+  btn.setAttribute('aria-checked','true');
+  if (chosen === correct) diagScore++;
+
+  setTimeout(() => {
+    diagIdx++;
+    if (diagIdx < diagBank.length) {
+      renderDiag();
+    } else {
+      // Route by score
+      if (experience === 'little') {
+        placedCourse = diagScore >= 2 ? 'jss2' : 'jss1';
+      } else {
+        placedCourse = diagScore === 3 ? 'ss2' : diagScore === 2 ? 'ss1' : 'jss3';
+      }
+      advance(3);
+    }
+  }, 380);
+}
+
+// ── Screen 3: dream ─────────────────────────────────────
+function pickDream(btn) {
+  document.querySelectorAll('.dream-btn').forEach(b => {
+    b.classList.remove('selected');
+    b.setAttribute('aria-checked','false');
+  });
+  btn.classList.add('selected');
+  btn.setAttribute('aria-checked','true');
+  dream = btn.dataset.dream;
+  const nxt = document.getElementById('dreamNext');
+  nxt.classList.remove('btn-dim');
+  nxt.disabled = false;
+}
+
+// ── Screen 4: result + save ─────────────────────────────
+function finalize() {
+  if (!dream) return;
+  try {
+    localStorage.setItem('moyacode_dream', dream);
+    localStorage.setItem('moyacode_placement_course', placedCourse);
+    localStorage.setItem('moyacode_experience_level', experience);
+  } catch(e) {}
+
+  const d = COURSES[placedCourse];
+  document.getElementById('rEmoji').textContent = d.emoji;
+  document.getElementById('rEmoji').dataset.color = d.color;
+  document.getElementById('rName').textContent  = d.agent;
+  document.getElementById('rChip').textContent  = d.label;
+  document.getElementById('rIntro').textContent = INTROS[placedCourse](dream);
+  document.getElementById('rCTA').textContent   = `Start with ${d.agent} →`;
+
+  // Fire-and-forget Supabase profile save
+  window._syncPlacement?.(dream, placedCourse);
+
+  advance(4);
+}
+
+function startJourney() {
+  window.location.href = 'loading.html?class=' + placedCourse;
+}
+</script>
+
+<script type="module">
+import { getSession } from './js/auth.js';
+import { saveProfile } from './js/db.js';
+
+// Exposed to non-module script via window
+window._syncPlacement = async (dream, course) => {
+  try {
+    const session = await getSession();
+    if (!session) return;
+    await saveProfile(session.user.id, { dream, motivation: '', goal: course });
+  } catch {}
+};
+
+// Auto-redirect returning users who already have a placement
+(async () => {
+  try {
+    const already = localStorage.getItem('moyacode_placement_course');
+    const session = await getSession();
+    if (already && session) {
+      window.location.replace('home.html');
+    }
+  } catch {}
+})();
+</script>
+
+</body>
+</html>

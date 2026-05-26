@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MoyaCode | Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --c-teal:#00E5A0;--c-teal-mid:#00B87A;--c-teal-dim:rgba(0,229,160,0.15);--c-teal-faint:rgba(0,229,160,0.07);
+      --c-blue:#60A5FA;--c-blue-dim:rgba(96,165,250,0.12);
+      --c-coral:#FB7185;--c-coral-dim:rgba(251,113,133,0.12);
+      --c-amber:#FCD34D;--c-amber-dim:rgba(252,211,77,0.12);
+      --bg-0:#030712;--bg-1:#060D1F;--bg-2:#0A1628;--bg-3:#0F1F38;
+      --glass:rgba(10,22,40,0.6);--glass-border:rgba(255,255,255,0.07);--glass-hi:rgba(255,255,255,0.12);
+      --t-100:#F8FAFF;--t-200:#CBD5F0;--t-400:#7A8FAD;--t-600:#3D506A;
+      --f-display:'Bricolage Grotesque',sans-serif;--f-body:'Space Grotesk',sans-serif;
+      --ease:cubic-bezier(0.4,0,0.2,1);--spring:cubic-bezier(0.34,1.4,0.64,1);
+      --dur-fast:150ms;--dur-mid:250ms;--dur-slow:400ms;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:var(--f-body);background:var(--bg-0);color:var(--t-100);
+      -webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;
+    }
+
+    /* Background */
+    .bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+    .orb{position:absolute;border-radius:50%;filter:blur(120px);will-change:transform}
+    .orb-1{width:700px;height:700px;background:radial-gradient(circle,rgba(0,229,160,0.12) 0%,transparent 65%);top:-20%;left:-15%;animation:oa 25s ease-in-out infinite}
+    .orb-2{width:600px;height:600px;background:radial-gradient(circle,rgba(96,165,250,0.09) 0%,transparent 65%);top:30%;right:-10%;animation:ob 30s ease-in-out infinite}
+    .orb-3{width:500px;height:500px;background:radial-gradient(circle,rgba(251,113,133,0.06) 0%,transparent 65%);bottom:5%;left:20%;animation:oc 22s ease-in-out infinite}
+    @keyframes oa{0%,100%{transform:translate(0,0)}40%{transform:translate(50px,-40px)}70%{transform:translate(-20px,30px)}}
+    @keyframes ob{0%,100%{transform:translate(0,0)}50%{transform:translate(-70px,50px)}}
+    @keyframes oc{0%,100%{transform:translate(0,0)}60%{transform:translate(40px,-25px)}}
+
+    /* Nav */
+    .nav{position:fixed;top:12px;left:0;right:0;z-index:900;pointer-events:none}
+    .nav-inner{
+      width:min(600px,92vw);margin:0 auto;
+      background:rgba(6,13,31,0.8);backdrop-filter:blur(24px) saturate(180%);
+      border:1px solid var(--glass-hi);border-radius:20px;
+      padding:10px 16px;display:flex;align-items:center;justify-content:space-between;
+      pointer-events:all;
+    }
+    .logo{display:flex;align-items:center;gap:8px;text-decoration:none;font-family:var(--f-display);font-size:1.05rem;font-weight:800;color:var(--t-100);letter-spacing:-0.03em}
+    .logo-mark{width:26px;height:26px;border-radius:8px;background:var(--c-teal);display:flex;align-items:center;justify-content:center}
+    .nav-actions{display:flex;align-items:center;gap:10px}
+    .nav-btn{padding:6px 12px;border-radius:10px;background:var(--glass);border:1px solid var(--glass-border);color:var(--t-400);font-size:.75rem;font-weight:600;text-decoration:none;cursor:pointer;font-family:var(--f-body);transition:color var(--dur-fast) var(--ease),background var(--dur-fast) var(--ease)}
+    .nav-btn:hover{color:var(--t-100);background:var(--glass-hi)}
+
+    /* Page layout */
+    .page{position:relative;z-index:1;width:min(540px,92vw);margin:0 auto;padding:88px 0 60px;display:flex;flex-direction:column;gap:16px}
+
+    /* ── Greeting strip ── */
+    .greeting{
+      background:var(--glass);backdrop-filter:blur(20px);
+      border:1px solid var(--glass-border);border-radius:18px;
+      padding:18px 20px;display:flex;align-items:center;justify-content:space-between;
+      animation:fadeUp .4s var(--spring) both;
+    }
+    .greeting-left{}
+    .greeting-name{font-family:var(--f-display);font-size:1.25rem;font-weight:800;letter-spacing:-.03em;color:var(--t-100);line-height:1}
+    .greeting-sub{font-size:.78rem;color:var(--t-400);margin-top:4px}
+    .streak-badge{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:12px;background:var(--bg-2);border:1px solid var(--glass-border)}
+    .streak-num{font-family:var(--f-display);font-size:1.3rem;font-weight:800;color:var(--t-100);line-height:1}
+    .streak-label{font-size:.65rem;font-weight:600;color:var(--t-400);text-transform:uppercase;letter-spacing:.06em;margin-top:1px}
+
+    /* ── Current course card (main CTA) ── */
+    .course-card{
+      background:var(--glass);backdrop-filter:blur(20px);
+      border:1px solid var(--glass-border);border-radius:20px;
+      padding:22px 20px;position:relative;overflow:hidden;
+      animation:fadeUp .4s var(--spring) .06s both;
+    }
+    .course-card::after{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--glass-hi),transparent)}
+    .course-card[data-color="teal"]{border-color:rgba(0,229,160,.15);box-shadow:0 0 40px rgba(0,229,160,.04)}
+    .course-card[data-color="blue"]{border-color:rgba(96,165,250,.15);box-shadow:0 0 40px rgba(96,165,250,.04)}
+    .course-card[data-color="amber"]{border-color:rgba(252,211,77,.15);box-shadow:0 0 40px rgba(252,211,77,.04)}
+    .course-card[data-color="coral"]{border-color:rgba(251,113,133,.15);box-shadow:0 0 40px rgba(251,113,133,.04)}
+
+    .agent-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+    .agent-avatar{width:40px;height:40px;border-radius:12px;background:var(--bg-2);border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+    .agent-info{}
+    .agent-name{font-family:var(--f-display);font-size:.95rem;font-weight:800;color:var(--t-100);line-height:1}
+    .agent-role{font-size:.7rem;color:var(--t-400);margin-top:2px}
+    .course-chip{margin-left:auto;padding:4px 10px;border-radius:999px;background:var(--bg-2);border:1px solid var(--glass-border);font-size:.68rem;font-weight:700;color:var(--t-400);letter-spacing:.04em;white-space:nowrap}
+
+    .course-title{font-family:var(--f-display);font-size:1.35rem;font-weight:800;letter-spacing:-.03em;color:var(--t-100);margin-bottom:6px;line-height:1.1}
+    .course-meta{font-size:.78rem;color:var(--t-400);margin-bottom:14px}
+
+    .progress-row{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+    .progress-track{flex:1;height:6px;border-radius:999px;background:var(--glass-border);overflow:hidden}
+    .progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--c-teal),var(--c-blue));transition:width .6s var(--ease)}
+    .progress-pct{font-size:.75rem;font-weight:700;color:var(--t-400);flex-shrink:0;min-width:28px;text-align:right}
+
+    .btn-continue{
+      display:flex;align-items:center;justify-content:center;gap:8px;
+      width:100%;padding:15px 20px;border-radius:14px;
+      background:var(--c-teal);color:var(--bg-0);
+      font-family:var(--f-body);font-weight:700;font-size:1rem;
+      border:none;cursor:pointer;text-decoration:none;
+      box-shadow:0 0 32px rgba(0,229,160,.32),0 4px 12px rgba(0,229,160,.16);
+      transition:transform var(--dur-fast) var(--spring),box-shadow var(--dur-mid) var(--ease);
+    }
+    .btn-continue:hover{transform:translateY(-2px);box-shadow:0 0 48px rgba(0,229,160,.48),0 8px 20px rgba(0,229,160,.26)}
+    .btn-continue:active{transform:translateY(0)}
+    .btn-arrow{display:inline-block;transition:transform var(--dur-fast) var(--spring)}
+    .btn-continue:hover .btn-arrow{transform:translateX(4px)}
+
+    /* ── Learning path ── */
+    .path-card{
+      background:var(--glass);backdrop-filter:blur(20px);
+      border:1px solid var(--glass-border);border-radius:18px;
+      padding:18px 20px;animation:fadeUp .4s var(--spring) .12s both;
+    }
+    .path-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t-600);margin-bottom:14px}
+    .path-nodes{display:flex;align-items:center;gap:0}
+    .path-node{display:flex;flex-direction:column;align-items:center;flex:1;position:relative}
+    .path-node:not(:last-child)::after{
+      content:'';position:absolute;top:11px;left:calc(50% + 11px);right:calc(-50% + 11px);
+      height:2px;background:var(--glass-border);z-index:0;
+    }
+    .path-node.done:not(:last-child)::after{background:var(--c-teal-mid)}
+    .node-dot{
+      width:22px;height:22px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      font-size:.65rem;font-weight:700;
+      border:2px solid var(--glass-border);
+      background:var(--bg-2);color:var(--t-600);
+      position:relative;z-index:1;flex-shrink:0;
+      transition:all var(--dur-mid) var(--ease);
+    }
+    .path-node.done .node-dot{background:var(--c-teal);border-color:var(--c-teal);color:var(--bg-0)}
+    .path-node.current .node-dot{background:var(--bg-3);border-color:var(--c-teal);color:var(--c-teal);box-shadow:0 0 0 4px var(--c-teal-faint);animation:nodePulse 2s ease-in-out infinite}
+    @keyframes nodePulse{0%,100%{box-shadow:0 0 0 4px var(--c-teal-faint)}50%{box-shadow:0 0 0 7px rgba(0,229,160,0.04)}}
+    .node-key{font-size:.58rem;font-weight:700;color:var(--t-600);margin-top:5px;letter-spacing:.04em;text-transform:uppercase}
+    .path-node.done .node-key{color:var(--c-teal-mid)}
+    .path-node.current .node-key{color:var(--c-teal)}
+
+    /* ── Stats strip ── */
+    .stats-strip{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+      animation:fadeUp .4s var(--spring) .18s both;
+    }
+    .stat{
+      background:var(--glass);backdrop-filter:blur(16px);
+      border:1px solid var(--glass-border);border-radius:14px;
+      padding:14px 12px;text-align:center;
+    }
+    .stat-val{font-family:var(--f-display);font-size:1.4rem;font-weight:800;letter-spacing:-.03em;color:var(--t-100);line-height:1;margin-bottom:4px}
+    .stat-key{font-size:.66rem;font-weight:600;color:var(--t-400);text-transform:uppercase;letter-spacing:.06em}
+
+    /* ── Browse link ── */
+    .browse-link{
+      text-align:center;padding:14px;border-radius:14px;
+      border:1px solid var(--glass-border);background:var(--glass);
+      color:var(--t-400);text-decoration:none;font-size:.85rem;font-weight:600;
+      transition:color var(--dur-fast) var(--ease),background var(--dur-fast) var(--ease);
+      animation:fadeUp .4s var(--spring) .24s both;display:block;
+    }
+    .browse-link:hover{color:var(--t-100);background:var(--glass-hi)}
+
+    /* ── No-progress state ── */
+    .empty-card{
+      background:var(--glass);backdrop-filter:blur(20px);
+      border:1px solid var(--glass-border);border-radius:20px;
+      padding:32px 20px;text-align:center;
+      animation:fadeUp .4s var(--spring) .06s both;
+    }
+    .empty-emoji{font-size:2.4rem;margin-bottom:14px}
+    .empty-h{font-family:var(--f-display);font-size:1.2rem;font-weight:800;letter-spacing:-.03em;color:var(--t-100);margin-bottom:8px}
+    .empty-p{font-size:.85rem;color:var(--t-400);line-height:1.6;margin-bottom:20px}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+    @media(max-width:380px){
+      .stat-val{font-size:1.2rem}
+      .course-title{font-size:1.15rem}
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-canvas" aria-hidden="true">
+  <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+</div>
+
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-mark">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M8 6l4-4 4 4M8 18l4 4 4-4M3 12h18" stroke="#030712" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      MoyaCode
+    </a>
+    <div class="nav-actions">
+      <a href="selection.html" class="nav-btn">All Courses</a>
+      <button class="nav-btn" id="signOutBtn" onclick="handleSignOut()">Sign Out</button>
+    </div>
+  </div>
+</nav>
+
+<main class="page" id="pageContent" aria-label="Student home">
+  <!-- Populated by JS -->
+</main>
+
+<script>
+const COURSE_ORDER = ['jss1','jss2','jss3','ss1','ss2','ss3'];
+
+const COURSE_META = {
+  jss1:{ label:'Scratch Basics',   agent:'Tolu',  emoji:'🎮', role:'Scratch & Visual Programming', color:'teal',  xpMax:120 },
+  jss2:{ label:'Advanced Scratch', agent:'Tolu',  emoji:'🎮', role:'Scratch & Visual Programming', color:'teal',  xpMax:160 },
+  jss3:{ label:'Intro to HTML',    agent:'Chidi', emoji:'🌐', role:'HTML & Web Structure',          color:'blue',  xpMax:190 },
+  ss1: { label:'Advanced HTML',    agent:'Chidi', emoji:'🌐', role:'HTML & Web Structure',          color:'blue',  xpMax:210 },
+  ss2: { label:'CSS Styling',      agent:'Amaka', emoji:'🎨', role:'CSS Styling',                   color:'amber', xpMax:240 },
+  ss3: { label:'JavaScript Logic', agent:'Emeka', emoji:'⚡', role:'JavaScript Logic',              color:'coral', xpMax:300 },
+};
+
+const KEY_LABELS = { jss1:'JSS1', jss2:'JSS2', jss3:'JSS3', ss1:'SS1', ss2:'SS2', ss3:'SS3' };
+
+function getProgress(key) {
+  try { return JSON.parse(localStorage.getItem('moyacode_progress_' + key) || 'null'); } catch { return null; }
+}
+
+function getSessionLog() {
+  try { return JSON.parse(localStorage.getItem('moyacode_session_log') || '[]'); } catch { return []; }
+}
+
+function calcStreak() {
+  try {
+    const log = getSessionLog();
+    if (!log.length) return 0;
+    const dates = [...new Set(log.map(e => (e.timestamp || '').slice(0,10)))].filter(Boolean).sort();
+    const today = new Date().toISOString().slice(0,10);
+    if (dates[dates.length - 1] !== today) return 0;
+    let streak = 1;
+    for (let i = dates.length - 1; i > 0; i--) {
+      const diff = (new Date(dates[i]) - new Date(dates[i-1])) / 86400000;
+      if (diff === 1) streak++; else break;
+    }
+    return streak;
+  } catch { return 0; }
+}
+
+function calcStats() {
+  const log = getSessionLog();
+  const totalXP = COURSE_ORDER.reduce((s, k) => { const p = getProgress(k); return s + (p?.xp || 0); }, 0);
+  const totalQ  = log.length;
+  const correct = log.filter(e => e.isCorrect).length;
+  const accuracy = totalQ > 0 ? Math.round((correct / totalQ) * 100) : 0;
+  return { totalXP, totalQ, accuracy };
+}
+
+function getCurrentCourse() {
+  // First: any started-but-not-completed course
+  for (const key of COURSE_ORDER) {
+    const p = getProgress(key);
+    if (p && !p.completed) return key;
+  }
+  // Second: placement assignment
+  const placed = localStorage.getItem('moyacode_placement_course');
+  if (placed && COURSE_ORDER.includes(placed)) {
+    // Confirm it's not already completed
+    const p = getProgress(placed);
+    if (!p?.completed) return placed;
+  }
+  // Third: next uncompleted course
+  for (const key of COURSE_ORDER) {
+    const p = getProgress(key);
+    if (!p?.completed) return key;
+  }
+  return null; // all done
+}
+
+function getCourseProgress(key) {
+  const p = getProgress(key);
+  if (!p) return 0;
+  if (p.completed) return 100;
+  // Use score ratio if available, else 0
+  const score = p.score || 0;
+  const total = 5; // 5 questions per quiz
+  return Math.round((score / total) * 100);
+}
+
+function render() {
+  const page = document.getElementById('pageContent');
+  const streak  = calcStreak();
+  const stats   = calcStats();
+  const current = getCurrentCourse();
+  const dream   = localStorage.getItem('moyacode_dream') || '';
+  const allDone = COURSE_ORDER.every(k => getProgress(k)?.completed);
+
+  // ── Greeting ──
+  const greetingEl = document.createElement('div');
+  greetingEl.className = 'greeting';
+  greetingEl.setAttribute('aria-label', 'Welcome back');
+  greetingEl.innerHTML = `
+    <div class="greeting-left">
+      <div class="greeting-name">Hey, Coder. 👋</div>
+      <div class="greeting-sub">${dream ? `Building toward: ${dream}` : 'Keep going — every session counts.'}</div>
+    </div>
+    <div class="streak-badge" title="${streak}-day streak">
+      <span style="font-size:1.1rem" aria-hidden="true">🔥</span>
+      <div>
+        <div class="streak-num">${streak}</div>
+        <div class="streak-label">day streak</div>
+      </div>
+    </div>
+  `;
+  page.appendChild(greetingEl);
+
+  // ── Current course card ──
+  if (allDone) {
+    const grad = document.createElement('div');
+    grad.className = 'empty-card';
+    grad.innerHTML = `
+      <div class="empty-emoji">🎓</div>
+      <div class="empty-h">You've graduated.</div>
+      <p class="empty-p">All six courses complete. You built the whole stack — Scratch, HTML, CSS, JavaScript. That's real.</p>
+      <a class="btn-continue" href="selection.html">Review your courses <span class="btn-arrow">→</span></a>
+    `;
+    page.appendChild(grad);
+  } else if (!current) {
+    const empty = document.createElement('div');
+    empty.className = 'empty-card';
+    empty.innerHTML = `
+      <div class="empty-emoji">🚀</div>
+      <div class="empty-h">Ready to start?</div>
+      <p class="empty-p">You haven't begun a course yet. Take the placement test so your agent can meet you where you are.</p>
+      <a class="btn-continue" href="placement.html">Take placement test <span class="btn-arrow">→</span></a>
+    `;
+    page.appendChild(empty);
+  } else {
+    const meta = COURSE_META[current];
+    const pct  = getCourseProgress(current);
+    const card = document.createElement('div');
+    card.className = 'course-card';
+    card.dataset.color = meta.color;
+    card.setAttribute('aria-label', `Current course: ${meta.label}`);
+    card.innerHTML = `
+      <div class="agent-row">
+        <div class="agent-avatar" aria-hidden="true">${meta.emoji}</div>
+        <div class="agent-info">
+          <div class="agent-name">${meta.agent}</div>
+          <div class="agent-role">${meta.role}</div>
+        </div>
+        <div class="course-chip">${KEY_LABELS[current]}</div>
+      </div>
+      <div class="course-title">${meta.label}</div>
+      <div class="course-meta">${getProgress(current) ? 'In progress' : 'Not started yet'}</div>
+      <div class="progress-row" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Course progress">
+        <div class="progress-track">
+          <div class="progress-fill" style="width:${pct}%"></div>
+        </div>
+        <span class="progress-pct">${pct}%</span>
+      </div>
+      <a class="btn-continue" href="loading.html?class=${current}" aria-label="Continue ${meta.label}">
+        ${getProgress(current) ? 'Continue lesson' : 'Start lesson'}
+        <span class="btn-arrow" aria-hidden="true">→</span>
+      </a>
+    `;
+    page.appendChild(card);
+  }
+
+  // ── Path visualization ──
+  const pathCard = document.createElement('div');
+  pathCard.className = 'path-card';
+  pathCard.setAttribute('aria-label', 'Learning path');
+  const nodesHtml = COURSE_ORDER.map(key => {
+    const p = getProgress(key);
+    const done = p?.completed;
+    const isCur = key === current && !allDone;
+    const cls = done ? 'done' : isCur ? 'current' : '';
+    const dot = done ? '✓' : KEY_LABELS[key].replace(/[A-Z]+/, '');
+    return `
+      <div class="path-node ${cls}" aria-label="${KEY_LABELS[key]}: ${done ? 'completed' : isCur ? 'in progress' : 'not started'}">
+        <div class="node-dot">${done ? '✓' : ''}</div>
+        <div class="node-key">${KEY_LABELS[key]}</div>
+      </div>
+    `;
+  }).join('');
+  pathCard.innerHTML = `<div class="path-label">Your path</div><div class="path-nodes">${nodesHtml}</div>`;
+  page.appendChild(pathCard);
+
+  // ── Stats ──
+  const statsEl = document.createElement('div');
+  statsEl.className = 'stats-strip';
+  statsEl.setAttribute('aria-label', 'Your stats');
+  statsEl.innerHTML = `
+    <div class="stat">
+      <div class="stat-val">⚡${stats.totalXP}</div>
+      <div class="stat-key">Total XP</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">${stats.totalQ}</div>
+      <div class="stat-key">Questions</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">${stats.accuracy}%</div>
+      <div class="stat-key">Accuracy</div>
+    </div>
+  `;
+  page.appendChild(statsEl);
+
+  // ── Browse link ──
+  const browse = document.createElement('a');
+  browse.className = 'browse-link';
+  browse.href = 'selection.html';
+  browse.textContent = 'Browse all courses →';
+  page.appendChild(browse);
+}
+
+function handleSignOut() {
+  // Defer to module script
+  window._signOut?.();
+}
+
+render();
+</script>
+
+<script type="module">
+import { requireAuth } from './js/auth.js';
+import { signOut }     from './js/auth.js';
+import { loadProgress, loadProfile } from './js/db.js';
+
+window._signOut = async () => {
+  await signOut();
+};
+
+// Guard page — redirect to auth if not logged in
+requireAuth('home.html');
+
+// Hydrate from Supabase if available
+(async () => {
+  try {
+    const { getSession } = await import('./js/auth.js');
+    const session = await getSession();
+    if (!session) return;
+
+    const [profileData, progressRows] = await Promise.all([
+      loadProfile(session.user.id),
+      loadProgress(session.user.id),
+    ]);
+
+    // Sync profile into localStorage
+    if (profileData?.dream)      localStorage.setItem('moyacode_dream', profileData.dream);
+
+    // Sync progress rows into localStorage
+    if (Array.isArray(progressRows)) {
+      progressRows.forEach(row => {
+        const key = 'moyacode_progress_' + row.class_key;
+        const existing = JSON.parse(localStorage.getItem(key) || '{}');
+        // Only overwrite if DB data is newer or richer
+        if (!existing.completed && row.completed) {
+          localStorage.setItem(key, JSON.stringify({
+            score:     row.score || existing.score || 0,
+            xp:        row.xp   || existing.xp   || 0,
+            completed: row.completed,
+            updatedAt: row.updated_at,
+          }));
+        }
+      });
+    }
+
+    // Re-render with fresh data
+    document.getElementById('pageContent').innerHTML = '';
+    // Use global render exposed via window (re-declared for module scope)
+    if (typeof render === 'function') render();
+  } catch {}
+})();
+</script>
+
+</body>
+</html>
