@@ -135,6 +135,7 @@ function readProfile() {
 
 function saveProgress(key) {
   localStorage.setItem(`moyacode_progress_${key}`, "complete");
+  window.MOYADB?.markCourseComplete(key, { score: state.score, xp: state.xp });
 }
 
 // ─── AGENT MAP (Faculty) ──────────────────────────────────────────────────────
@@ -164,6 +165,7 @@ function logHandoff(fromKey, toKey) {
     log.push({ fromKey, toKey, fromAgent: from.name, toAgent: to.name, timestamp: new Date().toISOString() });
     localStorage.setItem(k, JSON.stringify(log));
   } catch {}
+  window.MOYADB?.logHandoffEvent({ fromCourse: fromKey, toCourse: toKey, fromAgent: from.name, toAgent: to.name });
 }
 
 function logScore(entry) {
@@ -359,7 +361,9 @@ function handleCheck() {
   else           { state.currentLives--; state.streak = 0; }
   if (state.currentLives <= 0) state.phase = "gameover";
 
-  logScore({ questionId:q.id, classKey:state.activeQuizKey, isCorrect, timestamp:new Date().toISOString(), xpAwarded:isCorrect?q.xp_value:0 });
+  const scoreEntry = { questionId:q.id, classKey:state.activeQuizKey, isCorrect, timestamp:new Date().toISOString(), xpAwarded:isCorrect?q.xp_value:0 };
+  logScore(scoreEntry);
+  window.MOYADB?.logAnswerEvent({ classKey:scoreEntry.classKey, questionId:scoreEntry.questionId, isCorrect:scoreEntry.isCorrect, xpAwarded:scoreEntry.xpAwarded });
 
   try { navigator.vibrate && navigator.vibrate(isCorrect ? [30,50,30] : [80,40,80]); } catch(e){}
 

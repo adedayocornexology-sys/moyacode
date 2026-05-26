@@ -178,5 +178,22 @@
   </div>
 </main>
 
+<script type="module">
+import { getSession } from './js/auth.js';
+import { migrateLocalStorage } from './js/db.js';
+
+// If logged in, migrate any existing localStorage data then continue.
+// If not logged in, let them proceed — auth is gated at selection.html.
+(async () => {
+  const session = await getSession();
+  if (session) {
+    await migrateLocalStorage(session.user.id);
+    // Update the CTA to skip onboarding for returning users
+    const cta = document.querySelector('.btn-primary[href="discovery.html"]');
+    if (cta) { cta.href = 'selection.html'; cta.textContent = 'Go to Quests →'; }
+  }
+})();
+</script>
+
 </body>
 </html>

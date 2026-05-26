@@ -290,6 +290,20 @@
     localStorage.setItem('moyacode_motivation', chosen);
   });
 </script>
+<script type="module">
+import { getSession } from './js/auth.js';
+import { saveProfile, loadProfile } from './js/db.js';
+document.querySelector('a[href]')?.addEventListener('click', async () => {
+  const session = await getSession();
+  if (!session) return;
+  const existing = await loadProfile(session.user.id);
+  await saveProfile(session.user.id, {
+    dream:      existing.dream || localStorage.getItem('moyacode_dream') || '',
+    motivation: localStorage.getItem('moyacode_motivation') || '',
+    goal:       existing.goal || '',
+  });
+});
+</script>
 
 </body>
 </html>

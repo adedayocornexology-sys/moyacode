@@ -282,5 +282,20 @@
 </div>
 
 <script src="script.js"></script>
+<script type="module">
+import { requireAuth } from './js/auth.js';
+import { logAnswerEvent, markCourseComplete, logHandoffEvent } from './js/db.js';
+
+const session = await requireAuth();
+if (session) {
+  const uid = session.user.id;
+  // Expose DB helpers to the non-module script.js via window.MOYADB
+  window.MOYADB = {
+    logAnswerEvent:   (e) => logAnswerEvent(uid, e),
+    markCourseComplete: (classKey, opts) => markCourseComplete(uid, classKey, opts),
+    logHandoffEvent:  (e) => logHandoffEvent(uid, e),
+  };
+}
+</script>
 </body>
 </html>
