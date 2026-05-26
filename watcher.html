@@ -357,7 +357,23 @@
       font-size: 0.7rem;
       color: var(--color-text-muted, #888);
       margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
     }
+
+    .btn-send {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.28rem 0.7rem;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: opacity 0.15s;
+    }
+    .btn-send-wa    { background: color-mix(in srgb, #25D366 18%, transparent); border-color: color-mix(in srgb, #25D366 40%, transparent); color: #25D366; }
+    .btn-send-email { background: color-mix(in srgb, #60A5FA 15%, transparent); border-color: color-mix(in srgb, #60A5FA 35%, transparent); color: #60A5FA; }
+    .btn-send:hover { opacity: 0.75; }
 
     /* ── Toolbar ── */
     .toolbar {
@@ -687,7 +703,34 @@
     rejectBtn.disabled  = true;
 
     const labels = { approved: "Approved ✓", edited: "Approved with edits ✓", rejected: "Rejected ✗" };
-    noteEl.textContent = labels[resolvedAction];
+
+    if (resolvedAction === "rejected") {
+      noteEl.textContent = labels.rejected;
+    } else {
+      const reportLabel = panel === "parent" ? "Parent Report" : "Student Reflection";
+      const text = finalText;
+
+      const waBtn = document.createElement("button");
+      waBtn.className   = "btn-send btn-send-wa";
+      waBtn.textContent = "WhatsApp";
+      waBtn.addEventListener("click", () =>
+        window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank")
+      );
+
+      const emailBtn = document.createElement("button");
+      emailBtn.className   = "btn-send btn-send-email";
+      emailBtn.textContent = "Email";
+      emailBtn.addEventListener("click", () => {
+        window.location.href =
+          "mailto:?subject=" + encodeURIComponent("MoyaCode " + reportLabel) +
+          "&body=" + encodeURIComponent(text);
+      });
+
+      noteEl.innerHTML = "";
+      noteEl.appendChild(document.createTextNode(labels[resolvedAction] + " · "));
+      noteEl.appendChild(waBtn);
+      noteEl.appendChild(emailBtn);
+    }
   }
 
   // ── Data source ───────────────────────────────────────────────────────────────

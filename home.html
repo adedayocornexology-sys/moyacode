@@ -163,6 +163,17 @@
     }
     .browse-link:hover{color:var(--t-100);background:var(--glass-hi)}
 
+    /* ── At-risk re-engagement banner ── */
+    .risk-banner{
+      display:flex;align-items:flex-start;gap:12px;
+      padding:14px 16px;border-radius:16px;
+      background:rgba(252,211,77,0.08);border:1px solid rgba(252,211,77,0.22);
+      animation:fadeUp .4s var(--spring) .03s both;
+    }
+    .risk-icon{font-size:1.3rem;flex-shrink:0;margin-top:1px}
+    .risk-h{font-size:.85rem;font-weight:700;color:var(--c-amber);margin-bottom:3px}
+    .risk-p{font-size:.78rem;color:var(--t-400);line-height:1.5}
+
     /* ── No-progress state ── */
     .empty-card{
       background:var(--glass);backdrop-filter:blur(20px);
@@ -247,6 +258,18 @@ function calcStreak() {
   } catch { return 0; }
 }
 
+function calcDaysSinceLastActive() {
+  try {
+    const log = getSessionLog();
+    if (!log.length) return null;
+    const dates = [...new Set(log.map(e => (e.timestamp || '').slice(0,10)))].filter(Boolean).sort();
+    if (!dates.length) return null;
+    const last = new Date(dates[dates.length - 1]);
+    const today = new Date(); today.setHours(0,0,0,0); last.setHours(0,0,0,0);
+    return Math.round((today - last) / 86400000);
+  } catch { return null; }
+}
+
 function calcStats() {
   const log = getSessionLog();
   const totalXP = COURSE_ORDER.reduce((s, k) => { const p = getProgress(k); return s + (p?.xp || 0); }, 0);
@@ -313,6 +336,22 @@ function render() {
     </div>
   `;
   page.appendChild(greetingEl);
+
+  // ── At-risk banner ──
+  const daysSince = calcDaysSinceLastActive();
+  if (daysSince !== null && daysSince >= 7) {
+    const banner = document.createElement('div');
+    banner.className = 'risk-banner';
+    banner.setAttribute('role', 'alert');
+    banner.innerHTML = `
+      <div class="risk-icon" aria-hidden="true">⚠️</div>
+      <div>
+        <div class="risk-h">Your streak ended ${daysSince} day${daysSince !== 1 ? 's' : ''} ago</div>
+        <div class="risk-p">It's been a while. Even 5 minutes today resets your momentum — pick up from where you left off.</div>
+      </div>
+    `;
+    page.appendChild(banner);
+  }
 
   // ── Current course card ──
   if (allDone) {
