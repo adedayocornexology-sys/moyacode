@@ -486,6 +486,7 @@
 <div class="toolbar">
   <button class="btn-refresh" id="btnRefresh">↻ Refresh</button>
   <span class="generated-at" id="generatedAt"></span>
+  <span class="generated-at" id="dataSource" style="margin-left:auto;opacity:0.5"></span>
 </div>
 
 <div id="emptyState" class="empty-state" hidden>
@@ -559,13 +560,19 @@
 <script type="module">
   import {
     buildActivityRecord,
+    buildActivityRecordFromDB,
     renderParentReport,
     renderStudentReflection,
   } from "./js/watcher.js";
 
   import { examineRecord } from "./js/examiner.js";
+  import { getSession }    from "./js/auth.js";
+  import { loadActivityRecord as loadDBActivity } from "./js/db.js";
 
   const DECISIONS_KEY = "moyacode_watcher_decisions";
+
+  // Cached so handleDecision can read totals without a second fetch
+  let currentRecord = null;
 
   // Original generated texts — used to detect edits
   const originals = { parent: "", student: "" };
@@ -660,16 +667,16 @@
     const resolvedAction = action === "approve" && wasEdited ? "edited" : action === "approve" ? "approved" : "rejected";
     const finalText      = resolvedAction === "rejected" ? null : currentText;
 
-    // Build snapshot from latest record
+    // Snapshot from cached record (avoids a second fetch / localStorage read)
     let snapshot = null;
-    try {
-      const { totals } = buildActivityRecord();
+    if (currentRecord) {
+      const { totals } = currentRecord;
       snapshot = {
         coursesCompleted:  totals.coursesCompleted,
         totalXP:           totals.totalXP,
         questionsAnswered: totals.questionsAnswered,
       };
-    } catch {}
+    }
 
     saveDecision(panel, resolvedAction, originalText, finalText, snapshot);
 
@@ -683,9 +690,31 @@
     noteEl.textContent = labels[resolvedAction];
   }
 
+  // ── Data source ───────────────────────────────────────────────────────────────
+  async function getRecord() {
+    try {
+      const session = await getSession();
+      if (session) {
+        const dbData = await loadDBActivity(session.user.id);
+        document.getElementById("dataSource").textContent = "source: DB ✓";
+        return buildActivityRecordFromDB(dbData);
+      }
+    } catch (e) {
+      console.warn("[watcher] DB fetch failed, falling back to local:", e);
+    }
+    document.getElementById("dataSource").textContent = "source: local (not signed in)";
+    return buildActivityRecord();
+  }
+
   // ── Main render ───────────────────────────────────────────────────────────────
-  function render() {
-    const record = buildActivityRecord();
+  async function render() {
+    document.getElementById("btnRefresh").disabled = true;
+    document.getElementById("dataSource").textContent = "Loading…";
+
+    const record = await getRecord();
+    currentRecord = record;
+
+    document.getElementById("btnRefresh").disabled = false;
     const { totals, courses, generatedAt } = record;
     const COURSE_ORDER = ["jss1", "jss2", "jss3", "ss1", "ss2", "ss3"];
 
@@ -806,7 +835,7 @@
   });
 
   // Refresh
-  document.getElementById("btnRefresh").addEventListener("click", render);
+  document.getElementById("btnRefresh").addEventListener("click", () => render());
 
   // Clear log
   document.getElementById("btnClearLog").addEventListener("click", () => {
@@ -816,7 +845,7 @@
     }
   });
 
-  render();
+  render();          // async — fires and resolves in background
   renderDecisionLog();
 </script>
 

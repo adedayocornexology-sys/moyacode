@@ -95,6 +95,84 @@ export function buildActivityRecord() {
   };
 }
 
+// ─── ACTIVITY RECORD FROM DB ─────────────────────────────────────────────────
+// Builds the same record shape as buildActivityRecord() but from Supabase data.
+// `dbData` is the object returned by db.js loadActivityRecord().
+export function buildActivityRecordFromDB(dbData) {
+  const { profile = {}, progress = [], answers = [], handoffs = [] } = dbData;
+  const now = new Date();
+
+  const student = {
+    dream:      profile.dream      || "",
+    motivation: profile.motivation || "",
+    goal:       profile.goal       || "",
+  };
+
+  const progressMap = {};
+  for (const row of progress) progressMap[row.class_key] = row;
+
+  const courses = {};
+  for (const key of COURSE_ORDER) {
+    const entries    = answers.filter(a => a.class_key === key);
+    const timestamps = entries.map(a => a.created_at).filter(Boolean).sort();
+    const pRow       = progressMap[key];
+
+    const questionsAnswered = entries.length;
+    const correctAnswers    = entries.filter(a => a.is_correct).length;
+    const xpEarned          = entries.reduce((s, a) => s + (a.xp_awarded || 0), 0);
+
+    courses[key] = {
+      title:             COURSE_META[key].title,
+      completed:         pRow?.completed ?? false,
+      lessonSeen:        pRow?.completed ?? false,
+      questionsAnswered,
+      correctAnswers,
+      xpEarned,
+      accuracy:          questionsAnswered ? correctAnswers / questionsAnswered : 0,
+      firstActive:       timestamps[0] || null,
+      lastActive:        timestamps[timestamps.length - 1] || null,
+    };
+  }
+
+  const allTimestamps       = answers.map(a => a.created_at).filter(Boolean).sort();
+  const activeDates         = new Set(allTimestamps.map(t => t.slice(0, 10)));
+  const firstSeen           = allTimestamps[0] || null;
+  const lastSeen            = allTimestamps[allTimestamps.length - 1] || null;
+  const daysSinceLastActive = lastSeen
+    ? Math.floor((now - new Date(lastSeen)) / 86_400_000)
+    : null;
+
+  const questionsAnswered = answers.length;
+  const correctAnswers    = answers.filter(a => a.is_correct).length;
+  const totalXP           = answers.reduce((s, a) => s + (a.xp_awarded || 0), 0);
+
+  return {
+    generatedAt: now.toISOString(),
+    student,
+    courses,
+    handoffs: handoffs.map(h => ({
+      fromCourse: h.from_course,
+      toCourse:   h.to_course,
+      fromAgent:  h.from_agent,
+      toAgent:    h.to_agent,
+      timestamp:  h.created_at,
+    })),
+    totals: {
+      coursesCompleted:  COURSE_ORDER.filter(k => courses[k].completed).length,
+      coursesStarted:    COURSE_ORDER.filter(k => courses[k].questionsAnswered > 0).length,
+      questionsAnswered,
+      correctAnswers,
+      totalXP,
+      overallAccuracy:   questionsAnswered ? correctAnswers / questionsAnswered : 0,
+      activeDays:        activeDates.size,
+      handoffCount:      handoffs.length,
+      firstSeen,
+      lastSeen,
+      daysSinceLastActive,
+    },
+  };
+}
+
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
 function fmtDate(iso) {
   if (!iso) return "—";
