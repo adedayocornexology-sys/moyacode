@@ -103,6 +103,35 @@ export async function signIn(email, password) {
   };
 }
 
+// ── Password reset ────────────────────────────────────────────
+
+/**
+ * Sends a password-reset email. The link redirects to reset-password.html.
+ *
+ * @param {string} email
+ * @returns {Promise<{error: object|null}>}
+ */
+export async function resetPassword(email) {
+  const redirectTo = window.location.href
+    .split('?')[0]
+    .replace(/auth\.html$/, 'reset-password.html');
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+  return { error: error ?? null };
+}
+
+/**
+ * Sets a new password for the currently-authenticated recovery session.
+ * Call this only from reset-password.html after the PASSWORD_RECOVERY event.
+ *
+ * @param {string} newPassword
+ * @returns {Promise<{error: object|null}>}
+ */
+export async function updatePassword(newPassword) {
+  const { error } = await supabase.auth.updateUser({ password: newPassword });
+  return { error: error ?? null };
+}
+
 // ── Sign out ──────────────────────────────────────────────────
 
 /**

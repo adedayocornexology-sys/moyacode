@@ -155,43 +155,120 @@
       I'm here to guide your coding journey — from your first block of Scratch all the way to real JavaScript projects.
     </p>
 
-    <!-- XP chips -->
-    <div class="chips" aria-label="Your stats">
-      <div class="chip"><strong>🔥</strong> 5 day streak</div>
-      <div class="chip"><strong>⚡</strong> 680 XP</div>
-      <div class="chip"><strong>🏆</strong> Builder Level 7</div>
+    <!-- XP chips (populated by JS; hidden until data is ready) -->
+    <div class="chips" aria-label="Your stats" id="statsRow" style="visibility:hidden">
+      <div class="chip" id="chipStreak"><strong>🔥</strong> — streak</div>
+      <div class="chip" id="chipXP"><strong>⚡</strong> — XP</div>
+      <div class="chip" id="chipLevel"><strong>🏆</strong> Level —</div>
     </div>
 
     <!-- CTA -->
     <div class="cta-wrap">
-      <a class="btn-primary" href="discovery.html">
+      <a class="btn-primary" href="placement.html" id="mainCTA">
         Start Your Journey
         <span class="btn-arrow" aria-hidden="true">→</span>
       </a>
     </div>
 
     <!-- Skip for returning users -->
-    <a class="skip-link" href="selection.html" aria-label="Skip onboarding, go straight to quests">
-      Already have an account? Go to Quests →
+    <a class="skip-link" href="auth.html" id="secondaryCTA" aria-label="Sign in to your account">
+      Already have an account? Sign in →
     </a>
 
   </div>
 </main>
 
 <script type="module">
-import { getSession } from './js/auth.js';
-import { migrateLocalStorage } from './js/db.js';
+import { getSession }        from './js/auth.js';
+import { migrateLocalStorage, loadProgress, loadProfile } from './js/db.js';
 
-// If logged in, migrate any existing localStorage data then continue.
-// If not logged in, let them proceed — auth is gated at selection.html.
+const COURSE_ORDER = ['jss1','jss2','jss3','ss1','ss2','ss3'];
+
+function calcXP() {
+  return COURSE_ORDER.reduce((s, k) => {
+    try { const p = JSON.parse(localStorage.getItem('moyacode_progress_' + k) || '{}'); return s + (p.xp || 0); } catch { return s; }
+  }, 0);
+}
+
+function calcStreak() {
+  try {
+    const log = JSON.parse(localStorage.getItem('moyacode_session_log') || '[]');
+    if (!log.length) return 0;
+    const dates = [...new Set(log.map(e => (e.timestamp||'').slice(0,10)))].filter(Boolean).sort();
+    const today = new Date().toISOString().slice(0,10);
+    if (dates[dates.length-1] !== today) return 0;
+    let streak = 1;
+    for (let i = dates.length-1; i > 0; i--) {
+      if ((new Date(dates[i]) - new Date(dates[i-1])) / 86400000 === 1) streak++; else break;
+    }
+    return streak;
+  } catch { return 0; }
+}
+
+function calcLevel(xp) {
+  if (xp < 100)  return 1;
+  if (xp < 250)  return 2;
+  if (xp < 450)  return 3;
+  if (xp < 700)  return 4;
+  if (xp < 1000) return 5;
+  if (xp < 1400) return 6;
+  if (xp < 1900) return 7;
+  return 8;
+}
+
+function showStats() {
+  const xp     = calcXP();
+  const streak = calcStreak();
+  const level  = calcLevel(xp);
+  document.getElementById('chipStreak').innerHTML = `<strong>🔥</strong> ${streak} day streak`;
+  document.getElementById('chipXP').innerHTML     = `<strong>⚡</strong> ${xp} XP`;
+  document.getElementById('chipLevel').innerHTML  = `<strong>🏆</strong> Level ${level}`;
+  document.getElementById('statsRow').style.visibility = 'visible';
+}
+
 (async () => {
   const session = await getSession();
+
   if (session) {
-    await migrateLocalStorage(session.user.id);
-    // Update the CTA to skip onboarding for returning users
-    const cta = document.querySelector('.btn-primary[href="discovery.html"]');
-    if (cta) { cta.href = 'selection.html'; cta.textContent = 'Go to Quests →'; }
+    // Migrate localStorage → Supabase once
+    await migrateLocalStorage(session.user.id).catch(() => {});
+
+    // Pull fresh data from DB to ensure stats are current
+    const [profile, progressRows] = await Promise.all([
+      loadProfile(session.user.id).catch(() => null),
+      loadProgress(session.user.id).catch(() => []),
+    ]);
+
+    if (profile?.dream) localStorage.setItem('moyacode_dream', profile.dream);
+    if (Array.isArray(progressRows)) {
+      progressRows.forEach(row => {
+        if (row.completed) {
+          const key = 'moyacode_progress_' + row.class_key;
+          const ex = JSON.parse(localStorage.getItem(key) || '{}');
+          if (!ex.completed) {
+            localStorage.setItem(key, JSON.stringify({ score: row.score||0, xp: row.xp||0, completed: true, updatedAt: row.updated_at }));
+          }
+        }
+      });
+    }
+
+    // Route returning user with placement → home.html
+    const hasPlacement = !!localStorage.getItem('moyacode_placement_course');
+    if (hasPlacement) {
+      window.location.replace('home.html');
+      return;
+    }
+
+    // Logged in but no placement yet → push to placement
+    const cta = document.getElementById('mainCTA');
+    cta.href = 'placement.html';
+    cta.innerHTML = 'Take Placement Test <span class="btn-arrow" aria-hidden="true">→</span>';
+
+    const sec = document.getElementById('secondaryCTA');
+    sec.style.display = 'none';
   }
+
+  showStats();
 })();
 </script>
 

@@ -528,6 +528,18 @@
       font-weight: 600;
       cursor: pointer;
     }
+
+/* ── Live code editor ── */
+.editor-panel{background:var(--bg-0);border:1px solid var(--glass-border);border-radius:var(--r-lg);overflow:hidden;}
+.editor-bar{background:var(--bg-2);padding:9px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--glass-border);}
+.editor-label{font-family:var(--f-mono);font-size:.7rem;font-weight:700;color:var(--c-teal);text-transform:uppercase;letter-spacing:.08em;}
+.editor-reset-btn{font-family:var(--f-mono);font-size:.65rem;color:var(--t-600);background:var(--glass-border);border:1px solid rgba(255,255,255,0.06);border-radius:5px;padding:3px 8px;cursor:pointer;transition:color 150ms;}
+.editor-reset-btn:hover{color:var(--c-teal);}
+.editor-body{display:grid;grid-template-columns:1fr 1fr;min-height:180px;}
+@media(max-width:600px){.editor-body{grid-template-columns:1fr;grid-template-rows:180px 180px;}}
+.editor-textarea{font-family:var(--f-mono);font-size:.78rem;line-height:1.75;padding:14px 16px;background:var(--bg-0);border:none;border-right:1px solid var(--glass-border);color:var(--t-200);resize:none;min-height:180px;outline:none;tab-size:2;-webkit-text-size-adjust:100%;}
+.editor-preview{background:#fff;border:none;min-height:180px;width:100%;}
+.editor-hint{font-size:.68rem;color:var(--t-600);padding:6px 14px 8px;border-top:1px solid var(--glass-border);}
   </style>
 </head>
 <body>
@@ -756,8 +768,27 @@ function renderContentBlocks(step, stepIndex) {
   if (step.codeBlock) {
     const animClass = 'step-animated-' + Math.min(delayClass++, 5);
     const codeCard = document.createElement('div'); codeCard.className = 'code-card ' + animClass;
-    codeCard.innerHTML = `<div class="code-bar"><div class="code-dots"><div class="code-dot dot-r"></div><div class="code-dot dot-a"></div><div class="code-dot dot-g"></div></div><span class="code-lang">${escHtml(step.codeBlock.label)}</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><div class="code-body" aria-label="${escHtml(step.codeBlock.label)} code example">${step.codeBlock.code}</div>`;
+    codeCard.innerHTML = `<div class="code-bar"><div class="code-dots"><div class="code-dot dot-r"></div><div class="code-dot dot-a"></div><div class="code-dot dot-g"></div></div><span class="code-lang">${escHtml(step.codeBlock.label)}</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><div class="code-body" aria-label="${escHtml(step.codeBlock.label)} code example">${escHtml(step.codeBlock.code)}</div>`;
     container.appendChild(codeCard);
+    if (['jss3','ss1','ss2'].includes(state.classKey)) {
+      const isCss = state.classKey === 'ss2';
+      const raw   = step.codeBlock.code;
+      const panel = document.createElement('div');
+      panel.className = 'editor-panel step-animated-' + Math.min(delayClass++, 5);
+      panel.innerHTML = '<div class="editor-bar"><span class="editor-label">✏️ Try it yourself</span><button class="editor-reset-btn" type="button">Reset</button></div><div class="editor-body"><textarea class="editor-textarea" spellcheck="false" autocapitalize="off" autocorrect="off" autocomplete="off"></textarea><iframe class="editor-preview" sandbox="allow-scripts" title="Live preview"></iframe></div><div class="editor-hint">Edit on the left · see it live on the right</div>';
+      const ta = panel.querySelector('.editor-textarea');
+      const fr = panel.querySelector('.editor-preview');
+      ta.value = raw;
+      function buildDoc(code) {
+        if (isCss) return '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>*{box-sizing:border-box}body{font-family:Arial,sans-serif;padding:16px;margin:0;background:#fff}' + code + '</style></head><body><h1>Hello, World!</h1><p>This is a paragraph of text.</p><a href="#">A link</a>&nbsp;&nbsp;<button>A button</button><ul><li>First item</li><li>Second item</li></ul></body></html>';
+        return '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="background:#fff;font-family:Arial,sans-serif;padding:16px;margin:0">' + code + '</body></html>';
+      }
+      fr.srcdoc = buildDoc(raw);
+      let dt;
+      ta.addEventListener('input', () => { clearTimeout(dt); dt = setTimeout(() => { fr.srcdoc = buildDoc(ta.value); }, 350); });
+      panel.querySelector('.editor-reset-btn').addEventListener('click', () => { ta.value = raw; fr.srcdoc = buildDoc(raw); });
+      container.appendChild(panel);
+    }
   }
 }
 function goToStep(index) { if (index < 0 || index >= state.totalSteps) return; state.stepIndex = index; renderStep(index); }

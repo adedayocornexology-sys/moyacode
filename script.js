@@ -99,6 +99,8 @@ let state = {
   selectedAnswer:       null,
   feedbackState:        "idle",
   phase:                "home",
+  hintUsed:             false,
+  hintEliminated:       null,
 };
 let autoDismissTimer = null;
 
@@ -134,7 +136,12 @@ function readProfile() {
 }
 
 function saveProgress(key) {
-  localStorage.setItem(`moyacode_progress_${key}`, "complete");
+  localStorage.setItem(`moyacode_progress_${key}`, JSON.stringify({
+    score:     state.score,
+    xp:        state.xp,
+    completed: true,
+    updatedAt: new Date().toISOString(),
+  }));
   window.MOYADB?.markCourseComplete(key, { score: state.score, xp: state.xp });
 }
 
@@ -203,6 +210,7 @@ const DOM = {
   teacherComment:el("teacher-comment"),
   xpEarned:      el("xp-earned"),
   continueBtn:   el("continue-btn"),
+  hintBtn:       el("hint-btn"),
   // end screen
   endBadge:      el("end-badge"),
   endEmoji:      el("end-emoji"),
@@ -270,10 +278,14 @@ function renderGame() {
     DOM.questionText.textContent = q.question;
   }
 
+  state.hintUsed       = false;
+  state.hintEliminated = null;
+
   setText(DOM.assemblyArea, "");
   renderHearts();
   renderOptions();
   updateCheckBtn();
+  updateHintBtn();
 }
 
 // ─── HEARTS ──────────────────────────────────────────────────────────────────
@@ -299,17 +311,19 @@ function renderOptions() {
   DOM.optionsGrid.innerHTML = "";
 
   q.options.forEach((opt, i) => {
-    const isSelected = state.selectedAnswer === i;
-    const isCorrect  = locked && normalize(opt) === normalize(q.correct_answer);
-    const isWrong    = locked && isSelected && normalize(opt) !== normalize(q.correct_answer);
-    const isLocked   = locked && !isSelected && !isCorrect;
+    const isSelected   = state.selectedAnswer === i;
+    const isCorrect    = locked && normalize(opt) === normalize(q.correct_answer);
+    const isWrong      = locked && isSelected && normalize(opt) !== normalize(q.correct_answer);
+    const isLocked     = locked && !isSelected && !isCorrect;
+    const isEliminated = !locked && state.hintEliminated === i;
 
     const btn = document.createElement("button");
     btn.className = "option-btn"
-      + (isSelected && !locked ? " selected" : "")
-      + (isCorrect             ? " correct"  : "")
-      + (isWrong               ? " wrong"    : "")
-      + (isLocked              ? " locked"   : "");
+      + (isSelected && !locked ? " selected"   : "")
+      + (isCorrect             ? " correct"    : "")
+      + (isWrong               ? " wrong"      : "")
+      + (isLocked              ? " locked"     : "")
+      + (isEliminated          ? " eliminated" : "");
 
     const letter = document.createElement("span");
     letter.className = "option-letter";
@@ -329,7 +343,7 @@ function renderOptions() {
       btn.appendChild(icon);
     }
 
-    if (!locked) {
+    if (!locked && !isEliminated) {
       btn.addEventListener("click", () => {
         state.selectedAnswer = i;
         setText(DOM.assemblyArea, opt);
@@ -347,6 +361,36 @@ function updateCheckBtn() {
   const on = state.selectedAnswer !== null && state.feedbackState === "idle";
   DOM.checkBtn.disabled = !on;
   DOM.checkBtn.classList.toggle("active", on);
+}
+
+// ─── HINT ─────────────────────────────────────────────────────────────────────
+function updateHintBtn() {
+  if (!DOM.hintBtn) return;
+  const disabled = state.hintUsed || state.feedbackState !== "idle";
+  DOM.hintBtn.disabled = disabled;
+  DOM.hintBtn.classList.toggle("used", state.hintUsed);
+  DOM.hintBtn.textContent = state.hintUsed ? "Hint used" : "💡 Hint";
+}
+
+function handleHint() {
+  if (state.hintUsed || state.feedbackState !== "idle") return;
+  const q = state.activeQuestions[state.currentQuestionIndex];
+
+  // Indices of wrong options, excluding whatever the student already selected
+  const candidates = q.options
+    .map((opt, i) => ({ opt, i }))
+    .filter(({ opt, i }) =>
+      normalize(opt) !== normalize(q.correct_answer) && i !== state.selectedAnswer
+    )
+    .map(({ i }) => i);
+
+  if (!candidates.length) return;
+
+  state.hintEliminated = candidates[Math.floor(Math.random() * candidates.length)];
+  state.hintUsed = true;
+
+  renderOptions();
+  updateHintBtn();
 }
 
 // ─── CHECK ANSWER ─────────────────────────────────────────────────────────────
@@ -394,6 +438,7 @@ function showFeedback(isCorrect, q) {
 
   setText(DOM.continueBtn, isCorrect ? "Next Question →" : "Try Again");
   DOM.drawer.classList.add("open");
+  updateHintBtn();
 
   clearTimeout(autoDismissTimer);
   autoDismissTimer = setTimeout(handleContinue, FEEDBACK_DELAY);
@@ -441,7 +486,7 @@ function showEndScreen() {
     saveProgress(classKey);
     if (nextKey) logHandoff(classKey, nextKey);
   }
-  renderConfetti(passed);
+  renderConfetti(passed, passed && isLast);
 
   if (state.phase === "gameover") {
     setText(DOM.endBadge, "Quest Debrief");
@@ -513,19 +558,20 @@ function buildEndHighlights({ quiz, nextKey, profile, livesLeft, passed, isLast 
   return cards.join("");
 }
 
-function renderConfetti(active) {
+function renderConfetti(active, isGrad) {
   if (!DOM.confettiBurst) return;
   DOM.confettiBurst.innerHTML = "";
   if (!active) return;
-
-  const colors = ["#00E5A0", "#60A5FA", "#FCD34D", "#FB7185", "#A78BFA"];
-  for (let i = 0; i < 18; i++) {
+  const count  = isGrad ? 42 : 18;
+  const colors = ["#00E5A0","#60A5FA","#FCD34D","#FB7185","#A78BFA","#34D399"];
+  for (let i = 0; i < count; i++) {
     const piece = document.createElement("span");
     piece.className = "confetti";
     piece.style.left = `${Math.random() * 100}%`;
     piece.style.background = colors[i % colors.length];
-    piece.style.animationDelay = `${Math.random() * 0.35}s`;
-    piece.style.setProperty("--drift", `${(Math.random() - 0.5) * 90}px`);
+    piece.style.animationDelay = `${Math.random() * (isGrad ? 0.7 : 0.35)}s`;
+    piece.style.setProperty("--drift", `${(Math.random() - 0.5) * (isGrad ? 130 : 90)}px`);
+    if (isGrad) piece.style.animationDuration = `${1800 + Math.random() * 1200}ms`;
     DOM.confettiBurst.appendChild(piece);
   }
 }
@@ -547,20 +593,42 @@ function renderActionButtons(passed, classKey, nextKey, isLast) {
   }
 
   if (passed && isLast) {
-    const a = document.createElement("a");
-    a.className = "btn-primary end-next-btn";
-    a.href = "bootcamp.html";
-    a.textContent = "Upgrade to Pro — Get a Real Tutor 🚀";
-    wrap.appendChild(a);
+    const today   = new Date();
+    const dateStr = today.toLocaleDateString("en-NG", { day:"numeric", month:"long", year:"numeric" });
+    const cert = document.createElement("div");
+    cert.className = "cert-card";
+    cert.id = "certificate";
+    cert.innerHTML = `
+      <span class="cert-seal">🎓</span>
+      <div class="cert-org">MoyaCode Academy</div>
+      <div class="cert-presents">This certifies that</div>
+      <input class="cert-name-input" id="cert-name" placeholder="Type your name here" maxlength="40" />
+      <div class="cert-name-hint">Tap to add your name before sharing</div>
+      <div class="cert-completed">has successfully completed the</div>
+      <div class="cert-program">Full Stack Developer Curriculum</div>
+      <div class="cert-courses">Scratch · HTML · CSS · JavaScript</div>
+      <div class="cert-divider"></div>
+      <div class="cert-footer">
+        <div class="cert-sig">MoyaCode Faculty</div>
+        <div class="cert-date">${escapeHTML(dateStr)}</div>
+      </div>
+    `;
+    wrap.appendChild(cert);
   }
 
   const share = document.createElement("button");
   share.className = "btn-outline end-share-btn";
-  share.textContent = "📲 Share Result on WhatsApp";
+  share.textContent = passed && isLast ? "🎓 Share Certificate on WhatsApp" : "📲 Share Result on WhatsApp";
   share.addEventListener("click", () => {
     const quiz  = QUIZ_BANKS[classKey];
     const total = state.activeQuestions.length;
-    const msg   = `${passed?"🏆":"💪"} I ${passed?"passed":"attempted"} the ${quiz.title} quest on MoyaCode — ${state.score}/${total} (${state.xp} XP)!\n\nFree coding platform for Nigerian secondary school students.\n🔗 https://adedayocornexology-sys.github.io/moyacode/`;
+    let msg;
+    if (passed && isLast) {
+      const name = (document.getElementById("cert-name")?.value.trim()) || "A MoyaCode student";
+      msg = `🎓 ${name} just graduated from MoyaCode!\n\nI completed the full curriculum:\n✅ Scratch (JSS1–JSS2)\n✅ HTML (JSS3–SS1)\n✅ CSS (SS2)\n✅ JavaScript (SS3)\n\nFree coding education for Nigerian secondary school students.\n🔗 https://adedayocornexology-sys.github.io/moyacode/`;
+    } else {
+      msg = `${passed?"🏆":"💪"} I ${passed?"passed":"attempted"} the ${quiz.title} quest on MoyaCode — ${state.score}/${total} (${state.xp} XP)!\n\nFree coding platform for Nigerian secondary school students.\n🔗 https://adedayocornexology-sys.github.io/moyacode/`;
+    }
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
   });
   wrap.appendChild(share);
@@ -586,6 +654,7 @@ if (DOM.restartBtn)  DOM.restartBtn.addEventListener("click",  goHome);
 if (DOM.backBtn)     DOM.backBtn.addEventListener("click",     goHome);
 if (DOM.closeBtn)    DOM.closeBtn.addEventListener("click",    goHome);
 if (DOM.skipBtn)     DOM.skipBtn.addEventListener("click",     handleSkip);
+if (DOM.hintBtn)     DOM.hintBtn.addEventListener("click",     handleHint);
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 function initQuizPage() {

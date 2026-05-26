@@ -357,7 +357,23 @@
       font-size: 0.7rem;
       color: var(--color-text-muted, #888);
       margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
     }
+
+    .btn-send {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.28rem 0.7rem;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: opacity 0.15s;
+    }
+    .btn-send-wa    { background: color-mix(in srgb, #25D366 18%, transparent); border-color: color-mix(in srgb, #25D366 40%, transparent); color: #25D366; }
+    .btn-send-email { background: color-mix(in srgb, #60A5FA 15%, transparent); border-color: color-mix(in srgb, #60A5FA 35%, transparent); color: #60A5FA; }
+    .btn-send:hover { opacity: 0.75; }
 
     /* ── Toolbar ── */
     .toolbar {
@@ -474,6 +490,26 @@
       color: var(--color-text-muted, #666);
       text-align: right;
     }
+
+    /* ── Parent alert ── */
+    .parent-alert-section{max-width:960px;margin:0 auto 2rem;}
+    .parent-alert-card{
+      background:color-mix(in srgb,#ef5350 6%,var(--color-surface,#1a1a24));
+      border:1px solid color-mix(in srgb,#ef5350 30%,transparent);
+      border-radius:var(--radius-md,10px);
+      padding:1rem;
+      display:flex;
+      flex-direction:column;
+      gap:.75rem;
+    }
+    .alert-header{display:flex;align-items:flex-start;gap:.65rem;}
+    .alert-icon{font-size:1.25rem;flex-shrink:0;margin-top:1px;}
+    .alert-h{font-size:.9rem;font-weight:700;color:#ef7070;margin-bottom:3px;}
+    .alert-sub{font-size:.78rem;color:var(--color-text-muted,#888);line-height:1.5;}
+    .alert-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--color-text-muted,#888);display:block;margin-bottom:.35rem;}
+    .alert-input{width:100%;padding:.5rem .75rem;background:var(--color-bg,#0f0f14);border:1px solid var(--color-border,#2a2a38);border-radius:6px;color:var(--color-text,#e8e8f0);font-family:inherit;font-size:.85rem;outline:none;transition:border-color .15s;}
+    .alert-input:focus{border-color:#ef7070;}
+    .alert-actions{display:flex;gap:.5rem;flex-wrap:wrap;}
   </style>
 </head>
 <body>
@@ -511,6 +547,28 @@
     </div>
     <p class="examiner-recommendation" id="examinerRecommendation"></p>
     <div class="examiner-grid" id="examinerGrid"></div>
+  </div>
+
+  <!-- Parent alert (shown when at-risk) -->
+  <div class="parent-alert-section" id="parentAlertSection" hidden>
+    <div class="section-heading" style="margin-bottom:.75rem">Parent alert</div>
+    <div class="parent-alert-card">
+      <div class="alert-header">
+        <span class="alert-icon" aria-hidden="true">⚠️</span>
+        <div>
+          <div class="alert-h">Student is at risk</div>
+          <div class="alert-sub" id="alertSubText">This student has been inactive — consider alerting the parent.</div>
+        </div>
+      </div>
+      <div>
+        <label class="alert-label" for="parentContact">Parent WhatsApp number or email</label>
+        <input class="alert-input" id="parentContact" type="text" placeholder="+234 801 234 5678 or parent@example.com" />
+      </div>
+      <div class="alert-actions">
+        <button class="btn-send btn-send-wa" id="alertSendWa">WhatsApp parent</button>
+        <button class="btn-send btn-send-email" id="alertSendEmail">Email parent</button>
+      </div>
+    </div>
   </div>
 
   <div class="summaries">
@@ -687,7 +745,34 @@
     rejectBtn.disabled  = true;
 
     const labels = { approved: "Approved ✓", edited: "Approved with edits ✓", rejected: "Rejected ✗" };
-    noteEl.textContent = labels[resolvedAction];
+
+    if (resolvedAction === "rejected") {
+      noteEl.textContent = labels.rejected;
+    } else {
+      const reportLabel = panel === "parent" ? "Parent Report" : "Student Reflection";
+      const text = finalText;
+
+      const waBtn = document.createElement("button");
+      waBtn.className   = "btn-send btn-send-wa";
+      waBtn.textContent = "WhatsApp";
+      waBtn.addEventListener("click", () =>
+        window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank")
+      );
+
+      const emailBtn = document.createElement("button");
+      emailBtn.className   = "btn-send btn-send-email";
+      emailBtn.textContent = "Email";
+      emailBtn.addEventListener("click", () => {
+        window.location.href =
+          "mailto:?subject=" + encodeURIComponent("MoyaCode " + reportLabel) +
+          "&body=" + encodeURIComponent(text);
+      });
+
+      noteEl.innerHTML = "";
+      noteEl.appendChild(document.createTextNode(labels[resolvedAction] + " · "));
+      noteEl.appendChild(waBtn);
+      noteEl.appendChild(emailBtn);
+    }
   }
 
   // ── Data source ───────────────────────────────────────────────────────────────
@@ -779,6 +864,46 @@
     standingEl.className   = `examiner-standing standing-${overall.standing}`;
 
     document.getElementById("atRiskFlag").hidden = !overall.atRisk;
+
+    // ── Parent alert ──────────────────────────────────────────────────────────
+    const alertSection = document.getElementById("parentAlertSection");
+    alertSection.hidden = !overall.atRisk;
+    if (overall.atRisk) {
+      const days = totals.daysSinceLastActive;
+      const daysText = (days === null || days === undefined)
+        ? "for an unknown period"
+        : `for ${days} day${days !== 1 ? "s" : ""}`;
+      document.getElementById("alertSubText").textContent =
+        `Last active ${daysText}. Reaching out now helps prevent dropout.`;
+
+      const contactInput = document.getElementById("parentContact");
+      contactInput.value = localStorage.getItem("moyacode_parent_contact") || "";
+
+      contactInput.addEventListener("change", () => {
+        localStorage.setItem("moyacode_parent_contact", contactInput.value.trim());
+      }, { once: false });
+
+      document.getElementById("alertSendWa").onclick = () => {
+        const raw = contactInput.value.trim();
+        if (raw) localStorage.setItem("moyacode_parent_contact", raw);
+        const phone = raw.replace(/\D/g, "");
+        const msg = `Hello! I'm contacting you from MoyaCode regarding your child's coding progress.\n\nYour child has not been active on MoyaCode ${daysText}. Regular practice is essential at this stage.\n\nPlease encourage them to log in today — even 10 minutes helps keep the streak alive.\n\nThank you,\nMoyaCode Team`;
+        const url = phone
+          ? `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`
+          : `https://wa.me/?text=${encodeURIComponent(msg)}`;
+        window.open(url, "_blank");
+      };
+
+      document.getElementById("alertSendEmail").onclick = () => {
+        const raw = contactInput.value.trim();
+        if (raw) localStorage.setItem("moyacode_parent_contact", raw);
+        const subject = "MoyaCode: Your child needs a nudge";
+        const body = `Hello,\n\nI am reaching out from MoyaCode about your child's coding education.\n\nYour child has been inactive ${daysText}. Consistent daily practice is what builds real programming skills.\n\nPlease encourage them to log in and continue — they were making great progress!\n\nBest regards,\nMoyaCode Team`;
+        const emailTo = raw.includes("@") ? raw : "";
+        window.location.href = `mailto:${emailTo}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      };
+    }
+
     document.getElementById("examinerRecommendation").textContent = overall.recommendation;
 
     document.getElementById("examinerGrid").innerHTML = COURSE_ORDER.map(key => {

@@ -302,6 +302,21 @@
     /* ── Panel visibility ── */
     .panel { display: none; }
     .panel.active { display: block; }
+
+    /* ── Inline link button ── */
+    .link-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      color: var(--c-teal);
+      font-family: var(--f-body);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 150ms;
+    }
+    .link-btn:hover { opacity: 0.75; }
   </style>
 </head>
 <body>
@@ -341,6 +356,9 @@
         </button>
       </form>
       <div class="msg" id="msg-signin" role="alert" aria-live="polite"></div>
+      <p style="text-align:center;margin-top:14px">
+        <button class="link-btn" id="open-reset" type="button">Forgot password?</button>
+      </p>
     </div>
 
     <!-- Sign Up panel -->
@@ -365,6 +383,27 @@
       <div class="msg" id="msg-signup" role="alert" aria-live="polite"></div>
     </div>
 
+    <!-- Reset Password panel (hidden until "Forgot password?" clicked) -->
+    <div class="panel" id="panel-reset" role="tabpanel">
+      <p class="form-title">Reset password</p>
+      <p class="form-sub">Enter your email and we'll send a reset link.</p>
+
+      <form id="form-reset" novalidate>
+        <div class="field">
+          <label for="reset-email">Email</label>
+          <input type="email" id="reset-email" name="email" placeholder="you@example.com" autocomplete="email" required />
+        </div>
+        <button type="submit" class="btn-submit" id="btn-reset">
+          <span class="btn-label">Send reset link</span>
+          <span class="spinner" aria-hidden="true"></span>
+        </button>
+      </form>
+      <div class="msg" id="msg-reset" role="alert" aria-live="polite"></div>
+      <p style="text-align:center;margin-top:14px">
+        <button class="link-btn" id="back-to-signin" type="button">← Back to Sign In</button>
+      </p>
+    </div>
+
   </div><!-- /.card -->
 
   <p class="auth-footer">
@@ -373,7 +412,7 @@
   </p>
 
   <script type="module">
-    import { signIn, signUp } from './js/auth.js';
+    import { signIn, signUp, resetPassword } from './js/auth.js';
     import { migrateLocalStorage } from './js/db.js';
 
     // ── Helpers ──────────────────────────────────────────────────
@@ -426,8 +465,53 @@
       if (firstInput) firstInput.focus();
     }
 
+    const panelReset  = document.getElementById('panel-reset');
+
+    function activateReset() {
+      panelSignin.classList.remove('active');
+      panelSignup.classList.remove('active');
+      panelReset.classList.add('active');
+      tabSignin.classList.remove('active');
+      tabSignup.classList.remove('active');
+      tabSignin.setAttribute('aria-selected', 'false');
+      tabSignup.setAttribute('aria-selected', 'false');
+      document.getElementById('reset-email').focus();
+    }
+
     tabSignin.addEventListener('click', () => activateTab('signin'));
     tabSignup.addEventListener('click', () => activateTab('signup'));
+
+    document.getElementById('open-reset').addEventListener('click', activateReset);
+    document.getElementById('back-to-signin').addEventListener('click', () => activateTab('signin'));
+
+    // ── Password Reset ────────────────────────────────────────────
+
+    const formReset = document.getElementById('form-reset');
+    const btnReset  = document.getElementById('btn-reset');
+    const msgReset  = document.getElementById('msg-reset');
+
+    formReset.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearMsg(msgReset);
+
+      const email = document.getElementById('reset-email').value.trim();
+      if (!email) {
+        showMsg(msgReset, 'Please enter your email address.', 'error');
+        return;
+      }
+
+      setLoading(btnReset, true);
+      const { error } = await resetPassword(email);
+      setLoading(btnReset, false);
+
+      if (error) {
+        showMsg(msgReset, error.message ?? 'Could not send reset email. Please try again.', 'error');
+        return;
+      }
+
+      showMsg(msgReset, 'Reset link sent — check your inbox. You can close this page.', 'info');
+      btnReset.disabled = true;
+    });
 
     // ── Sign In ───────────────────────────────────────────────────
 
