@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Watcher — Activity Review</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body, system-ui, sans-serif);
+      background: var(--color-bg, #0f0f14);
+      color: var(--color-text, #e8e8f0);
+      min-height: 100dvh;
+      padding: 1.5rem 1rem 4rem;
+    }
+
+    .page-header {
+      max-width: 960px;
+      margin: 0 auto 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .page-header h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .page-header .badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-primary, #7c6fea);
+      background: color-mix(in srgb, var(--color-primary, #7c6fea) 12%, transparent);
+      border: 1px solid color-mix(in srgb, var(--color-primary, #7c6fea) 30%, transparent);
+      padding: 0.25rem 0.6rem;
+      border-radius: 99px;
+    }
+
+    /* ── Totals bar ── */
+    .totals-bar {
+      max-width: 960px;
+      margin: 0 auto 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .stat-chip {
+      background: var(--color-surface, #1a1a24);
+      border: 1px solid var(--color-border, #2a2a38);
+      border-radius: var(--radius-md, 10px);
+      padding: 0.6rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      min-width: 120px;
+    }
+
+    .stat-chip .label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--color-text-muted, #888);
+    }
+
+    .stat-chip .value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--color-text, #e8e8f0);
+    }
+
+    /* ── Courses grid ── */
+    .courses-section {
+      max-width: 960px;
+      margin: 0 auto 2rem;
+    }
+
+    .section-heading {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-text-muted, #888);
+      margin-bottom: 0.75rem;
+    }
+
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .course-card {
+      background: var(--color-surface, #1a1a24);
+      border: 1px solid var(--color-border, #2a2a38);
+      border-radius: var(--radius-md, 10px);
+      padding: 0.85rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .course-card.completed  { border-color: color-mix(in srgb, var(--color-correct, #4caf7d) 40%, transparent); }
+    .course-card.in-progress { border-color: color-mix(in srgb, var(--color-primary, #7c6fea) 40%, transparent); }
+
+    .course-card .course-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .course-card .course-title .status-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: var(--color-text-muted, #555);
+    }
+
+    .course-card.completed .status-dot   { background: var(--color-correct, #4caf7d); }
+    .course-card.in-progress .status-dot { background: var(--color-primary, #7c6fea); }
+
+    .course-card .course-stats {
+      font-size: 0.75rem;
+      color: var(--color-text-muted, #888);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    /* ── Examiner section ── */
+    .examiner-section {
+      max-width: 960px;
+      margin: 0 auto 2rem;
+    }
+
+    .examiner-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .examiner-standing {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.2rem 0.65rem;
+      border-radius: 99px;
+    }
+
+    .standing-not-started { background: color-mix(in srgb, #888 15%, transparent); color: #888; }
+    .standing-early       { background: color-mix(in srgb, #7c6fea 15%, transparent); color: #7c6fea; }
+    .standing-progressing { background: color-mix(in srgb, #ffc107 15%, transparent); color: #ffc107; }
+    .standing-advanced    { background: color-mix(in srgb, #4caf7d 15%, transparent); color: #4caf7d; }
+    .standing-graduate    { background: color-mix(in srgb, #4caf7d 25%, transparent); color: #4caf7d; }
+
+    .at-risk-flag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #ef7070;
+      background: color-mix(in srgb, #ef5350 12%, transparent);
+      border: 1px solid color-mix(in srgb, #ef5350 30%, transparent);
+      padding: 0.2rem 0.6rem;
+      border-radius: 99px;
+    }
+
+    .examiner-recommendation {
+      font-size: 0.8rem;
+      color: var(--color-text-muted, #aaa);
+      line-height: 1.5;
+      margin-bottom: 0.85rem;
+    }
+
+    .examiner-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 0.65rem;
+    }
+
+    .verdict-card {
+      background: var(--color-surface, #1a1a24);
+      border: 1px solid var(--color-border, #2a2a38);
+      border-radius: var(--radius-md, 10px);
+      padding: 0.75rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .verdict-card.v-pass       { border-color: color-mix(in srgb, #4caf7d 35%, transparent); }
+    .verdict-card.v-borderline { border-color: color-mix(in srgb, #ffc107 35%, transparent); }
+    .verdict-card.v-fail       { border-color: color-mix(in srgb, #ef5350 30%, transparent); }
+    .verdict-card.v-incomplete { border-color: color-mix(in srgb, #ef5350 20%, transparent); }
+
+    .verdict-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .verdict-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    .grade-chip {
+      font-size: 0.72rem;
+      font-weight: 800;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .grade-A { background: color-mix(in srgb, #4caf7d 25%, transparent); color: #4caf7d; }
+    .grade-B { background: color-mix(in srgb, #4caf7d 15%, transparent); color: #8bc34a; }
+    .grade-C { background: color-mix(in srgb, #ffc107 18%, transparent); color: #ffc107; }
+    .grade-D { background: color-mix(in srgb, #ef5350 15%, transparent); color: #ef7070; }
+    .grade-F { background: color-mix(in srgb, #ef5350 18%, transparent); color: #ef5350; }
+    .grade-null { background: color-mix(in srgb, #888 12%, transparent); color: #666; }
+
+    .verdict-notes {
+      font-size: 0.72rem;
+      color: var(--color-text-muted, #888);
+      line-height: 1.4;
+    }
+
+    /* ── Summary panels ── */
+    .summaries {
+      max-width: 960px;
+      margin: 0 auto 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 640px) {
+      .summaries { grid-template-columns: 1fr; }
+    }
+
+    .summary-panel {
+      background: var(--color-surface, #1a1a24);
+      border: 1px solid var(--color-border, #2a2a38);
+      border-radius: var(--radius-md, 10px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .summary-panel.decision-approved { border-color: color-mix(in srgb, var(--color-correct, #4caf7d) 60%, transparent); }
+    .summary-panel.decision-rejected { border-color: color-mix(in srgb, #ef5350 60%, transparent); opacity: 0.6; }
+
+    .summary-panel-header {
+      padding: 0.85rem 1rem 0.7rem;
+      border-bottom: 1px solid var(--color-border, #2a2a38);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .summary-panel-header h2 {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .summary-panel-header .header-actions {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+    }
+
+    .btn-copy {
+      font-size: 0.72rem;
+      font-weight: 600;
+      background: none;
+      border: 1px solid var(--color-border, #2a2a38);
+      color: var(--color-text-muted, #888);
+      padding: 0.3rem 0.7rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .btn-copy:hover  { color: var(--color-text, #e8e8f0); border-color: var(--color-text, #e8e8f0); }
+    .btn-copy.copied { color: var(--color-correct, #4caf7d); border-color: var(--color-correct, #4caf7d); }
+
+    .summary-text {
+      padding: 1rem;
+      font-family: monospace;
+      font-size: 0.78rem;
+      line-height: 1.65;
+      flex: 1;
+      resize: none;
+      background: transparent;
+      border: none;
+      color: var(--color-text, #e8e8f0);
+      outline: none;
+      min-height: 320px;
+    }
+
+    /* ── Panel footer (approve/reject) ── */
+    .summary-panel-footer {
+      padding: 0.65rem 1rem;
+      border-top: 1px solid var(--color-border, #2a2a38);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-approve, .btn-reject {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.35rem 0.9rem;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: opacity 0.15s;
+    }
+
+    .btn-approve {
+      background: color-mix(in srgb, var(--color-correct, #4caf7d) 18%, transparent);
+      border-color: color-mix(in srgb, var(--color-correct, #4caf7d) 40%, transparent);
+      color: var(--color-correct, #4caf7d);
+    }
+
+    .btn-reject {
+      background: color-mix(in srgb, #ef5350 12%, transparent);
+      border-color: color-mix(in srgb, #ef5350 30%, transparent);
+      color: #ef7070;
+    }
+
+    .btn-approve:hover, .btn-reject:hover { opacity: 0.75; }
+    .btn-approve:disabled, .btn-reject:disabled { opacity: 0.35; cursor: default; }
+
+    .decision-note {
+      font-size: 0.7rem;
+      color: var(--color-text-muted, #888);
+      margin-left: auto;
+    }
+
+    /* ── Toolbar ── */
+    .toolbar {
+      max-width: 960px;
+      margin: 0 auto 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-refresh {
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: var(--color-primary, #7c6fea);
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1.1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .btn-refresh:hover { opacity: 0.85; }
+
+    .generated-at {
+      font-size: 0.72rem;
+      color: var(--color-text-muted, #888);
+    }
+
+    /* ── Empty state ── */
+    .empty-state {
+      max-width: 960px;
+      margin: 3rem auto;
+      text-align: center;
+      color: var(--color-text-muted, #888);
+    }
+
+    .empty-state p { font-size: 0.9rem; line-height: 1.6; }
+
+    /* ── Decision log ── */
+    .decision-log-section {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .decision-log-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+
+    .btn-clear-log {
+      font-size: 0.68rem;
+      font-weight: 600;
+      background: none;
+      border: 1px solid var(--color-border, #2a2a38);
+      color: var(--color-text-muted, #888);
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn-clear-log:hover { color: #ef7070; border-color: #ef5350; }
+
+    .decision-log-empty {
+      font-size: 0.78rem;
+      color: var(--color-text-muted, #555);
+      padding: 1rem 0;
+    }
+
+    .decision-entries {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .decision-entry {
+      background: var(--color-surface, #1a1a24);
+      border: 1px solid var(--color-border, #2a2a38);
+      border-radius: var(--radius-md, 10px);
+      padding: 0.75rem 1rem;
+      display: grid;
+      grid-template-columns: auto auto 1fr auto;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .decision-entry .entry-action {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .entry-action.approved { background: color-mix(in srgb, var(--color-correct, #4caf7d) 18%, transparent); color: var(--color-correct, #4caf7d); }
+    .entry-action.edited   { background: color-mix(in srgb, #ffc107 15%, transparent); color: #ffc107; }
+    .entry-action.rejected { background: color-mix(in srgb, #ef5350 12%, transparent); color: #ef7070; }
+
+    .decision-entry .entry-target {
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .decision-entry .entry-meta {
+      font-size: 0.72rem;
+      color: var(--color-text-muted, #888);
+    }
+
+    .decision-entry .entry-time {
+      font-size: 0.68rem;
+      color: var(--color-text-muted, #666);
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+
+<header class="page-header">
+  <h1>Watcher <span style="font-weight:400;opacity:0.4">·</span> Activity Review</h1>
+  <span class="badge">Admin</span>
+</header>
+
+<div class="toolbar">
+  <button class="btn-refresh" id="btnRefresh">↻ Refresh</button>
+  <span class="generated-at" id="generatedAt"></span>
+  <span class="generated-at" id="dataSource" style="margin-left:auto;opacity:0.5"></span>
+</div>
+
+<div id="emptyState" class="empty-state" hidden>
+  <p>No activity logged yet.<br>
+  Have a student complete at least one quiz question, then refresh.</p>
+</div>
+
+<div id="content">
+  <div class="totals-bar" id="totalsBar"></div>
+
+  <div class="courses-section">
+    <div class="section-heading">Courses</div>
+    <div class="courses-grid" id="coursesGrid"></div>
+  </div>
+
+  <!-- Examiner -->
+  <div class="examiner-section">
+    <div class="examiner-header">
+      <div class="section-heading" style="margin-bottom:0">Examiner verdict</div>
+      <span class="examiner-standing" id="standingChip"></span>
+      <span class="at-risk-flag" id="atRiskFlag" hidden>At risk</span>
+    </div>
+    <p class="examiner-recommendation" id="examinerRecommendation"></p>
+    <div class="examiner-grid" id="examinerGrid"></div>
+  </div>
+
+  <div class="summaries">
+    <!-- Parent Report -->
+    <div class="summary-panel" id="panelParent">
+      <div class="summary-panel-header">
+        <h2>Parent Report</h2>
+        <div class="header-actions">
+          <button class="btn-copy" data-target="parentText">Copy</button>
+        </div>
+      </div>
+      <textarea class="summary-text" id="parentText" spellcheck="false"></textarea>
+      <div class="summary-panel-footer">
+        <button class="btn-approve" data-panel="parent">Approve</button>
+        <button class="btn-reject"  data-panel="parent">Reject</button>
+        <span class="decision-note" id="noteParent"></span>
+      </div>
+    </div>
+
+    <!-- Student Reflection -->
+    <div class="summary-panel" id="panelStudent">
+      <div class="summary-panel-header">
+        <h2>Student Reflection</h2>
+        <div class="header-actions">
+          <button class="btn-copy" data-target="studentText">Copy</button>
+        </div>
+      </div>
+      <textarea class="summary-text" id="studentText" spellcheck="false"></textarea>
+      <div class="summary-panel-footer">
+        <button class="btn-approve" data-panel="student">Approve</button>
+        <button class="btn-reject"  data-panel="student">Reject</button>
+        <span class="decision-note" id="noteStudent"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Decision log -->
+  <div class="decision-log-section">
+    <div class="decision-log-header">
+      <div class="section-heading" style="margin-bottom:0">Decision log</div>
+      <button class="btn-clear-log" id="btnClearLog">Clear log</button>
+    </div>
+    <div id="decisionLogContent"></div>
+  </div>
+</div>
+
+<script type="module">
+  import {
+    buildActivityRecord,
+    buildActivityRecordFromDB,
+    renderParentReport,
+    renderStudentReflection,
+  } from "./js/watcher.js";
+
+  import { examineRecord } from "./js/examiner.js";
+  import { getSession }    from "./js/auth.js";
+  import { loadActivityRecord as loadDBActivity } from "./js/db.js";
+
+  const DECISIONS_KEY = "moyacode_watcher_decisions";
+
+  // Cached so handleDecision can read totals without a second fetch
+  let currentRecord = null;
+
+  // Original generated texts — used to detect edits
+  const originals = { parent: "", student: "" };
+
+  // ── Helpers ──────────────────────────────────────────────────────────────────
+  function pct(r) { return Math.round(r * 100) + "%"; }
+
+  function dayLabel(n) {
+    if (n === null || n === undefined) return "—";
+    if (n === 0) return "today";
+    if (n === 1) return "yesterday";
+    return `${n} days ago`;
+  }
+
+  function fmtDate(iso) {
+    if (!iso) return "—";
+    return new Date(iso).toLocaleDateString("en-NG", {
+      day: "numeric", month: "short", year: "numeric",
+      hour: "2-digit", minute: "2-digit",
+    });
+  }
+
+  function fmtShort(iso) {
+    if (!iso) return "";
+    return new Date(iso).toLocaleTimeString("en-NG", {
+      month: "short", day: "numeric",
+      hour: "2-digit", minute: "2-digit",
+    });
+  }
+
+  // ── Decision storage ──────────────────────────────────────────────────────────
+  function loadDecisions() {
+    try { return JSON.parse(localStorage.getItem(DECISIONS_KEY) || "[]"); }
+    catch { return []; }
+  }
+
+  function saveDecision(target, action, originalText, finalText, snapshot) {
+    const decisions = loadDecisions();
+    decisions.unshift({
+      id:           Date.now(),
+      decidedAt:    new Date().toISOString(),
+      target,       // "parent" | "student"
+      action,       // "approved" | "edited" | "rejected"
+      originalText,
+      finalText,    // null if rejected
+      wasEdited:    action === "edited",
+      snapshot,     // { coursesCompleted, totalXP, questionsAnswered }
+    });
+    localStorage.setItem(DECISIONS_KEY, JSON.stringify(decisions));
+    renderDecisionLog();
+  }
+
+  // ── Decision log UI ───────────────────────────────────────────────────────────
+  function renderDecisionLog() {
+    const decisions = loadDecisions();
+    const el = document.getElementById("decisionLogContent");
+
+    if (decisions.length === 0) {
+      el.innerHTML = `<p class="decision-log-empty">No decisions recorded yet. Approve or reject a summary above to log your first decision.</p>`;
+      return;
+    }
+
+    el.innerHTML = `<div class="decision-entries">${
+      decisions.map(d => {
+        const targetLabel = d.target === "parent" ? "Parent Report" : "Student Reflection";
+        const meta = d.snapshot
+          ? `${d.snapshot.coursesCompleted} courses · ${d.snapshot.totalXP} XP · ${d.snapshot.questionsAnswered} Qs`
+          : "";
+        return `
+          <div class="decision-entry">
+            <span class="entry-action ${d.action}">${d.action}</span>
+            <span class="entry-target">${targetLabel}</span>
+            <span class="entry-meta">${meta}</span>
+            <span class="entry-time">${fmtShort(d.decidedAt)}</span>
+          </div>`;
+      }).join("")
+    }</div>`;
+  }
+
+  // ── Decision handlers ─────────────────────────────────────────────────────────
+  function handleDecision(panel, action) {
+    const textareaId = panel === "parent" ? "parentText" : "studentText";
+    const panelEl    = document.getElementById(panel === "parent" ? "panelParent" : "panelStudent");
+    const noteEl     = document.getElementById(panel === "parent" ? "noteParent" : "noteStudent");
+    const approveBtn = panelEl.querySelector(".btn-approve");
+    const rejectBtn  = panelEl.querySelector(".btn-reject");
+
+    const currentText  = document.getElementById(textareaId).value;
+    const originalText = originals[panel];
+    const wasEdited    = currentText.trim() !== originalText.trim();
+
+    const resolvedAction = action === "approve" && wasEdited ? "edited" : action === "approve" ? "approved" : "rejected";
+    const finalText      = resolvedAction === "rejected" ? null : currentText;
+
+    // Snapshot from cached record (avoids a second fetch / localStorage read)
+    let snapshot = null;
+    if (currentRecord) {
+      const { totals } = currentRecord;
+      snapshot = {
+        coursesCompleted:  totals.coursesCompleted,
+        totalXP:           totals.totalXP,
+        questionsAnswered: totals.questionsAnswered,
+      };
+    }
+
+    saveDecision(panel, resolvedAction, originalText, finalText, snapshot);
+
+    // Visual state
+    panelEl.classList.remove("decision-approved", "decision-rejected");
+    panelEl.classList.add(resolvedAction === "rejected" ? "decision-rejected" : "decision-approved");
+    approveBtn.disabled = true;
+    rejectBtn.disabled  = true;
+
+    const labels = { approved: "Approved ✓", edited: "Approved with edits ✓", rejected: "Rejected ✗" };
+    noteEl.textContent = labels[resolvedAction];
+  }
+
+  // ── Data source ───────────────────────────────────────────────────────────────
+  async function getRecord() {
+    try {
+      const session = await getSession();
+      if (session) {
+        const dbData = await loadDBActivity(session.user.id);
+        document.getElementById("dataSource").textContent = "source: DB ✓";
+        return buildActivityRecordFromDB(dbData);
+      }
+    } catch (e) {
+      console.warn("[watcher] DB fetch failed, falling back to local:", e);
+    }
+    document.getElementById("dataSource").textContent = "source: local (not signed in)";
+    return buildActivityRecord();
+  }
+
+  // ── Main render ───────────────────────────────────────────────────────────────
+  async function render() {
+    document.getElementById("btnRefresh").disabled = true;
+    document.getElementById("dataSource").textContent = "Loading…";
+
+    const record = await getRecord();
+    currentRecord = record;
+
+    document.getElementById("btnRefresh").disabled = false;
+    const { totals, courses, generatedAt } = record;
+    const COURSE_ORDER = ["jss1", "jss2", "jss3", "ss1", "ss2", "ss3"];
+
+    document.getElementById("generatedAt").textContent = `Generated ${fmtDate(generatedAt)}`;
+
+    const hasActivity = totals.questionsAnswered > 0;
+    document.getElementById("emptyState").hidden = hasActivity;
+    document.getElementById("content").style.visibility = hasActivity ? "" : "hidden";
+
+    // Reset panel states on refresh
+    ["panelParent", "panelStudent"].forEach(id => {
+      const p = document.getElementById(id);
+      p.classList.remove("decision-approved", "decision-rejected");
+      p.querySelectorAll(".btn-approve, .btn-reject").forEach(b => b.disabled = false);
+    });
+    document.getElementById("noteParent").textContent  = "";
+    document.getElementById("noteStudent").textContent = "";
+
+    // Totals bar
+    const stats = [
+      { label: "Courses done",  value: `${totals.coursesCompleted} / 6` },
+      { label: "XP earned",     value: totals.totalXP },
+      { label: "Questions",     value: totals.questionsAnswered },
+      { label: "Accuracy",      value: pct(totals.overallAccuracy) },
+      { label: "Active days",   value: totals.activeDays },
+      { label: "Last active",   value: dayLabel(totals.daysSinceLastActive) },
+    ];
+
+    document.getElementById("totalsBar").innerHTML = stats
+      .map(s => `<div class="stat-chip"><span class="label">${s.label}</span><span class="value">${s.value}</span></div>`)
+      .join("");
+
+    // Courses grid
+    document.getElementById("coursesGrid").innerHTML = COURSE_ORDER.map(key => {
+      const c   = courses[key];
+      const cls = c.completed ? "completed" : c.questionsAnswered > 0 ? "in-progress" : "";
+      const statsStr = c.questionsAnswered > 0
+        ? `<span>${c.correctAnswers}/${c.questionsAnswered} correct</span><span>${pct(c.accuracy)}</span><span>${c.xpEarned} XP</span>`
+        : `<span>Not started</span>`;
+
+      return `
+        <div class="course-card ${cls}">
+          <div class="course-title"><span class="status-dot"></span>${c.title}</div>
+          <div class="course-stats">${statsStr}</div>
+        </div>`;
+    }).join("");
+
+    // ── Examiner ──
+    const examination = examineRecord(record);
+    const { overall, courseVerdicts } = examination;
+
+    const standingLabels = {
+      "not-started": "Not started",
+      "early":       "Early stage",
+      "progressing": "Progressing",
+      "advanced":    "Advanced",
+      "graduate":    "Graduate",
+    };
+
+    const standingEl = document.getElementById("standingChip");
+    standingEl.textContent = standingLabels[overall.standing] || overall.standing;
+    standingEl.className   = `examiner-standing standing-${overall.standing}`;
+
+    document.getElementById("atRiskFlag").hidden = !overall.atRisk;
+    document.getElementById("examinerRecommendation").textContent = overall.recommendation;
+
+    document.getElementById("examinerGrid").innerHTML = COURSE_ORDER.map(key => {
+      const v = courseVerdicts[key];
+      const resultCls = v.result === "pass"
+        ? (v.grade === "C" ? "v-borderline" : "v-pass")
+        : v.result === "fail" ? "v-fail"
+        : v.result === "incomplete" ? "v-incomplete"
+        : "";
+
+      const gradeDisplay = v.grade || "—";
+      const gradeClass   = v.grade ? `grade-${v.grade}` : "grade-null";
+
+      return `
+        <div class="verdict-card ${resultCls}">
+          <div class="verdict-card-top">
+            <span class="verdict-title">${courses[key].title}</span>
+            <span class="grade-chip ${gradeClass}">${gradeDisplay}</span>
+          </div>
+          <span class="verdict-notes">${v.notes}</span>
+        </div>`;
+    }).join("");
+
+    // Summaries — populate textareas and save originals
+    const parentText  = renderParentReport(record);
+    const studentText = renderStudentReflection(record);
+
+    document.getElementById("parentText").value  = parentText;
+    document.getElementById("studentText").value = studentText;
+    originals.parent  = parentText;
+    originals.student = studentText;
+  }
+
+  // ── Event listeners ───────────────────────────────────────────────────────────
+
+  // Copy buttons
+  document.querySelectorAll(".btn-copy").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const text = document.getElementById(btn.dataset.target).value;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = "Copied!";
+        btn.classList.add("copied");
+        setTimeout(() => { btn.textContent = "Copy"; btn.classList.remove("copied"); }, 2000);
+      });
+    });
+  });
+
+  // Approve / Reject
+  document.querySelectorAll(".btn-approve").forEach(btn => {
+    btn.addEventListener("click", () => handleDecision(btn.dataset.panel, "approve"));
+  });
+  document.querySelectorAll(".btn-reject").forEach(btn => {
+    btn.addEventListener("click", () => handleDecision(btn.dataset.panel, "reject"));
+  });
+
+  // Refresh
+  document.getElementById("btnRefresh").addEventListener("click", () => render());
+
+  // Clear log
+  document.getElementById("btnClearLog").addEventListener("click", () => {
+    if (confirm("Clear the entire decision log? This cannot be undone.")) {
+      localStorage.removeItem(DECISIONS_KEY);
+      renderDecisionLog();
+    }
+  });
+
+  render();          // async — fires and resolves in background
+  renderDecisionLog();
+</script>
+
+</body>
+</html>

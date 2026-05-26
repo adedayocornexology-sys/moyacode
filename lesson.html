@@ -490,6 +490,31 @@
     }
     .sidebar-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:499; }
     .sidebar-backdrop.visible { display:block; }
+    /* ── Agent banner (sidebar) ── */
+    .sb-agent-banner {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sb-agent-emoji { font-size: 17px; flex-shrink: 0; }
+    .sb-agent-name  { font-size: .8rem; font-weight: 700; color: var(--t-100); line-height: 1.2; }
+    .sb-agent-role  { font-size: .63rem; font-weight: 600; color: var(--t-600); text-transform: uppercase; letter-spacing: .07em; }
+    /* ── Agent intro card (step 0 content) ── */
+    .agent-intro-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-lg);
+      padding: 15px 18px;
+      display: flex;
+      gap: 13px;
+      align-items: flex-start;
+      animation: step-fade-in var(--dur-slow) var(--spring) both;
+    }
+    .agent-intro-emoji { font-size: 21px; flex-shrink: 0; line-height: 1.4; }
+    .agent-intro-from  { font-size: .65rem; font-weight: 700; color: var(--t-600); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; }
+    .agent-intro-text  { font-size: .88rem; color: var(--t-200); line-height: 1.65; }
     .mob-menu-btn {
       display: none;
       align-items: center;
@@ -582,6 +607,53 @@
   </div>
 </nav>
 <script src="lessons.js"></script>
+<script type="module">
+import { getAgentForCourse } from './js/agents.js';
+
+function readLocal(key) {
+  try { return localStorage.getItem(key) || ''; } catch { return ''; }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const params   = new URLSearchParams(location.search);
+  const classKey = (params.get('class') || 'jss3').toLowerCase();
+  const agent    = getAgentForCourse(classKey);
+  if (!agent) return;
+
+  const profile = {
+    dream:      readLocal('moyacode_dream'),
+    motivation: readLocal('moyacode_motivation'),
+  };
+
+  // 1. Agent banner in sidebar (after .sb-course-info)
+  const courseInfoEl = document.querySelector('.sb-course-info');
+  if (courseInfoEl) {
+    const banner = document.createElement('div');
+    banner.className = 'sb-agent-banner';
+    banner.innerHTML = `
+      <span class="sb-agent-emoji">${agent.emoji}</span>
+      <div>
+        <div class="sb-agent-name">${agent.name}</div>
+        <div class="sb-agent-role">${agent.role}</div>
+      </div>`;
+    courseInfoEl.insertAdjacentElement('afterend', banner);
+  }
+
+  // 2. Intro card at the top of step-0 content
+  const stepContent = document.getElementById('step-content');
+  if (stepContent) {
+    const card = document.createElement('div');
+    card.className = 'agent-intro-card';
+    card.innerHTML = `
+      <span class="agent-intro-emoji">${agent.emoji}</span>
+      <div>
+        <div class="agent-intro-from">From ${agent.name} · ${agent.role}</div>
+        <p class="agent-intro-text">${agent.intro(profile)}</p>
+      </div>`;
+    stepContent.insertAdjacentElement('afterbegin', card);
+  }
+});
+</script>
 <script>
 const LESSON_SEEN_KEY = 'moyacode_lesson_seen_';
 const XP_KEY = 'moyacode_xp';

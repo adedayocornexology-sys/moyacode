@@ -35,5 +35,9 @@
 </main>
 </div>
 <script>function startQuiz(classKey){window.location.href='loading.html?class='+classKey;}</script>
+<script type="module">
+import { requireAuth } from './js/auth.js';
+requireAuth();
+</script>
 </body>
 </html>
