@@ -137,6 +137,111 @@
       gap: 0.75rem;
     }
 
+    /* ── Examiner section ── */
+    .examiner-section {
+      max-width: 960px;
+      margin: 0 auto 2rem;
+    }
+
+    .examiner-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .examiner-standing {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.2rem 0.65rem;
+      border-radius: 99px;
+    }
+
+    .standing-not-started { background: color-mix(in srgb, #888 15%, transparent); color: #888; }
+    .standing-early       { background: color-mix(in srgb, #7c6fea 15%, transparent); color: #7c6fea; }
+    .standing-progressing { background: color-mix(in srgb, #ffc107 15%, transparent); color: #ffc107; }
+    .standing-advanced    { background: color-mix(in srgb, #4caf7d 15%, transparent); color: #4caf7d; }
+    .standing-graduate    { background: color-mix(in srgb, #4caf7d 25%, transparent); color: #4caf7d; }
+
+    .at-risk-flag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #ef7070;
+      background: color-mix(in srgb, #ef5350 12%, transparent);
+      border: 1px solid color-mix(in srgb, #ef5350 30%, transparent);
+      padding: 0.2rem 0.6rem;
+      border-radius: 99px;
+    }
+
+    .examiner-recommendation {
+      font-size: 0.8rem;
+      color: var(--color-text-muted, #aaa);
+      line-height: 1.5;
+      margin-bottom: 0.85rem;
+    }
+
+    .examiner-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 0.65rem;
+    }
+
+    .verdict-card {
+      background: var(--color-surface, #1a1a24);
+      border: 1px solid var(--color-border, #2a2a38);
+      border-radius: var(--radius-md, 10px);
+      padding: 0.75rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .verdict-card.v-pass       { border-color: color-mix(in srgb, #4caf7d 35%, transparent); }
+    .verdict-card.v-borderline { border-color: color-mix(in srgb, #ffc107 35%, transparent); }
+    .verdict-card.v-fail       { border-color: color-mix(in srgb, #ef5350 30%, transparent); }
+    .verdict-card.v-incomplete { border-color: color-mix(in srgb, #ef5350 20%, transparent); }
+
+    .verdict-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .verdict-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    .grade-chip {
+      font-size: 0.72rem;
+      font-weight: 800;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .grade-A { background: color-mix(in srgb, #4caf7d 25%, transparent); color: #4caf7d; }
+    .grade-B { background: color-mix(in srgb, #4caf7d 15%, transparent); color: #8bc34a; }
+    .grade-C { background: color-mix(in srgb, #ffc107 18%, transparent); color: #ffc107; }
+    .grade-D { background: color-mix(in srgb, #ef5350 15%, transparent); color: #ef7070; }
+    .grade-F { background: color-mix(in srgb, #ef5350 18%, transparent); color: #ef5350; }
+    .grade-null { background: color-mix(in srgb, #888 12%, transparent); color: #666; }
+
+    .verdict-notes {
+      font-size: 0.72rem;
+      color: var(--color-text-muted, #888);
+      line-height: 1.4;
+    }
+
     /* ── Summary panels ── */
     .summaries {
       max-width: 960px;
@@ -396,6 +501,17 @@
     <div class="courses-grid" id="coursesGrid"></div>
   </div>
 
+  <!-- Examiner -->
+  <div class="examiner-section">
+    <div class="examiner-header">
+      <div class="section-heading" style="margin-bottom:0">Examiner verdict</div>
+      <span class="examiner-standing" id="standingChip"></span>
+      <span class="at-risk-flag" id="atRiskFlag" hidden>At risk</span>
+    </div>
+    <p class="examiner-recommendation" id="examinerRecommendation"></p>
+    <div class="examiner-grid" id="examinerGrid"></div>
+  </div>
+
   <div class="summaries">
     <!-- Parent Report -->
     <div class="summary-panel" id="panelParent">
@@ -446,6 +562,8 @@
     renderParentReport,
     renderStudentReflection,
   } from "./js/watcher.js";
+
+  import { examineRecord } from "./js/examiner.js";
 
   const DECISIONS_KEY = "moyacode_watcher_decisions";
 
@@ -612,6 +730,46 @@
         <div class="course-card ${cls}">
           <div class="course-title"><span class="status-dot"></span>${c.title}</div>
           <div class="course-stats">${statsStr}</div>
+        </div>`;
+    }).join("");
+
+    // ── Examiner ──
+    const examination = examineRecord(record);
+    const { overall, courseVerdicts } = examination;
+
+    const standingLabels = {
+      "not-started": "Not started",
+      "early":       "Early stage",
+      "progressing": "Progressing",
+      "advanced":    "Advanced",
+      "graduate":    "Graduate",
+    };
+
+    const standingEl = document.getElementById("standingChip");
+    standingEl.textContent = standingLabels[overall.standing] || overall.standing;
+    standingEl.className   = `examiner-standing standing-${overall.standing}`;
+
+    document.getElementById("atRiskFlag").hidden = !overall.atRisk;
+    document.getElementById("examinerRecommendation").textContent = overall.recommendation;
+
+    document.getElementById("examinerGrid").innerHTML = COURSE_ORDER.map(key => {
+      const v = courseVerdicts[key];
+      const resultCls = v.result === "pass"
+        ? (v.grade === "C" ? "v-borderline" : "v-pass")
+        : v.result === "fail" ? "v-fail"
+        : v.result === "incomplete" ? "v-incomplete"
+        : "";
+
+      const gradeDisplay = v.grade || "—";
+      const gradeClass   = v.grade ? `grade-${v.grade}` : "grade-null";
+
+      return `
+        <div class="verdict-card ${resultCls}">
+          <div class="verdict-card-top">
+            <span class="verdict-title">${courses[key].title}</span>
+            <span class="grade-chip ${gradeClass}">${gradeDisplay}</span>
+          </div>
+          <span class="verdict-notes">${v.notes}</span>
         </div>`;
     }).join("");
 
