@@ -4,7 +4,8 @@
   "description": "Spotify data pull and analysis for Artist Soul Map",
   "main": "spotify-pull.js",
   "scripts": {
-    "pull": "node spotify-pull.js"
+    "pull": "node spotify-pull.js",
+    "soul-map": "node soul-map.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

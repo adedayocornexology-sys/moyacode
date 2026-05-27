@@ -7,6 +7,17 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = join(__dirname, '..', 'data');
 
+// ── CLI args ──────────────────────────────────────────────────────────────────
+
+function getArtistArg() {
+  const i = process.argv.indexOf('--artist');
+  return i !== -1 ? process.argv[i + 1] : 'Wizkid';
+}
+
+function slugify(name) {
+  return name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+}
+
 // ── Auth ─────────────────────────────────────────────────────────────────────
 
 async function getAccessToken() {
@@ -92,23 +103,23 @@ async function paginate(token, firstPage, key = 'items') {
   return results;
 }
 
-// ── Fetch Wizkid data ─────────────────────────────────────────────────────────
+// ── Find artist ───────────────────────────────────────────────────────────────
 
-async function findWizkid(token) {
-  console.log('🔍  Searching for Wizkid on Spotify...');
+async function findArtist(token, artistName) {
+  console.log(`🔍  Searching for "${artistName}" on Spotify...`);
 
   const data = await spotifyGet(token, '/search', {
-    q: 'Wizkid',
+    q: artistName,
     type: 'artist',
     limit: 5,
   });
 
-  // Pick the artist with the most followers named "Wizkid"
+  const query = artistName.toLowerCase();
   const candidates = data.artists.items.filter((a) =>
-    a.name.toLowerCase().includes('wizkid')
+    a.name.toLowerCase().includes(query)
   );
 
-  if (!candidates.length) throw new Error('Wizkid not found in search results');
+  if (!candidates.length) throw new Error(`"${artistName}" not found in search results`);
 
   const artist = candidates.sort((a, b) => b.followers.total - a.followers.total)[0];
 
@@ -119,6 +130,18 @@ async function findWizkid(token) {
   console.log(`   Genres     : ${artist.genres.join(', ')}\n`);
 
   return artist;
+}
+
+async function fetchPlaylists(token, artistName) {
+  console.log('📋  Fetching playlists (via search)...');
+  const data = await spotifyGet(token, '/search', {
+    q: artistName,
+    type: 'playlist',
+    limit: 20,
+  });
+  const playlists = data.playlists.items.filter(Boolean);
+  console.log(`   ${playlists.length} playlists found.\n`);
+  return playlists;
 }
 
 async function fetchAlbums(token, artistId) {
@@ -154,22 +177,6 @@ async function fetchTopTracks(token, artistId) {
 
   console.log(`   ${data.tracks.length} top tracks found.\n`);
   return data.tracks;
-}
-
-async function fetchPlaylists(token, artistId) {
-  console.log('📋  Fetching artist playlists (via search)...');
-
-  // Client Credentials can't access user playlists directly;
-  // search for artist-name playlists on Spotify Editorial instead
-  const data = await spotifyGet(token, '/search', {
-    q: `Wizkid`,
-    type: 'playlist',
-    limit: 20,
-  });
-
-  const playlists = data.playlists.items.filter(Boolean);
-  console.log(`   ${playlists.length} playlists found.\n`);
-  return playlists;
 }
 
 async function fetchAudioFeatures(token, trackIds) {
@@ -222,18 +229,21 @@ function saveJSON(filename, data) {
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 async function main() {
+  const artistName = getArtistArg();
+  const slug       = slugify(artistName);
+
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('  Artist Soul Map — Spotify Pull');
-  console.log('  Target: Wizkid');
+  console.log(`  Target: ${artistName}`);
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
   const token = await getAccessToken();
 
-  const artist = await findWizkid(token);
+  const artist = await findArtist(token, artistName);
   const [albums, topTracks, playlists] = await Promise.all([
     fetchAlbums(token, artist.id),
     fetchTopTracks(token, artist.id),
-    fetchPlaylists(token, artist.id),
+    fetchPlaylists(token, artistName),
   ]);
 
   // Pull tracks from all albums (for complete audio feature coverage)
@@ -266,11 +276,11 @@ async function main() {
   // ── Save everything ───────────────────────────────────────────────────────
   console.log('\n📁  Saving data files...\n');
 
-  saveJSON('artist.json', artist);
-  saveJSON('albums.json', albums);
-  saveJSON('top_tracks.json', topTracks);
-  saveJSON('playlists.json', playlists);
-  saveJSON('tracks_with_features.json', tracksWithFeatures);
+  saveJSON(`${slug}_artist.json`, artist);
+  saveJSON(`${slug}_albums.json`, albums);
+  saveJSON(`${slug}_top_tracks.json`, topTracks);
+  saveJSON(`${slug}_playlists.json`, playlists);
+  saveJSON(`${slug}_tracks_with_features.json`, tracksWithFeatures);
 
   // Summary stats for quick sanity check
   const featuredCount = tracksWithFeatures.filter((t) => t.audio_features).length;
@@ -304,7 +314,7 @@ async function main() {
     },
   };
 
-  saveJSON('_summary.json', summary);
+  saveJSON(`${slug}_summary.json`, summary);
 
   console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('  Pull complete!');
