@@ -1,0 +1,62 @@
+{
+  "wizkid": {
+    "name": "Wizkid",
+    "dob": "1990-07-16",
+    "real_name": "Ayodeji Ibrahim Balogun"
+  },
+  "burna-boy": {
+    "name": "Burna Boy",
+    "dob": "1991-07-02",
+    "real_name": "Damini Ebunoluwa Ogulu"
+  },
+  "davido": {
+    "name": "Davido",
+    "dob": "1992-11-21",
+    "real_name": "David Adedeji Adeleke"
+  },
+  "rema": {
+    "name": "Rema",
+    "dob": "2000-05-01",
+    "real_name": "Divine Ikubor"
+  },
+  "asake": {
+    "name": "Asake",
+    "dob": "1993-01-13",
+    "real_name": "Ahmed Ololade"
+  },
+  "ckay": {
+    "name": "CKay",
+    "dob": "1996-06-02",
+    "real_name": "Chukwuemeka Akamma"
+  },
+  "omah-lay": {
+    "name": "Omah Lay",
+    "dob": "1997-05-19",
+    "real_name": "Stanley Omah Didia"
+  },
+  "tems": {
+    "name": "Tems",
+    "dob": "1995-06-11",
+    "real_name": "Temilade Openiyi"
+  },
+  "beyonce": {
+    "name": "Beyoncé",
+    "dob": "1981-09-04",
+    "real_name": "Beyoncé Giselle Knowles"
+  },
+  "drake": {
+    "name": "Drake",
+    "dob": "1986-10-24",
+    "real_name": "Aubrey Drake Graham"
+  },
+  "the-weeknd": {
+    "name": "The Weeknd",
+    "dob": "1990-02-16",
+    "real_name": "Abel Makkonen Tesfaye"
+  },
+  "bad-bunny": {
+    "name": "Bad Bunny",
+    "dob": "1994-03-10",
+    "real_name": "Benito Antonio Martínez Ocasio"
+  }
+}

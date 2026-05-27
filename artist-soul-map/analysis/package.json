@@ -1,0 +1,18 @@
+{
+  "name": "artist-soul-map-analysis",
+  "version": "1.0.0",
+  "description": "Spotify data pull and analysis for Artist Soul Map",
+  "main": "spotify-pull.js",
+  "scripts": {
+    "pull": "node spotify-pull.js",
+    "soul-map": "node soul-map.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "node-fetch": "^3.3.2"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
