@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Catch the Bug</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { background: radial-gradient(circle at 50% 0%, #0F1F38, #030712); color: #F8FAFF; font-family: 'Space Grotesk', system-ui, sans-serif; overflow: hidden; user-select: none; }
+  #hud { position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; padding: 14px 18px; font-weight: 700; z-index: 5; }
+  #hud .v { color: #00E5A0; }
+  #board { position: absolute; inset: 0; }
+  .bug { position: absolute; font-size: 2rem; cursor: pointer; transition: transform .08s; }
+  .bug:active { transform: scale(0.8); }
+  #overlay { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(3,7,18,0.86); z-index: 10; text-align: center; padding: 24px; }
+  #overlay.hidden { display: none; }
+  h1 { font-size: 1.8rem; margin-bottom: 8px; }
+  p { color: #7A8FAD; margin-bottom: 20px; }
+  button { background: #00E5A0; color: #030712; border: none; font-weight: 800; padding: 13px 30px; border-radius: 14px; font-size: 1rem; cursor: pointer; }
+</style>
+</head>
+<body>
+  <div id="hud"><div>Score: <span class="v" id="score">0</span></div><div>Time: <span class="v" id="time">20</span>s</div></div>
+  <div id="board"></div>
+  <div id="overlay">
+    <div>
+      <h1 id="title">🐛 Catch the Bug</h1>
+      <p id="sub">Tap every bug you can in 20 seconds. Go!</p>
+      <button id="startBtn">Start</button>
+    </div>
+  </div>
+<script>
+  const board = document.getElementById('board');
+  const scoreEl = document.getElementById('score');
+  const timeEl = document.getElementById('time');
+  const overlay = document.getElementById('overlay');
+  const title = document.getElementById('title');
+  const sub = document.getElementById('sub');
+  const startBtn = document.getElementById('startBtn');
+  const BUGS = ['🐛','🐞','🦗','🪲','🕷️'];
+  let score = 0, time = 20, spawnT, clockT, running = false;
+
+  function spawn() {
+    const b = document.createElement('div');
+    b.className = 'bug';
+    b.textContent = BUGS[Math.random() * BUGS.length | 0];
+    b.style.left = (Math.random() * 86 + 4) + '%';
+    b.style.top = (Math.random() * 74 + 16) + '%';
+    b.addEventListener('pointerdown', () => { if (!running) return; score++; scoreEl.textContent = score; b.remove(); });
+    board.appendChild(b);
+    setTimeout(() => b.remove(), 1100);
+  }
+
+  function start() {
+    score = 0; time = 20; running = true;
+    scoreEl.textContent = '0'; timeEl.textContent = '20';
+    overlay.classList.add('hidden');
+    board.innerHTML = '';
+    spawnT = setInterval(spawn, 620);
+    clockT = setInterval(() => {
+      time--; timeEl.textContent = time;
+      if (time <= 0) end();
+    }, 1000);
+  }
+
+  function end() {
+    running = false;
+    clearInterval(spawnT); clearInterval(clockT);
+    board.innerHTML = '';
+    title.textContent = '🏆 Time!';
+    sub.textContent = 'You caught ' + score + ' bug' + (score === 1 ? '' : 's') + '. Play again?';
+    startBtn.textContent = 'Play again';
+    overlay.classList.remove('hidden');
+  }
+
+  startBtn.addEventListener('click', start);
+</script>
+</body>
+</html>

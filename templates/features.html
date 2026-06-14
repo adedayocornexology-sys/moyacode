@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}MoyaCode | Features{% endblock %}
+{% block nav_features %}active{% endblock %}
+
+{% block head %}
+<style>
+  .feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 18px; margin-top: 48px; }
+  .fcard { background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--r-xl); padding: 26px; transition: transform var(--dur-mid) var(--spring), border-color var(--dur-fast) var(--ease); }
+  .fcard:hover { transform: translateY(-4px); border-color: var(--c-teal-dim); }
+  .fcard .ic { width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; font-size: 1.4rem; margin-bottom: 16px; background: var(--c-teal-faint); border: 1px solid var(--c-teal-dim); }
+  .fcard h3 { font-family: var(--f-display); font-size: 1.12rem; margin-bottom: 8px; }
+  .fcard p { color: var(--t-400); line-height: 1.55; font-size: 0.93rem; }
+  .cta-row { margin-top: 44px; }
+  .btn-primary { display: inline-block; padding: 13px 28px; border-radius: var(--r-lg); background: var(--c-teal); color: var(--bg-0); font-weight: 700; box-shadow: 0 0 28px rgba(0,229,160,0.3); transition: transform var(--dur-fast) var(--spring); }
+  .btn-primary:hover { transform: translateY(-2px); }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="wrap">
+  <span class="eyebrow">Platform Features</span>
+  <h1 class="page-h1">Built to make you<br><span style="color:var(--c-teal)">a real developer.</span></h1>
+  <p class="lead">Everything in MoyaCode is designed around the dopamine loop of coding: learn, win, level up, repeat. Here's what's under the hood.</p>
+
+  <div class="feat-grid">
+    <div class="fcard"><div class="ic">🤖</div><h3>MoyaBot AI Tutor</h3><p>Your personal coding companion explains every concept at your level and gives smart hints the moment you're stuck.</p></div>
+    <div class="fcard"><div class="ic">⚡</div><h3>Earn XP every session</h3><p>Every correct answer earns experience. Watch your power grow in real time and climb the ranks.</p></div>
+    <div class="fcard"><div class="ic">❤️</div><h3>3 hearts, real stakes</h3><p>Lose a heart on wrong answers. It teaches you to think before you code — just like the real thing.</p></div>
+    <div class="fcard"><div class="ic">🔥</div><h3>Daily streak system</h3><p>Code a little every day. Consistency is what actually builds great developers, so we reward it.</p></div>
+    <div class="fcard"><div class="ic">⌨️</div><h3>Write real code</h3><p>HTML, CSS, and JavaScript that actually runs — not toy exercises. Real web development from day one.</p></div>
+    <div class="fcard"><div class="ic">🏆</div><h3>Rank up through levels</h3><p>Start as a Rookie. Rise through Coder, Builder, Pro, and Legend as you complete more quests.</p></div>
+    <div class="fcard"><div class="ic">🎮</div><h3>Ship to the Arcade</h3><p>Don't just learn — build. Your best games get featured in the public <a href="/arcade" style="color:var(--c-teal)">Arcade</a> for everyone to play.</p></div>
+    <div class="fcard"><div class="ic">💚</div><h3>100% free to learn</h3><p>Every lesson, every quest, every AI hint — completely free for students. We never charge a child to learn.</p></div>
+  </div>
+
+  <div class="cta-row"><a href="/welcome.html" class="btn-primary">Start for Free →</a></div>
+</section>
+{% endblock %}

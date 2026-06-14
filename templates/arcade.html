@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+{% block title %}MoyaCode | Arcade{% endblock %}
+{% block nav_arcade %}active{% endblock %}
+
+{% block head %}
+<style>
+  .arcade-hero { text-align: center; padding-bottom: 8px; }
+  .arcade-hero .lead { margin-left: auto; margin-right: auto; }
+
+  .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 20px; margin-top: 44px; }
+
+  .game-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--r-xl); overflow: hidden; cursor: pointer; transition: transform var(--dur-mid) var(--spring), border-color var(--dur-fast) var(--ease), box-shadow var(--dur-mid) var(--ease); display: flex; flex-direction: column; }
+  .game-card:hover { transform: translateY(-4px); border-color: var(--c-teal-dim); box-shadow: 0 18px 50px rgba(0,0,0,0.4); }
+  .thumb { aspect-ratio: 16/10; background: linear-gradient(135deg, var(--bg-3), var(--bg-1)); display: grid; place-items: center; font-size: 2.6rem; position: relative; }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .play-badge { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(3,7,18,0.5); opacity: 0; transition: opacity var(--dur-fast) var(--ease); }
+  .game-card:hover .play-badge { opacity: 1; }
+  .play-badge span { background: var(--c-teal); color: var(--bg-0); font-weight: 700; padding: 10px 22px; border-radius: 999px; }
+  .game-body { padding: 16px 18px 18px; }
+  .game-title { font-family: var(--f-display); font-size: 1.08rem; font-weight: 700; }
+  .game-meta { display: flex; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+  .chip { font-family: var(--f-mono); font-size: 0.72rem; padding: 3px 9px; border-radius: 999px; background: var(--c-teal-faint); border: 1px solid var(--c-teal-dim); color: var(--c-teal); }
+  .by { color: var(--t-400); font-size: 0.85rem; }
+  .game-desc { color: var(--t-400); font-size: 0.88rem; margin-top: 10px; line-height: 1.5; }
+
+  .empty, .submit-card { grid-column: 1 / -1; text-align: center; border: 1px dashed var(--glass-hi); border-radius: var(--r-xl); padding: 48px 24px; color: var(--t-400); }
+  .submit-card { border-style: solid; background: var(--c-teal-faint); border-color: var(--c-teal-dim); }
+  .submit-card h3 { font-family: var(--f-display); color: var(--t-100); font-size: 1.25rem; margin-bottom: 8px; }
+
+  /* ── Modal ─────────────────────────────────── */
+  .modal { position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; padding: 16px; background: rgba(3,7,18,0.8); backdrop-filter: blur(8px); }
+  .modal.open { display: flex; }
+  .modal-box { background: var(--bg-1); border: 1px solid var(--glass-border); border-radius: var(--r-2xl); width: min(880px, 100%); max-height: 92vh; overflow-y: auto; }
+  .modal-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid var(--glass-border); position: sticky; top: 0; background: var(--bg-1); }
+  .modal-head h2 { font-family: var(--f-display); font-size: 1.2rem; }
+  .close-btn { background: var(--glass-hi); border: none; color: var(--t-100); width: 34px; height: 34px; border-radius: 50%; cursor: pointer; font-size: 1.1rem; }
+  .game-frame { width: 100%; aspect-ratio: 16/10; border: 0; background: var(--bg-0); display: block; }
+  .modal-pad { padding: 22px; }
+
+  .fb-form { display: grid; gap: 12px; margin-top: 8px; }
+  .stars { display: flex; gap: 6px; font-size: 1.6rem; }
+  .star { cursor: pointer; color: var(--t-700); transition: color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--spring); }
+  .star:hover { transform: scale(1.15); }
+  .star.on { color: var(--c-amber); }
+  .fb-form input, .fb-form textarea { width: 100%; background: var(--bg-3); border: 1px solid var(--glass-border); border-radius: var(--r-md); padding: 11px 14px; color: var(--t-100); font-family: var(--f-body); font-size: 0.95rem; }
+  .fb-form textarea { resize: vertical; min-height: 72px; }
+  .fb-submit { justify-self: start; padding: 11px 24px; border-radius: var(--r-lg); background: var(--c-teal); color: var(--bg-0); font-weight: 700; border: none; cursor: pointer; }
+  .fb-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+  .fb-list { margin-top: 22px; display: grid; gap: 12px; }
+  .fb-item { background: var(--bg-2); border: 1px solid var(--glass-border); border-radius: var(--r-md); padding: 12px 14px; }
+  .fb-item .who { font-weight: 600; font-size: 0.9rem; }
+  .fb-item .stars-mini { color: var(--c-amber); font-size: 0.85rem; }
+  .fb-item p { color: var(--t-200); font-size: 0.9rem; margin-top: 4px; line-height: 1.45; }
+  .section-label { font-family: var(--f-mono); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--t-400); margin: 22px 0 6px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="wrap">
+  <div class="arcade-hero">
+    <span class="eyebrow">Student Arcade</span>
+    <h1 class="page-h1">Games built by<br><span style="color:var(--c-teal)">MoyaCode students.</span></h1>
+    <p class="lead">Real games, made by real students learning to code. Play them, then leave feedback to help the creators level up. The best ones get featured right here.</p>
+  </div>
+
+  <div class="game-grid" id="grid">
+    <div class="empty">Loading games…</div>
+  </div>
+</section>
+
+<!-- Play modal -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 id="modalTitle">Game</h2>
+      <button class="close-btn" id="closeBtn" aria-label="Close">✕</button>
+    </div>
+    <iframe class="game-frame" id="frame" title="Student game" sandbox="allow-scripts allow-same-origin" referrerpolicy="no-referrer"></iframe>
+    <div class="modal-pad">
+      <p class="by" id="modalBy"></p>
+      <p class="game-desc" id="modalDesc"></p>
+
+      <div class="section-label">Rate this game</div>
+      <form class="fb-form" id="fbForm">
+        <div class="stars" id="stars" role="radiogroup" aria-label="Rating">
+          <span class="star" data-v="1" role="radio" aria-label="1 star">★</span>
+          <span class="star" data-v="2" role="radio" aria-label="2 stars">★</span>
+          <span class="star" data-v="3" role="radio" aria-label="3 stars">★</span>
+          <span class="star" data-v="4" role="radio" aria-label="4 stars">★</span>
+          <span class="star" data-v="5" role="radio" aria-label="5 stars">★</span>
+        </div>
+        <input type="text" id="fbName" placeholder="Your name (optional)" maxlength="60" />
+        <textarea id="fbComment" placeholder="What did you think? Any tips for the creator?" maxlength="600"></textarea>
+        <button type="submit" class="fb-submit" id="fbSubmit">Send feedback</button>
+      </form>
+
+      <div class="section-label">What players are saying</div>
+      <div class="fb-list" id="fbList"><p class="by">No feedback yet — be the first!</p></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const grid = document.getElementById('grid');
+  const modal = document.getElementById('modal');
+  const frame = document.getElementById('frame');
+  const fbList = document.getElementById('fbList');
+  let current = null, rating = 0;
+
+  const esc = (s) => (s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const starStr = (n) => '★★★★★'.slice(0, n) + '☆☆☆☆☆'.slice(0, 5 - n);
+
+  async function loadGames() {
+    try {
+      const games = await (await fetch('/api/games')).json();
+      if (!games.length) {
+        grid.innerHTML = `
+          <div class="submit-card">
+            <h3>The Arcade is warming up 🎮</h3>
+            <p>No featured games yet. MoyaCode students — build a game, deploy it (your own GitHub Pages works great), and the best ones land here for everyone to play.</p>
+          </div>`;
+        return;
+      }
+      grid.innerHTML = games.map(g => `
+        <article class="game-card" data-id="${g.id}"
+          data-title="${esc(g.title)}" data-url="${esc(g.play_url)}"
+          data-by="${esc(g.author_name)}" data-class="${esc(g.class_level || '')}"
+          data-desc="${esc(g.description || '')}">
+          <div class="thumb">
+            ${g.thumbnail_url ? `<img src="${esc(g.thumbnail_url)}" alt="${esc(g.title)}" loading="lazy">` : '🎮'}
+            <div class="play-badge"><span>▶ Play</span></div>
+          </div>
+          <div class="game-body">
+            <div class="game-title">${esc(g.title)}</div>
+            <div class="game-meta">
+              ${g.class_level ? `<span class="chip">${esc(g.class_level)}</span>` : ''}
+              <span class="by">by ${esc(g.author_name)}</span>
+            </div>
+            ${g.description ? `<p class="game-desc">${esc(g.description)}</p>` : ''}
+          </div>
+        </article>`).join('');
+    } catch (e) {
+      grid.innerHTML = '<div class="empty">Couldn\'t load games right now. Try again soon.</div>';
+    }
+  }
+
+  grid.addEventListener('click', (e) => {
+    const card = e.target.closest('.game-card');
+    if (card) openGame(card.dataset);
+  });
+
+  async function openGame(d) {
+    current = d.id;
+    document.getElementById('modalTitle').textContent = d.title;
+    document.getElementById('modalBy').textContent = (d.class ? d.class + ' · ' : '') + 'by ' + d.by;
+    document.getElementById('modalDesc').textContent = d.desc;
+    frame.src = d.url;
+    setRating(0);
+    document.getElementById('fbName').value = '';
+    document.getElementById('fbComment').value = '';
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    loadFeedback(d.id);
+  }
+
+  function closeGame() {
+    modal.classList.remove('open');
+    frame.src = 'about:blank';
+    document.body.style.overflow = '';
+  }
+  document.getElementById('closeBtn').addEventListener('click', closeGame);
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeGame(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeGame(); });
+
+  // Stars
+  const stars = [...document.querySelectorAll('.star')];
+  function setRating(n) { rating = n; stars.forEach(s => s.classList.toggle('on', +s.dataset.v <= n)); }
+  stars.forEach(s => s.addEventListener('click', () => setRating(+s.dataset.v)));
+
+  async function loadFeedback(id) {
+    try {
+      const items = await (await fetch(`/api/games/${id}/feedback`)).json();
+      fbList.innerHTML = items.length ? items.map(f => `
+        <div class="fb-item">
+          <div class="who">${esc(f.player_name || 'Anonymous')} <span class="stars-mini">${starStr(f.rating)}</span></div>
+          ${f.comment ? `<p>${esc(f.comment)}</p>` : ''}
+        </div>`).join('') : '<p class="by">No feedback yet — be the first!</p>';
+    } catch (e) { /* keep placeholder */ }
+  }
+
+  document.getElementById('fbForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!rating) { alert('Pick a star rating first 🙂'); return; }
+    const btn = document.getElementById('fbSubmit');
+    btn.disabled = true; btn.textContent = 'Sending…';
+    try {
+      const res = await fetch('/api/feedback', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          game_id: Number(current), rating,
+          player_name: document.getElementById('fbName').value.trim() || null,
+          comment: document.getElementById('fbComment').value.trim() || null,
+        }),
+      });
+      if (!res.ok) throw new Error();
+      setRating(0);
+      document.getElementById('fbName').value = '';
+      document.getElementById('fbComment').value = '';
+      loadFeedback(current);
+      btn.textContent = 'Thanks! ✓';
+      setTimeout(() => { btn.textContent = 'Send feedback'; btn.disabled = false; }, 1500);
+    } catch (err) {
+      btn.textContent = 'Failed — try again'; btn.disabled = false;
+    }
+  });
+
+  loadGames();
+</script>
+{% endblock %}

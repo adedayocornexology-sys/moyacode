@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>MoyaCode | Light the Nation — The Ajasin Torch Run</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@10..48,400..800&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --teal:#00E5A0; --gold:#FCD34D; --ember:#FB7185;
+    --bg0:#030712; --bg1:#0A1628; --ink:#F8FAFF; --dim:#7A8FAD;
+    --f-disp:'Bricolage Grotesque',sans-serif; --f-body:'Space Grotesk',sans-serif; --f-mono:'DM Mono',monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--ink);font-family:var(--f-body);-webkit-font-smoothing:antialiased;}
+  #wrap{position:fixed;inset:0;}
+  canvas{display:block;width:100%;height:100%;touch-action:none;}
+
+  /* top-left back link + brand */
+  .brand{position:absolute;top:14px;left:16px;z-index:6;display:flex;align-items:center;gap:8px;font-family:var(--f-disp);font-weight:700;font-size:.95rem;text-decoration:none;color:var(--ink);opacity:.85;}
+  .brand .mk{width:24px;height:24px;border-radius:7px;background:var(--teal);display:grid;place-items:center;box-shadow:0 0 16px rgba(0,229,160,.4);}
+
+  /* pause button (only during play) */
+  .pause-btn{position:absolute;top:92px;left:16px;z-index:7;display:none;align-items:center;justify-content:center;gap:6px;width:auto;padding:8px 14px;border-radius:12px;background:rgba(10,22,40,.7);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.14);color:var(--ink);font-family:var(--f-body);font-weight:600;font-size:.85rem;cursor:pointer;}
+  .pause-btn:hover{background:rgba(255,255,255,.12);}
+
+  /* HUD */
+  #hud{position:absolute;top:12px;right:16px;z-index:6;display:flex;flex-direction:column;align-items:flex-end;gap:8px;pointer-events:none;}
+  .score-box{font-family:var(--f-mono);font-size:1.5rem;font-weight:500;text-shadow:0 0 18px rgba(0,229,160,.5);}
+  .score-box small{font-size:.7rem;color:var(--dim);letter-spacing:.08em;}
+  .lit-box{font-size:.85rem;color:var(--gold);font-family:var(--f-mono);}
+  /* flame meter */
+  .flame-meter{width:160px;max-width:38vw;height:10px;border-radius:99px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);overflow:hidden;}
+  .flame-fill{height:100%;width:100%;border-radius:99px;background:linear-gradient(90deg,var(--ember),var(--gold));box-shadow:0 0 14px var(--gold);transition:width .12s linear;}
+
+  /* overlays */
+  .overlay{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 50% 40%,rgba(3,7,18,.55),rgba(3,7,18,.92));backdrop-filter:blur(3px);}
+  .overlay.hidden{display:none;}
+  .panel{width:min(440px,100%);text-align:center;}
+  .eyebrow{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);}
+  .title{font-family:var(--f-disp);font-size:clamp(2rem,8vw,3.1rem);line-height:1.02;font-weight:800;margin:8px 0 6px;}
+  .title .g{color:var(--gold);}
+  .quote{color:var(--ink);font-size:1.02rem;line-height:1.5;font-style:italic;margin:18px auto;max-width:380px;border-left:2px solid var(--teal);padding-left:14px;text-align:left;}
+  .quote cite{display:block;font-style:normal;color:var(--dim);font-size:.82rem;margin-top:8px;}
+  .sub{color:var(--dim);font-size:.95rem;margin-bottom:22px;line-height:1.5;}
+  .btn{display:inline-block;border:none;cursor:pointer;font-family:var(--f-body);font-weight:700;font-size:1.05rem;padding:14px 34px;border-radius:16px;background:var(--teal);color:var(--bg0);box-shadow:0 0 34px rgba(0,229,160,.45);transition:transform .15s cubic-bezier(.34,1.4,.64,1),filter .15s;}
+  .btn:hover{transform:translateY(-2px);filter:brightness(1.08);}
+  .hint{margin-top:16px;color:var(--dim);font-size:.82rem;}
+  .hint kbd{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:6px;padding:2px 8px;font-family:var(--f-mono);font-size:.78rem;}
+
+  /* game over extras */
+  .stat-row{display:flex;gap:14px;justify-content:center;margin:14px 0 4px;}
+  .stat{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:12px 18px;}
+  .stat b{display:block;font-family:var(--f-mono);font-size:1.6rem;color:var(--teal);}
+  .stat span{font-size:.72rem;color:var(--dim);}
+  .name-in{width:100%;margin:14px 0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:12px 14px;color:var(--ink);font-family:var(--f-body);font-size:1rem;text-align:center;}
+  .lb{margin-top:10px;text-align:left;}
+  .lb h4{font-family:var(--f-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin-bottom:8px;text-align:center;}
+  .lb-row{display:flex;justify-content:space-between;padding:7px 12px;border-radius:9px;font-size:.9rem;}
+  .lb-row:nth-child(even){background:rgba(255,255,255,.04);}
+  .lb-row.you{background:rgba(0,229,160,.14);border:1px solid rgba(0,229,160,.3);}
+  .lb-row .rk{color:var(--gold);font-family:var(--f-mono);width:28px;}
+  .lb-row .nm{flex:1;}
+  .lb-row .sc{font-family:var(--f-mono);color:var(--teal);}
+
+  /* story shard card */
+  #shard{position:absolute;left:50%;bottom:26px;transform:translateX(-50%) translateY(140%);z-index:7;width:min(520px,90%);background:rgba(10,22,40,.82);backdrop-filter:blur(10px);border:1px solid rgba(0,229,160,.3);border-radius:16px;padding:14px 18px;box-shadow:0 14px 50px rgba(0,0,0,.5);transition:transform .5s cubic-bezier(.34,1.4,.64,1);}
+  #shard.show{transform:translateX(-50%) translateY(0);}
+  #shard .tag{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);}
+  #shard .txt{font-size:.98rem;line-height:1.45;margin-top:4px;}
+  #shard .src{color:var(--dim);font-size:.78rem;margin-top:6px;}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <a class="brand" href="/"><span class="mk"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M8 6l4-4 4 4M8 18l4 4 4-4M3 12h18" stroke="#030712" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>MoyaCode</a>
+
+  <div id="hud">
+    <div class="score-box"><span id="score">0</span><br><small>SCORE</small></div>
+    <div class="lit-box">🏫 <span id="lit">0</span> schools lit</div>
+    <div class="flame-meter"><div class="flame-fill" id="flame"></div></div>
+  </div>
+
+  <canvas id="game"></canvas>
+
+  <button class="pause-btn" id="pauseBtn" aria-label="Pause">⏸ Pause</button>
+  <button class="pause-btn" id="soundBtn" aria-label="Toggle sound" style="display:flex;top:48px;">🔊</button>
+
+  <div id="shard"><div class="tag" id="shardTag">Echoes of Wisdom</div><div class="txt" id="shardTxt"></div><div class="src" id="shardSrc"></div></div>
+
+  <!-- START -->
+  <div class="overlay" id="startScreen">
+    <div class="panel">
+      <div class="eyebrow">The Ajasin Torch Run · Owo</div>
+      <h1 class="title">Light the <span class="g">Nation</span></h1>
+      <p class="sub">Pa Ajasin lit the torch of free education. The schools ahead are dark. Run, keep your flame alive, and light up every school you pass.</p>
+      <blockquote class="quote">"Education in this State is free at all levels."<cite>— Chief M. A. Ajasin, sworn in as Ondo State's first Executive Governor, 1 Oct 1979</cite></blockquote>
+      <button class="btn" id="startBtn">▶ Start the run</button>
+      <div class="hint">Tap / click / <kbd>Space</kbd> to leap. Collect glowing knowledge to feed your flame.</div>
+    </div>
+  </div>
+
+  <!-- GAME OVER -->
+  <div class="overlay hidden" id="overScreen">
+    <div class="panel">
+      <div class="eyebrow" id="overEyebrow">The flame went out</div>
+      <h1 class="title" style="font-size:clamp(1.6rem,6vw,2.4rem)">Your <span class="g">legacy</span> run</h1>
+      <div class="stat-row">
+        <div class="stat"><b id="finalScore">0</b><span>SCORE</span></div>
+        <div class="stat"><b id="finalLit">0</b><span>SCHOOLS LIT</span></div>
+      </div>
+      <blockquote class="quote" id="overQuote"></blockquote>
+      <input class="name-in" id="nameIn" maxlength="16" placeholder="Enter your name for the leaderboard" />
+      <div class="lb"><h4>Top Torchbearers</h4><div id="lbList"></div></div>
+      <button class="btn" id="againBtn" style="margin-top:16px;">↻ Run again</button>
+      <div class="hint">Leaderboard saves on this device. Global ranking unlocks with the live database.</div>
+    </div>
+  </div>
+
+  <!-- PAUSED -->
+  <div class="overlay hidden" id="pauseScreen">
+    <div class="panel">
+      <div class="eyebrow">Paused</div>
+      <h1 class="title" style="font-size:clamp(1.8rem,7vw,2.6rem)">Take your <span class="g">time</span></h1>
+      <p class="sub">Your flame is safe. Resume whenever you're ready.</p>
+      <button class="btn" id="resumeBtn">▶ Resume</button>
+      <div class="hint" style="margin-top:18px;"><button id="restartBtn" style="background:none;border:none;color:var(--dim);text-decoration:underline;cursor:pointer;font-family:var(--f-body);font-size:.85rem;">Restart run</button> · or press <kbd>Esc</kbd> to resume</div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== Light the Nation — Ajasin Torch Run (Neon Saga prototype) ===== */
+const cv = document.getElementById('game');
+const ctx = cv.getContext('2d');
+let W=0,H=0,DPR=Math.min(window.devicePixelRatio||1,2);
+function resize(){ W=window.innerWidth; H=window.innerHeight; cv.width=W*DPR; cv.height=H*DPR; ctx.setTransform(DPR,0,0,DPR,0,0); groundY=H*0.82; }
+let groundY; window.addEventListener('resize',resize); resize();
+
+/* authentic content from "The Story of a Legend" (1992) */
+const QUOTES=[
+  {t:"A human being is not in any proper sense a human being until he is educated.",s:"— Chief M. A. Ajasin, 17 Jan 1980",tag:"Echoes of Wisdom"},
+  {t:"It is on sound education for the people that the security and destiny of every nation mainly rest.",s:"— Chief M. A. Ajasin, 17 Jan 1980",tag:"Echoes of Wisdom"},
+  {t:"No road is too long for the man who advances deliberately and with determination.",s:"— Chief M. A. Ajasin",tag:"Echoes of Wisdom"},
+  {t:"Victory belongs to the most persevering.",s:"— Chief M. A. Ajasin",tag:"Echoes of Wisdom"},
+  {t:"Founder and first Principal of Owo High School, 1963.",s:"The Story of a Legend",tag:"From the Legend"},
+  {t:"First Executive Governor of Ondo State, 1979–1983 — he made education free at every level.",s:"The Story of a Legend",tag:"From the Legend"},
+  {t:"A pioneer school principal for 15 years (1947–1962) before he ever held office.",s:"The Story of a Legend",tag:"From the Legend"},
+  {t:"Asiwaju of Owo — a son of Owo who lit the way for a generation.",s:"The Story of a Legend",tag:"From the Legend"},
+];
+const OVER_QUOTES=[
+  {t:"No road is too long for the man who advances deliberately and with determination.",s:"— Chief M. A. Ajasin"},
+  {t:"Victory belongs to the most persevering.",s:"— Chief M. A. Ajasin"},
+];
+
+/* ---- game state ---- */
+let state='start', t=0, last=0;
+let scrollX=0, speed=0, baseSpeed=300;
+let score=0, schoolsLit=0, flame=100;
+let hero, orbs, schools, obstacles, embers, sparks, lit;
+let nextOrb=0, nextSchool=0, nextObstacle=0, shardTimer=0, usedQuotes=[];
+
+function reset(){
+  t=0; scrollX=0; speed=baseSpeed; score=0; schoolsLit=0; flame=100;
+  hero={x:W*0.22,y:groundY,vy:0,onGround:true,runPhase:0};
+  orbs=[]; schools=[]; obstacles=[]; embers=[]; sparks=[]; lit=[];
+  nextOrb=0; nextSchool=900; nextObstacle=1400; shardTimer=0; usedQuotes=[];
+}
+
+/* ---- input ---- */
+function jump(){
+  if(state!=='play') return;
+  if(hero.onGround){ hero.vy=-560; hero.onGround=false; sfxJump(); }
+}
+window.addEventListener('keydown',e=>{ if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();jump();} });
+cv.addEventListener('pointerdown',e=>{e.preventDefault();jump();});
+
+/* ---- audio: Web Audio, no files, fully royalty-free ---- */
+let actx=null, soundOn=true, musicTimer=null, mStep=0;
+function initAudio(){ try{ if(!actx){actx=new (window.AudioContext||window.webkitAudioContext)();} if(actx.state==='suspended')actx.resume(); }catch(e){} }
+function tone(freq,dur,type,vol,slideTo){ if(!actx||!soundOn)return; const o=actx.createOscillator(),g=actx.createGain(); o.type=type||'square'; o.frequency.setValueAtTime(freq,actx.currentTime); if(slideTo)o.frequency.exponentialRampToValueAtTime(slideTo,actx.currentTime+dur); g.gain.setValueAtTime(0.0001,actx.currentTime); g.gain.exponentialRampToValueAtTime(vol||0.16,actx.currentTime+0.01); g.gain.exponentialRampToValueAtTime(0.0001,actx.currentTime+dur); o.connect(g).connect(actx.destination); o.start(); o.stop(actx.currentTime+dur+0.03); }
+const sfxJump=()=>tone(420,0.18,'square',0.15,780);
+const sfxOrb =()=>tone(900,0.12,'triangle',0.15,1400);
+const sfxLight=()=>[523,659,784,1046].forEach((f,i)=>setTimeout(()=>tone(f,0.45,'sawtooth',0.10),i*55));
+const sfxHit =()=>tone(150,0.28,'sawtooth',0.22,55);
+const sfxOver=()=>[523,392,330,247].forEach((f,i)=>setTimeout(()=>tone(f,0.4,'square',0.16),i*150));
+const BASS=[131,131,165,196];
+const LEAD=[523,0,659,587,0,784,659,523,0,587,659,0,784,880,784,0];
+function startMusic(){ if(musicTimer)return; const stepMs=60000/108/2;
+  musicTimer=setInterval(()=>{ if(!actx||!soundOn||state!=='play')return;
+    const n=LEAD[mStep%LEAD.length]; if(n)tone(n,stepMs/1000*0.85,'triangle',0.05);
+    if(mStep%4===0)tone(BASS[Math.floor(mStep/4)%BASS.length],stepMs/1000*1.6,'sine',0.10);
+    if(mStep%2===0)tone(2100,0.025,'square',0.012);
+    mStep++; },stepMs); }
+function setSound(on){ soundOn=on; const b=document.getElementById('soundBtn'); if(b)b.textContent=on?'🔊':'🔇'; }
+document.getElementById('soundBtn').addEventListener('click',e=>{e.stopPropagation();initAudio();setSound(!soundOn);});
+
+/* ---- spawns ---- */
+function spawnOrb(){ const y=groundY-60-Math.random()*150; orbs.push({x:W+40,y,r:11,bob:Math.random()*6}); }
+function spawnSchool(){ schools.push({x:W+80,w:120,h:120+Math.random()*40,lit:false}); }
+function spawnObstacle(){ obstacles.push({x:W+40,w:30+Math.random()*14,h:34+Math.random()*26}); }
+
+function showShard(){
+  const pool=QUOTES.filter((_,i)=>!usedQuotes.includes(i));
+  const src=pool.length?pool:QUOTES; const idx=QUOTES.indexOf(src[Math.floor(Math.random()*src.length)]);
+  usedQuotes.push(idx); if(usedQuotes.length>QUOTES.length-1) usedQuotes=[];
+  const q=QUOTES[idx];
+  document.getElementById('shardTag').textContent=q.tag;
+  document.getElementById('shardTxt').textContent='“'+q.t+'”';
+  document.getElementById('shardSrc').textContent=q.s;
+  const el=document.getElementById('shard'); el.classList.add('show');
+  clearTimeout(showShard._tm); showShard._tm=setTimeout(()=>el.classList.remove('show'),4200);
+}
+
+/* ---- update ---- */
+function update(dt){
+  t+=dt; speed=baseSpeed+Math.min(scrollX/600,260); scrollX+=speed*dt;
+  score=Math.floor(scrollX/18)+schoolsLit*50;
+  flame-=dt*(4.2+speed*0.004); // drains faster as you go
+  hero.runPhase+=dt*speed*0.03;
+  // hero physics
+  hero.vy+=1500*dt; hero.y+=hero.vy*dt;
+  if(hero.y>=groundY){hero.y=groundY;hero.vy=0;hero.onGround=true;}
+  // torch embers
+  if(Math.random()<0.9){ const hx=hero.x+26,hy=hero.y-92; embers.push({x:hx,y:hy,vx:(Math.random()-0.5)*20,vy:-30-Math.random()*40,life:1,r:2+Math.random()*2.5}); }
+  embers.forEach(e=>{e.x+=e.vx*dt;e.y+=e.vy*dt;e.vy-=40*dt;e.life-=dt*1.6;});
+  embers=embers.filter(e=>e.life>0).slice(-90);
+  sparks.forEach(s=>{s.x+=s.vx*dt;s.y+=s.vy*dt;s.vy+=300*dt;s.life-=dt*1.3;});
+  sparks=sparks.filter(s=>s.life>0);
+  // spawns
+  nextOrb-=speed*dt; if(nextOrb<=0){spawnOrb();nextOrb=260+Math.random()*220;}
+  nextSchool-=speed*dt; if(nextSchool<=0){spawnSchool();nextSchool=900+Math.random()*700;}
+  nextObstacle-=speed*dt; if(nextObstacle<=0){spawnObstacle();nextObstacle=820+Math.random()*900;}
+  // move + collide orbs
+  orbs.forEach(o=>{o.x-=speed*dt;});
+  orbs=orbs.filter(o=>{
+    const dx=o.x-hero.x, dy=(o.y+Math.sin(t*4+o.bob)*5)-(hero.y-70);
+    if(Math.abs(dx)<34&&Math.abs(dy)<48){ flame=Math.min(100,flame+9); score+=5; sfxOrb(); for(let i=0;i<8;i++)sparks.push({x:o.x,y:o.y,vx:(Math.random()-0.5)*180,vy:-Math.random()*160,life:.6,c:'0,229,160'}); return false; }
+    return o.x>-40;
+  });
+  // schools
+  schools.forEach(s=>{ s.x-=speed*dt;
+    if(!s.lit && s.x < hero.x+10){ s.lit=true; schoolsLit++; flame=Math.min(100,flame+5); sfxLight();
+      for(let i=0;i<26;i++)sparks.push({x:s.x+s.w/2,y:groundY-s.h/2,vx:(Math.random()-0.5)*320,vy:-Math.random()*300,life:1,c:'252,211,77'});
+      showShard();
+    }
+  });
+  schools=schools.filter(s=>s.x>-200);
+  // obstacles + collide
+  obstacles.forEach(o=>{o.x-=speed*dt;});
+  obstacles=obstacles.filter(o=>{
+    const hit = o.x<hero.x+18 && o.x+o.w>hero.x-18 && hero.y > groundY-o.h-4;
+    if(hit && !o.done){ o.done=true; flame-=22; sfxHit(); for(let i=0;i<14;i++)sparks.push({x:hero.x,y:hero.y-40,vx:(Math.random()-0.5)*240,vy:-Math.random()*200,life:.7,c:'251,113,133'}); }
+    return o.x>-60;
+  });
+  if(flame<=0){ flame=0; gameOver(); }
+  // hud
+  document.getElementById('score').textContent=score;
+  document.getElementById('lit').textContent=schoolsLit;
+  document.getElementById('flame').style.width=flame+'%';
+}
+
+/* ---- draw ---- */
+function lerp(a,b,p){return a+(b-a)*p;}
+function drawBg(){
+  const g=ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,'#06122b'); g.addColorStop(.55,'#0A1628'); g.addColorStop(1,'#030712'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  // moon glow
+  const mg=ctx.createRadialGradient(W*0.8,H*0.24,10,W*0.8,H*0.24,200); mg.addColorStop(0,'rgba(0,229,160,.20)'); mg.addColorStop(1,'rgba(0,229,160,0)'); ctx.fillStyle=mg; ctx.fillRect(0,0,W,H);
+  // far parallax skyline (Owo rooftops / palace silhouette)
+  ctx.fillStyle='rgba(15,31,56,.9)';
+  const off=(scrollX*0.2)%160;
+  for(let x=-off;x<W+160;x+=160){ const h=70+((x*7)%50); ctx.fillRect(x,groundY-h,90,h); ctx.beginPath(); ctx.moveTo(x-6,groundY-h); ctx.lineTo(x+45,groundY-h-34); ctx.lineTo(x+96,groundY-h); ctx.fill(); }
+  // mid layer
+  ctx.fillStyle='rgba(22,38,68,.95)';
+  const off2=(scrollX*0.45)%240;
+  for(let x=-off2;x<W+240;x+=240){ ctx.fillRect(x,groundY-46,140,46); }
+}
+function drawGround(){
+  ctx.fillStyle='#050a16'; ctx.fillRect(0,groundY,W,H-groundY);
+  ctx.strokeStyle='rgba(0,229,160,.5)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(0,groundY); ctx.lineTo(W,groundY); ctx.stroke();
+  ctx.strokeStyle='rgba(0,229,160,.18)'; ctx.lineWidth=2; const o=(scrollX)%48;
+  for(let x=-o;x<W;x+=48){ ctx.beginPath(); ctx.moveTo(x,groundY+4); ctx.lineTo(x-14,H); ctx.stroke(); }
+}
+function drawSchool(s){
+  const bx=s.x, by=groundY-s.h, w=s.w, h=s.h;
+  ctx.fillStyle = s.lit? 'rgba(20,30,52,1)' : 'rgba(12,18,32,1)';
+  ctx.strokeStyle = s.lit? 'rgba(252,211,77,.8)':'rgba(255,255,255,.08)'; ctx.lineWidth=2;
+  ctx.fillRect(bx,by,w,h); ctx.strokeRect(bx,by,w,h);
+  // roof
+  ctx.beginPath(); ctx.moveTo(bx-8,by); ctx.lineTo(bx+w/2,by-26); ctx.lineTo(bx+w+8,by); ctx.closePath();
+  ctx.fillStyle=s.lit?'rgba(252,211,77,.25)':'rgba(20,28,48,1)'; ctx.fill();
+  // windows
+  for(let r=0;r<2;r++)for(let c=0;c<3;c++){ const wx=bx+16+c*((w-32)/3), wy=by+18+r*44;
+    if(s.lit){ ctx.fillStyle='rgba(252,211,77,.95)'; ctx.shadowColor='rgba(252,211,77,.9)'; ctx.shadowBlur=18; } else { ctx.fillStyle='rgba(255,255,255,.05)'; ctx.shadowBlur=0; }
+    ctx.fillRect(wx,wy,22,28); ctx.shadowBlur=0;
+  }
+  if(s.lit){ const gg=ctx.createRadialGradient(bx+w/2,by+h/2,10,bx+w/2,by+h/2,w); gg.addColorStop(0,'rgba(252,211,77,.18)'); gg.addColorStop(1,'rgba(252,211,77,0)'); ctx.fillStyle=gg; ctx.fillRect(bx-w,by-h,w*3,h*3); }
+}
+function drawHero(){
+  const x=hero.x, y=hero.y, run=Math.sin(hero.runPhase), run2=Math.sin(hero.runPhase+Math.PI);
+  const air=hero.onGround?0:1, bob=hero.onGround?Math.abs(Math.sin(hero.runPhase))*-3:0;
+  ctx.save(); ctx.translate(x,y+bob);
+  // shadow
+  ctx.save(); ctx.scale(1,.3); ctx.fillStyle='rgba(0,0,0,.4)'; ctx.beginPath(); ctx.arc(0,(groundY-y)/.3*0+ (hero.onGround?6: (groundY-(y+bob))/0.3),20,0,7); ctx.fill(); ctx.restore();
+  const SKIN='#10131c';
+  ctx.strokeStyle='rgba(0,229,160,.85)'; ctx.lineWidth=3; ctx.lineCap='round'; ctx.fillStyle=SKIN;
+  ctx.shadowColor='rgba(0,229,160,.5)'; ctx.shadowBlur=12;
+  // back leg
+  ctx.beginPath(); ctx.moveTo(0,-44); ctx.lineTo(-10+ (air?14:run*18),-22); ctx.lineTo(-16+(air?22:run*22),0); ctx.stroke();
+  // front leg
+  ctx.beginPath(); ctx.moveTo(0,-44); ctx.lineTo(8+(air?-6:run2*18),-22); ctx.lineTo(12+(air?-10:run2*22),0); ctx.stroke();
+  // torso
+  ctx.beginPath(); ctx.moveTo(0,-44); ctx.lineTo(2,-92); ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(1,-70,9,18,0,0,7); ctx.fill(); ctx.stroke();
+  // back arm (swing)
+  ctx.beginPath(); ctx.moveTo(2,-84); ctx.lineTo(-10,-66+run*10); ctx.stroke();
+  // head
+  ctx.beginPath(); ctx.arc(3,-104,11,0,7); ctx.fill(); ctx.stroke();
+  // raised torch arm
+  ctx.beginPath(); ctx.moveTo(2,-86); ctx.lineTo(20,-104); ctx.lineTo(28,-122); ctx.stroke();
+  ctx.shadowBlur=0;
+  // torch stick
+  ctx.strokeStyle='#6b4a1f'; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(26,-118); ctx.lineTo(30,-100); ctx.stroke();
+  ctx.restore();
+  // torch flame glow (world coords)
+  const fx=x+28,fy=y+bob-126;
+  const fg=ctx.createRadialGradient(fx,fy,2,fx,fy,90); fg.addColorStop(0,'rgba(255,240,180,.95)'); fg.addColorStop(.3,'rgba(252,211,77,.7)'); fg.addColorStop(.7,'rgba(251,113,133,.25)'); fg.addColorStop(1,'rgba(251,113,133,0)');
+  ctx.fillStyle=fg; ctx.beginPath(); ctx.arc(fx,fy,90,0,7); ctx.fill();
+}
+function drawParticles(){
+  ctx.globalCompositeOperation='lighter';
+  embers.forEach(e=>{ ctx.fillStyle='rgba(252,211,77,'+e.life+')'; ctx.beginPath(); ctx.arc(e.x,e.y,e.r,0,7); ctx.fill(); });
+  sparks.forEach(s=>{ ctx.fillStyle='rgba('+s.c+','+s.life+')'; ctx.beginPath(); ctx.arc(s.x,s.y,3,0,7); ctx.fill(); });
+  ctx.globalCompositeOperation='source-over';
+}
+function drawOrb(o){
+  const y=o.y+Math.sin(t*4+o.bob)*5;
+  const g=ctx.createRadialGradient(o.x,y,1,o.x,y,o.r*2.4); g.addColorStop(0,'rgba(255,255,255,.95)'); g.addColorStop(.4,'rgba(0,229,160,.85)'); g.addColorStop(1,'rgba(0,229,160,0)');
+  ctx.fillStyle=g; ctx.beginPath(); ctx.arc(o.x,y,o.r*2.4,0,7); ctx.fill();
+  ctx.fillStyle='#eafff7'; ctx.beginPath(); ctx.arc(o.x,y,o.r*0.5,0,7); ctx.fill();
+}
+function drawObstacle(o){
+  const by=groundY-o.h;
+  ctx.fillStyle='rgba(40,18,30,1)'; ctx.strokeStyle='rgba(251,113,133,.7)'; ctx.lineWidth=2;
+  ctx.fillRect(o.x,by,o.w,o.h); ctx.strokeRect(o.x,by,o.w,o.h);
+  ctx.fillStyle='rgba(251,113,133,.9)'; ctx.font='14px DM Mono'; ctx.fillText('×',o.x+o.w/2-4,by+o.h/2+5);
+}
+function render(){
+  drawBg();
+  schools.forEach(drawSchool);
+  drawGround();
+  orbs.forEach(drawOrb);
+  obstacles.forEach(drawObstacle);
+  drawHero();
+  drawParticles();
+}
+
+/* ---- loop ---- */
+function frame(ts){
+  const dt=Math.min((ts-last)/1000||0,0.05); last=ts;
+  if(state==='play'){ update(dt); }
+  render();
+  requestAnimationFrame(frame);
+}
+reset();              // initialize the world so the idle scene renders behind the start screen
+requestAnimationFrame(frame);
+
+/* ---- flow ---- */
+const pauseBtn=document.getElementById('pauseBtn');
+const pauseScreen=document.getElementById('pauseScreen');
+function start(){ initAudio(); startMusic(); reset(); state='play'; document.getElementById('startScreen').classList.add('hidden'); document.getElementById('overScreen').classList.add('hidden'); pauseScreen.classList.add('hidden'); pauseBtn.style.display='flex'; }
+function togglePause(){
+  if(state==='play'){ state='paused'; pauseScreen.classList.remove('hidden'); pauseBtn.style.display='none'; }
+  else if(state==='paused'){ state='play'; pauseScreen.classList.add('hidden'); pauseBtn.style.display='flex'; }
+}
+pauseBtn.addEventListener('click',e=>{e.stopPropagation();togglePause();});
+document.getElementById('resumeBtn').addEventListener('click',togglePause);
+document.getElementById('restartBtn').addEventListener('click',start);
+window.addEventListener('keydown',e=>{ if((e.code==='Escape'||e.code==='KeyP')&&(state==='play'||state==='paused')){e.preventDefault();togglePause();} });
+window.addEventListener('blur',()=>{ if(state==='play') togglePause(); }); // auto-pause when tab loses focus
+function gameOver(){
+  state='over'; pauseBtn.style.display='none'; sfxOver();
+  document.getElementById('finalScore').textContent=score;
+  document.getElementById('finalLit').textContent=schoolsLit;
+  const q=OVER_QUOTES[Math.floor(Math.random()*OVER_QUOTES.length)];
+  document.getElementById('overQuote').innerHTML='“'+q.t+'”<cite>'+q.s+'</cite>';
+  document.getElementById('nameIn').value=localStorage.getItem('torch_name')||'';
+  renderLB(null);
+  document.getElementById('overScreen').classList.remove('hidden');
+}
+function getLB(){ try{return JSON.parse(localStorage.getItem('torch_lb')||'[]');}catch(e){return [];} }
+function renderLB(youIdx){
+  const lb=getLB(); const el=document.getElementById('lbList');
+  if(!lb.length){ el.innerHTML='<div class="lb-row"><span class="nm" style="color:var(--dim)">Be the first torchbearer on the board.</span></div>'; return; }
+  el.innerHTML=lb.slice(0,6).map((r,i)=>`<div class="lb-row ${i===youIdx?'you':''}"><span class="rk">#${i+1}</span><span class="nm">${(r.n||'Anon').replace(/[<>&]/g,'')}</span><span class="sc">${r.s}</span></div>`).join('');
+}
+function saveScore(){
+  const name=(document.getElementById('nameIn').value.trim()||'Anonymous').slice(0,16);
+  localStorage.setItem('torch_name',name);
+  const lb=getLB(); const entry={n:name,s:score,l:schoolsLit}; lb.push(entry);
+  lb.sort((a,b)=>b.s-a.s); const top=lb.slice(0,20); localStorage.setItem('torch_lb',JSON.stringify(top));
+  renderLB(top.indexOf(entry));
+}
+document.getElementById('startBtn').addEventListener('click',start);
+document.getElementById('againBtn').addEventListener('click',start);
+document.getElementById('nameIn').addEventListener('change',saveScore);
+document.getElementById('nameIn').addEventListener('blur',saveScore);
+</script>
+</body>
+</html>

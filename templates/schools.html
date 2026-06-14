@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}MoyaCode | For Schools{% endblock %}
+{% block nav_schools %}active{% endblock %}
+
+{% block head %}
+<style>
+  .feat-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; margin-top: 48px; }
+  .feat { background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--r-xl); padding: 24px; }
+  .feat h3 { font-family: var(--f-display); font-size: 1.1rem; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+  .feat p { color: var(--t-400); line-height: 1.55; font-size: 0.95rem; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--c-teal); box-shadow: 0 0 12px var(--c-teal); }
+  .cta-row { margin-top: 44px; display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn-primary { padding: 13px 26px; border-radius: var(--r-lg); background: var(--c-teal); color: var(--bg-0); font-weight: 700; box-shadow: 0 0 28px rgba(0,229,160,0.3); transition: transform var(--dur-fast) var(--spring); }
+  .btn-primary:hover { transform: translateY(-2px); }
+  .btn-outline { padding: 13px 26px; border-radius: var(--r-lg); border: 1px solid var(--glass-hi); color: var(--t-100); font-weight: 600; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="wrap">
+  <span class="eyebrow">For Schools</span>
+  <h1 class="page-h1">Bring real coding<br>to <span style="color:var(--c-teal)">your classroom.</span></h1>
+  <p class="lead">MoyaCode gives teachers a ready-made, game-style coding curriculum mapped to JSS1–SS3 — no setup, no licences, no expensive lab software. Students learn on any browser.</p>
+
+  <div class="feat-list">
+    <div class="feat"><h3><span class="dot"></span>Curriculum-ready</h3><p>Quests aligned to class levels, from Scratch fundamentals to web building blocks and Python.</p></div>
+    <div class="feat"><h3><span class="dot"></span>Teacher visibility</h3><p>See progress, streaks, and at-risk students so you know exactly who needs a nudge.</p></div>
+    <div class="feat"><h3><span class="dot"></span>Zero cost to learn</h3><p>Every lesson and quest is free for students. We never charge a child to learn.</p></div>
+    <div class="feat"><h3><span class="dot"></span>Showcase student work</h3><p>Your students' best games get featured in the public <a href="/arcade" style="color:var(--c-teal)">Arcade</a> — real motivation, real pride.</p></div>
+  </div>
+
+  <div class="cta-row">
+    <a href="mailto:hello@moyacode.com?subject=MoyaCode%20for%20Schools" class="btn-primary">Talk to us</a>
+    <a href="/arcade" class="btn-outline">See student games →</a>
+  </div>
+</section>
+{% endblock %}

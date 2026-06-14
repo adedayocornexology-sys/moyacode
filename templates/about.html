@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}MoyaCode | About{% endblock %}
+{% block nav_about %}active{% endblock %}
+
+{% block head %}
+<style>
+  .about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-top: 48px; }
+  .about-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--r-xl); padding: 26px; }
+  .about-card h3 { font-family: var(--f-display); font-size: 1.15rem; margin-bottom: 8px; }
+  .about-card p { color: var(--t-400); line-height: 1.55; font-size: 0.95rem; }
+  .about-icon { width: 42px; height: 42px; border-radius: 11px; display: grid; place-items: center; font-size: 1.3rem; margin-bottom: 16px; background: var(--c-teal-faint); border: 1px solid var(--c-teal-dim); }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="wrap">
+  <span class="eyebrow">Our Story</span>
+  <h1 class="page-h1">Coding shouldn't feel<br><span style="color:var(--c-teal)">out of reach.</span></h1>
+  <p class="lead">MoyaCode is a game-style coding journey built in Owo, Nigeria, for students from JSS1 to SS3. We turn "coding is too hard" into "give me one more quest" — with XP, hearts, streaks, and lessons that actually make sense.</p>
+
+  <div class="about-grid">
+    <div class="about-card">
+      <div class="about-icon">🎯</div>
+      <h3>Why we exist</h3>
+      <p>Too many brilliant students never touch code because the on-ramp is intimidating. We make the first step playful, free, and impossible to fail at.</p>
+    </div>
+    <div class="about-card">
+      <div class="about-icon">🧠</div>
+      <h3>How we teach</h3>
+      <p>Scratch, HTML, CSS, JavaScript — and a growing Python track — delivered as bite-size quests with instant feedback, not walls of theory.</p>
+    </div>
+    <div class="about-card">
+      <div class="about-icon">🌍</div>
+      <h3>Who it's for</h3>
+      <p>Secondary-school students across Africa, their teachers, and parents who want to see real progress they can track.</p>
+    </div>
+    <div class="about-card">
+      <div class="about-icon">🎮</div>
+      <h3>The Arcade</h3>
+      <p>Our students don't just learn — they build. The best student-made games get featured in our <a href="/arcade" style="color:var(--c-teal)">Arcade</a> for the world to play.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

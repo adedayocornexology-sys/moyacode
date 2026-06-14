@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}MoyaCode | Tracks{% endblock %}
+{% block nav_tracks %}active{% endblock %}
+
+{% block head %}
+<style>
+  .tracks { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-top: 48px; }
+  .tcard { background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--r-xl); padding: 24px; position: relative; overflow: hidden; }
+  .tcard .num { font-family: var(--f-mono); font-size: 0.75rem; color: var(--t-400); letter-spacing: 0.06em; }
+  .tcard .tic { width: 48px; height: 48px; border-radius: 13px; display: grid; place-items: center; font-size: 1.5rem; margin: 14px 0; }
+  .tcard h3 { font-family: var(--f-display); font-size: 1.15rem; }
+  .tcard .lvl { color: var(--t-400); font-size: 0.9rem; margin-top: 4px; }
+  .tag { display: inline-block; margin-top: 14px; font-family: var(--f-mono); font-size: 0.72rem; padding: 4px 11px; border-radius: 999px; }
+  .t1 { background: var(--c-teal-dim); } .tag1 { background: var(--c-teal-faint); color: var(--c-teal); border: 1px solid var(--c-teal-dim); }
+  .t2 { background: var(--c-blue-dim); } .tag2 { background: var(--c-blue-dim); color: var(--c-blue); }
+  .t3 { background: var(--c-amber-dim); } .tag3 { background: var(--c-amber-dim); color: var(--c-amber); }
+  .t4 { background: var(--c-coral-dim); } .tag4 { background: var(--c-coral-dim); color: var(--c-coral); }
+  .tcard.soon { border-style: dashed; border-color: var(--c-teal-dim); }
+  .soon-flag { position: absolute; top: 14px; right: 14px; font-family: var(--f-mono); font-size: 0.66rem; color: var(--c-teal); background: var(--c-teal-faint); padding: 3px 9px; border-radius: 999px; border: 1px solid var(--c-teal-dim); }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="wrap">
+  <span class="eyebrow">Curriculum</span>
+  <h1 class="page-h1">Your full journey,<br><span style="color:var(--c-teal)">one track at a time.</span></h1>
+  <p class="lead">Built for JSS1 through SS3. Each track builds on the last — from visual blocks all the way to real JavaScript, with Python on the way.</p>
+
+  <div class="tracks">
+    <div class="tcard"><div class="num">Track 01</div><div class="tic t1">🧩</div><h3>Advanced Scratch</h3><div class="lvl">JSS 1 – JSS 2</div><span class="tag tag1">Beginner</span></div>
+    <div class="tcard"><div class="num">Track 02</div><div class="tic t2">📄</div><h3>HTML Fundamentals</h3><div class="lvl">JSS 3 – SS 1</div><span class="tag tag2">Intermediate</span></div>
+    <div class="tcard"><div class="num">Track 03</div><div class="tic t3">🎨</div><h3>CSS &amp; Design</h3><div class="lvl">SS 2</div><span class="tag tag3">Intermediate</span></div>
+    <div class="tcard"><div class="num">Track 04</div><div class="tic t4">⚡</div><h3>JavaScript Logic</h3><div class="lvl">SS 3</div><span class="tag tag4">Advanced</span></div>
+    <div class="tcard soon"><span class="soon-flag">Coming soon</span><div class="num">Track 05</div><div class="tic t1">🐍</div><h3>Python &amp; AI</h3><div class="lvl">SS 2 – SS 3</div><span class="tag tag1">Planned</span></div>
+  </div>
+</section>
+{% endblock %}

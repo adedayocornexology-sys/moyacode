@@ -139,3 +139,60 @@ CREATE POLICY "handoff_events: select own rows"
   ON public.handoff_events
   FOR SELECT
   USING (auth.uid() = student_id);
+
+
+-- ── games (student-built Arcade) ─────────────────────────────
+-- Founder-curated for now: rows are added/approved in the SQL editor.
+-- `status` starts as 'pending'; flip to 'featured' to publish.
+-- A public submission form (Phase 2) just inserts 'pending' rows.
+CREATE TABLE IF NOT EXISTS public.games (
+  id            bigint      GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  title         text        NOT NULL,
+  author_name   text        NOT NULL,
+  class_level   text,
+  description   text,
+  thumbnail_url text,
+  play_url      text        NOT NULL,
+  status        text        NOT NULL DEFAULT 'pending',
+  created_at    timestamptz NOT NULL DEFAULT now()
+);
+
+ALTER TABLE public.games ENABLE ROW LEVEL SECURITY;
+
+-- Anyone (incl. anonymous visitors) can read only featured games.
+CREATE POLICY "games: public reads featured"
+  ON public.games
+  FOR SELECT
+  USING (status = 'featured');
+
+
+-- ── game_feedback (visitor ratings + comments) ───────────────
+CREATE TABLE IF NOT EXISTS public.game_feedback (
+  id          bigint      GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  game_id     bigint      NOT NULL REFERENCES public.games (id) ON DELETE CASCADE,
+  player_name text,
+  rating      int         NOT NULL CHECK (rating BETWEEN 1 AND 5),
+  comment     text,
+  created_at  timestamptz NOT NULL DEFAULT now()
+);
+
+ALTER TABLE public.game_feedback ENABLE ROW LEVEL SECURITY;
+
+-- Feedback is public: anyone can read it and anyone can leave it.
+CREATE POLICY "game_feedback: public reads"
+  ON public.game_feedback
+  FOR SELECT
+  USING (true);
+
+CREATE POLICY "game_feedback: public submits"
+  ON public.game_feedback
+  FOR INSERT
+  WITH CHECK (true);
+
+
+-- ── seed: a playable sample so the Arcade isn't empty ────────
+INSERT INTO public.games (title, author_name, class_level, description, play_url, status)
+SELECT 'Catch the Bug', 'MoyaCode Demo', 'JSS2',
+       'Click the runaway bugs before the timer runs out. A sample of what student games look like in the Arcade.',
+       '/samplegame/', 'featured'
+WHERE NOT EXISTS (SELECT 1 FROM public.games WHERE title = 'Catch the Bug');
