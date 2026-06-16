@@ -115,6 +115,76 @@ const STATS = {
 };
 
 // ═══════════════════════════════════════════════════════
+//  MR WALES SPRITE ATLAS
+//  Coordinates in the 720×480 sprite sheet (mrwales_sprites.png)
+//  Each entry: { fps, loop, frames:[[sx,sy,sw,sh],...] }
+//  fps  = animation frames per second (game runs at 60fps)
+//  loop = true→repeat, false→hold last frame (for attacks)
+// ═══════════════════════════════════════════════════════
+const WALES_ATLAS = {
+  IDLE:  { fps:5,  loop:true,  h:115, frames:[[155,12,37,72],[192,12,37,72],[229,12,37,72]] },
+  WL:    { fps:12, loop:true,  h:115, frames:[[267,12,33,72],[300,12,33,72],[333,12,33,72],[366,12,33,72],[399,12,33,72],[432,12,33,72]] },
+  WR:    { fps:12, loop:true,  h:115, frames:[[267,12,33,72],[300,12,33,72],[333,12,33,72],[366,12,33,72],[399,12,33,72],[432,12,33,72]] },
+  RUN:   { fps:16, loop:true,  h:115, frames:[[470,12,40,72],[510,12,40,72],[550,12,40,72],[590,12,40,72],[630,12,40,72],[670,12,40,72]] },
+  JUMP:  { fps:8,  loop:false, h:120, frames:[[155,88,30,79],[185,88,30,79],[215,88,30,79],[245,88,30,79]] },
+  FALL:  { fps:8,  loop:false, h:120, frames:[[275,88,58,79],[333,88,58,79],[391,88,58,79]] },
+  DASH:  { fps:20, loop:true,  h:110, frames:[[450,88,132,79],[582,88,132,79]] },
+  LP:    { fps:22, loop:false, h:118, frames:[[155,170,41,98],[196,170,41,98],[237,170,41,98]] },
+  HP:    { fps:14, loop:false, h:118, frames:[[280,170,40,98],[320,170,40,98],[360,170,40,98]] },
+  LK:    { fps:16, loop:false, h:118, frames:[[400,170,44,98],[444,170,44,98],[488,170,44,98]] },
+  HK:    { fps:14, loop:false, h:118, frames:[[533,170,60,98],[593,170,60,98],[653,170,60,98]] },
+  SL:    { fps:14, loop:false, h:112, frames:[[155,272,51,68],[206,272,51,68],[257,272,51,68]] },
+  SP:    { fps:10, loop:false, h:112, frames:[[310,272,61,68],[371,272,61,68],[432,272,61,68],[493,272,61,68]] },
+  TAUNT: { fps:5,  loop:true,  h:112, frames:[[555,272,80,68],[635,272,80,68]] },
+  HURT:  { fps:10, loop:true,  h:128, frames:[[0,345,74,110],[74,345,74,110]] },
+  KD:    { fps:7,  loop:false, h:128, frames:[[148,345,48,110],[196,345,48,110],[244,345,48,110],[292,345,48,110]] },
+  GETUP: { fps:10, loop:false, h:128, frames:[[343,345,54,110],[397,345,54,110]] },
+  WIN:   { fps:5,  loop:true,  h:128, frames:[[452,345,100,110]] },
+  INTRO: { fps:12, loop:true,  h:115, frames:[[267,12,33,72],[300,12,33,72],[333,12,33,72],[366,12,33,72],[399,12,33,72],[432,12,33,72]] },
+};
+
+// ── Sprite loader ──
+const walesImg = new Image();
+let walesReady = false;
+walesImg.onload = () => {
+  walesReady = true;
+  console.log('%c✅ Mr Wales is ALIVE', 'color:#FFD700;font-size:16px;font-weight:bold');
+};
+walesImg.onerror = () => console.warn('Sprite sheet failed to load — using fallback shapes');
+walesImg.src = 'mrwales_sprites.png';
+
+// ── Core sprite draw ──
+function drawWalesSprite(ctx, cx, cy, facing, state, sf, flashT, tf, invuln) {
+  if (!walesReady) return false;
+
+  const anim = WALES_ATLAS[state] || WALES_ATLAS.IDLE;
+  const tpf  = Math.max(1, Math.round(60 / anim.fps));  // ticks per frame
+  let fi = Math.floor(sf / tpf);
+  fi = anim.loop ? fi % anim.frames.length : Math.min(fi, anim.frames.length - 1);
+
+  const [sx, sy, sw, sh] = anim.frames[fi];
+  const scale = anim.h / sh;
+  const dw = Math.round(sw * scale);
+  const dh = anim.h;
+
+  ctx.save();
+
+  // Hit flash: alternate between full and semi-transparent
+  if (flashT > 0 && tf % 2 === 0) ctx.globalAlpha = 0.35;
+  // Invuln flicker
+  if (invuln > 0 && tf % 4 < 2)  ctx.globalAlpha = 0.28;
+
+  ctx.translate(Math.round(cx), Math.round(cy));
+  if (facing < 0) ctx.scale(-1, 1);  // mirror for left-facing
+
+  // Feet of character anchored at (0,0) which is cy=FLOOR_Y
+  ctx.drawImage(walesImg, sx, sy, sw, sh, -Math.round(dw/2), -dh, dw, dh);
+
+  ctx.restore();
+  return true;
+}
+
+// ═══════════════════════════════════════════════════════
 //  AUDIO ENGINE  — lazy init (mobile requires user gesture first)
 // ═══════════════════════════════════════════════════════
 let AC = null;  // created on first user interaction only
@@ -547,25 +617,43 @@ class Fighter {
   }
 
   // ═══════════════════════════════════════════════════
-  //  RENDERER  — all canvas-drawn, no external images
+  //  RENDERER
   // ═══════════════════════════════════════════════════
   draw(ctx) {
-    const sx = this.shakeAmt > 0 ? (Math.random()>.5?1:-1)*this.shakeAmt*0.5 : 0;
-    const cx = this.x + sx;
+    const shk = this.shakeAmt > 0 ? (Math.random()>.5?1:-1)*this.shakeAmt*0.4 : 0;
+    const cx = Math.round(this.x + shk);
     const cy = this.y;
     const f  = this.facing;
+
+    // Ground shadow — always drawn, no alpha interference
     ctx.save();
-    // Hit flash
-    if (this.flashT > 0 && this.tf % 2 === 0) ctx.globalAlpha = 0.45;
-    // Invuln flicker
-    if (this.invuln > 0 && this.tf % 4 < 2) ctx.globalAlpha = 0.35;
-
-    // Shadow on floor
-    ctx.fillStyle = 'rgba(0,0,0,0.28)';
+    ctx.fillStyle = 'rgba(0,0,0,0.32)';
     ctx.beginPath();
-    ctx.ellipse(cx, FLOOR_Y + 5, 26, 5, 0, 0, Math.PI*2);
+    ctx.ellipse(cx, FLOOR_Y + 6, 28, 6, 0, 0, Math.PI*2);
     ctx.fill();
+    ctx.restore();
 
+    // ── Wales: use real sprite if loaded, else fallback shapes ──
+    if (this.id === 'wales') {
+      const drawn = drawWalesSprite(ctx, cx, cy, f, this.st, this.sf, this.flashT, this.tf, this.invuln);
+      if (drawn) {
+        // Overlay hit-flash white flash on top of sprite
+        if (this.flashT > 0 && this.tf % 2 === 0) {
+          const anim = WALES_ATLAS[this.st] || WALES_ATLAS.IDLE;
+          ctx.save();
+          ctx.globalCompositeOperation = 'source-atop';
+          ctx.fillStyle = 'rgba(255,255,255,0.55)';
+          ctx.fillRect(cx - 50, cy - anim.h - 5, 100, anim.h + 5);
+          ctx.restore();
+        }
+        return;
+      }
+    }
+
+    // ── Fiston / fallback: canvas-drawn character ──
+    ctx.save();
+    if (this.flashT > 0 && this.tf % 2 === 0) ctx.globalAlpha = 0.45;
+    if (this.invuln > 0 && this.tf % 4 < 2)  ctx.globalAlpha = 0.35;
     this.drawBody(ctx, cx, cy, f);
     ctx.restore();
   }
