@@ -115,17 +115,25 @@ const STATS = {
 };
 
 // ═══════════════════════════════════════════════════════
-//  AUDIO ENGINE  (zero external files)
+//  AUDIO ENGINE  — lazy init (mobile requires user gesture first)
 // ═══════════════════════════════════════════════════════
-const AC = new (window.AudioContext || window.webkitAudioContext)();
+let AC = null;  // created on first user interaction only
+function getAC() {
+  if (AC) return AC;
+  try {
+    const Ctor = window.AudioContext || window.webkitAudioContext;
+    if (Ctor) { AC = new Ctor(); }
+  } catch(_) {}
+  return AC;
+}
 function beep(type, freq, vol, dur, decay) {
   try {
-    const g = AC.createGain();
-    g.connect(AC.destination);
-    const o = AC.createOscillator();
-    o.connect(g);
+    const ac = getAC(); if (!ac) return;
+    if (ac.state === 'suspended') ac.resume();
+    const g = ac.createGain(); g.connect(ac.destination);
+    const o = ac.createOscillator(); o.connect(g);
     o.type = type;
-    const t = AC.currentTime;
+    const t = ac.currentTime;
     o.frequency.setValueAtTime(freq, t);
     o.frequency.exponentialRampToValueAtTime(freq * 0.3, t + dur);
     g.gain.setValueAtTime(vol, t);
@@ -146,13 +154,9 @@ const SFX = {
   ding:    () => beep('sine',   700, 0.30, 0.45, 0.42),
   crowd:   () => beep('sine',   200, 0.08, 0.80, 0.75),
 };
-function unlockAudio() {
-  if (AC.state === 'suspended') AC.resume();
-  document.removeEventListener('pointerdown', unlockAudio);
-  document.removeEventListener('keydown', unlockAudio);
-}
-document.addEventListener('pointerdown', unlockAudio);
-document.addEventListener('keydown', unlockAudio);
+function unlockAudio() { getAC(); }
+document.addEventListener('pointerdown', unlockAudio, { once:true });
+document.addEventListener('keydown',    unlockAudio, { once:true });
 
 // ═══════════════════════════════════════════════════════
 //  INPUT SYSTEM  — keyboard + touch + edge detection
@@ -1018,43 +1022,79 @@ function drawHUD(ctx, w, f, roundTimer, round, p1wins, p2wins, phase, tick) {
 //  SCREENS  — title, intro cinematic, end screen
 // ═══════════════════════════════════════════════════════
 function drawTitleScreen(ctx, tick) {
-  // BG
+  // Bright gradient BG — visible on all screens
   const sky=ctx.createLinearGradient(0,0,0,H);
-  sky.addColorStop(0,'#050008'); sky.addColorStop(1,'#200500');
+  sky.addColorStop(0,'#1a0035');
+  sky.addColorStop(0.5,'#3a0a00');
+  sky.addColorStop(1,'#0a0a30');
   ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
 
-  // Animated scanlines
-  ctx.fillStyle='rgba(0,0,0,0.15)';
-  for (let y=0;y<H;y+=4) ctx.fillRect(0,y,W,2);
+  // Decorative fire/energy lines
+  ctx.strokeStyle='rgba(255,80,0,0.18)';
+  ctx.lineWidth=1;
+  for (let i=0;i<8;i++) {
+    ctx.beginPath();
+    ctx.moveTo(W/2+(i-3.5)*90, 0);
+    ctx.lineTo(W/2+(i-3.5)*30, H);
+    ctx.stroke();
+  }
 
-  // Title text glow
   ctx.save();
   ctx.textAlign='center';
-  const pulse = 0.7 + Math.sin(tick*0.06)*0.3;
-  ctx.shadowColor='#cc4400'; ctx.shadowBlur=40*pulse;
-  ctx.font='bold 72px Impact,sans-serif';
-  ctx.fillStyle='#FF5500';
+  const pulse = 0.75 + Math.sin(tick*0.07)*0.25;
+
+  // Red panel behind title
+  ctx.fillStyle='rgba(180,0,0,0.35)';
+  ctx.fillRect(W/2-300, 80, 600, 110);
+  ctx.strokeStyle='rgba(255,80,0,0.6)'; ctx.lineWidth=2;
+  ctx.strokeRect(W/2-300, 80, 600, 110);
+
+  // Main title
+  ctx.shadowColor='#ff4400'; ctx.shadowBlur=50*pulse;
+  ctx.font='bold 80px Impact,sans-serif';
+  ctx.fillStyle='#FF6600';
   ctx.fillText('MR WALES', W/2, 155);
-  ctx.font='bold 40px Impact,sans-serif';
+
+  // Subtitle
+  ctx.shadowColor='#FFD700'; ctx.shadowBlur=30*pulse;
+  ctx.font='bold 38px Impact,sans-serif';
   ctx.fillStyle='#FFD700';
-  ctx.shadowColor='#FFD700'; ctx.shadowBlur=25*pulse;
-  ctx.fillText('SMACKDOWN SHOWDOWN', W/2, 205);
+  ctx.fillText('SMACKDOWN  SHOWDOWN', W/2, 200);
   ctx.shadowBlur=0;
 
-  // Tagline
-  ctx.font='16px Arial,sans-serif';
-  ctx.fillStyle='rgba(200,180,140,0.85)';
-  ctx.fillText('"Fight for the scholarship. Fight for the students."', W/2, 245);
+  // Divider
+  ctx.strokeStyle='rgba(255,215,0,0.4)'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(W/2-200,215); ctx.lineTo(W/2+200,215); ctx.stroke();
 
-  // Controls
-  ctx.font='bold 20px Impact,sans-serif';
-  ctx.fillStyle = tick%60 < 38 ? '#FFD700' : '#886600';
-  ctx.fillText('PRESS ANY KEY / TAP TO FIGHT', W/2, 310);
+  // Tagline
+  ctx.font='bold 15px Arial,sans-serif';
+  ctx.fillStyle='rgba(230,200,160,0.9)';
+  ctx.fillText('"Fight for the scholarship. Fight for the students."', W/2, 248);
+
+  // Story tease
+  ctx.font='14px Arial,sans-serif';
+  ctx.fillStyle='rgba(180,150,120,0.75)';
+  ctx.fillText('Mr Wales vs Fiston Bivold  —  Lagos, Nigeria', W/2, 272);
+
+  // TAP TO START — large, pulsing, impossible to miss
+  const blink = tick%55 < 38;
+  ctx.fillStyle = blink ? '#FFD700' : '#cc9900';
+  ctx.shadowColor = blink ? '#FFD700' : 'transparent';
+  ctx.shadowBlur  = blink ? 20 : 0;
+  ctx.font='bold 28px Impact,sans-serif';
+  ctx.fillText('TAP HERE  /  PRESS ANY KEY  TO  FIGHT', W/2, 330);
+  ctx.shadowBlur=0;
+
+  // Touch finger icon
+  if (blink) {
+    ctx.font='32px Arial';
+    ctx.fillText('👆', W/2, 365);
+  }
 
   // Credits
-  ctx.font='13px Arial,sans-serif';
-  ctx.fillStyle='rgba(120,120,120,0.7)';
-  ctx.fillText('Characters designed by JSS3 Students  ·  essenceart', W/2, H-16);
+  ctx.font='12px Arial,sans-serif';
+  ctx.fillStyle='rgba(140,130,120,0.7)';
+  ctx.fillText('Sprites by JSS3 Students  ·  essenceart  ·  MoyaCode', W/2, H-10);
   ctx.restore();
 }
 
@@ -1302,6 +1342,23 @@ function loop(now) {
 
   ctx.clearRect(0,0,W,H);
   match.draw(ctx, tick);
+
+  // Portrait mode overlay — game is landscape, phone must be rotated
+  if (window.innerWidth < window.innerHeight && window.innerWidth < 600) {
+    ctx.save();
+    ctx.fillStyle='rgba(0,0,0,0.92)';
+    ctx.fillRect(0,0,W,H);
+    ctx.textAlign='center';
+    ctx.font='bold 36px Impact,sans-serif';
+    ctx.fillStyle='#FFD700';
+    ctx.fillText('🔄  ROTATE YOUR PHONE', W/2, H/2-30);
+    ctx.font='bold 20px Arial,sans-serif';
+    ctx.fillStyle='#ccc';
+    ctx.fillText('Turn to landscape to play', W/2, H/2+10);
+    ctx.font='60px Arial';
+    ctx.fillText('📱➡️', W/2, H/2+80);
+    ctx.restore();
+  }
 }
 requestAnimationFrame(t => { last=t; requestAnimationFrame(loop); });
 </script>
