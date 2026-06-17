@@ -101,6 +101,7 @@ let state = {
   phase:                "home",
   hintUsed:             false,
   hintEliminated:       null,
+  currentSessionLog:    [],
 };
 let autoDismissTimer = null;
 
@@ -238,6 +239,7 @@ window.startQuiz = function(classKey) {
   state.selectedAnswer  = null;
   state.feedbackState   = "idle";
   state.phase           = "quiz";
+  state.currentSessionLog = [];
 
   setText(DOM.subjectBadge, quiz.title);
 
@@ -405,8 +407,9 @@ function handleCheck() {
   else           { state.currentLives--; state.streak = 0; }
   if (state.currentLives <= 0) state.phase = "gameover";
 
-  const scoreEntry = { questionId:q.id, classKey:state.activeQuizKey, isCorrect, timestamp:new Date().toISOString(), xpAwarded:isCorrect?q.xp_value:0 };
+  const scoreEntry = { questionId:q.id, classKey:state.activeQuizKey, isCorrect, timestamp:new Date().toISOString(), xpAwarded:isCorrect?q.xp_value:0, hintUsed:state.hintUsed };
   logScore(scoreEntry);
+  state.currentSessionLog.push(scoreEntry);
   window.MOYADB?.logAnswerEvent({ classKey:scoreEntry.classKey, questionId:scoreEntry.questionId, isCorrect:scoreEntry.isCorrect, xpAwarded:scoreEntry.xpAwarded });
 
   try { navigator.vibrate && navigator.vibrate(isCorrect ? [30,50,30] : [80,40,80]); } catch(e){}
@@ -529,6 +532,7 @@ function showEndScreen() {
   `);
 
   renderActionButtons(passed, classKey, nextKey, isLast);
+  window.MoyaRecap?.generate(classKey, state.currentSessionLog, profile);
 }
 
 // ─── ACTION BUTTONS ───────────────────────────────────────────────────────────

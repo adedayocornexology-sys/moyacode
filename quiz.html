@@ -311,18 +311,23 @@
 <script src="script.js"></script>
 <script type="module">
 import { requireAuth } from './js/auth.js';
-import { logAnswerEvent, markCourseComplete, logHandoffEvent } from './js/db.js';
+import { logAnswerEvent, markCourseComplete, logHandoffEvent, saveRecap } from './js/db.js';
+import { generate as recapGenerate } from './js/recap.js';
 
 const session = await requireAuth();
 if (session) {
   const uid = session.user.id;
   // Expose DB helpers to the non-module script.js via window.MOYADB
   window.MOYADB = {
-    logAnswerEvent:   (e) => logAnswerEvent(uid, e),
+    logAnswerEvent:     (e) => logAnswerEvent(uid, e),
     markCourseComplete: (classKey, opts) => markCourseComplete(uid, classKey, opts),
-    logHandoffEvent:  (e) => logHandoffEvent(uid, e),
+    logHandoffEvent:    (e) => logHandoffEvent(uid, e),
+    saveRecap:          (row) => saveRecap(uid, row),
   };
 }
+
+// MoyaRecap is available regardless of auth — guest sessions still get the recap card
+window.MoyaRecap = { generate: recapGenerate };
 </script>
 <script type="module" src="/js/assistant.js"></script>
 </body>

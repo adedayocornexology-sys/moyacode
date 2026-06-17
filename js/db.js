@@ -199,6 +199,79 @@ export async function loadActivityRecord(userId) {
   };
 }
 
+// ── Lesson recaps ─────────────────────────────────────────────
+
+/**
+ * Inserts a lesson recap row.
+ *
+ * @param {string} userId
+ * @param {{
+ *   session_id: string,
+ *   student_summary: object,
+ *   teacher_summary: object,
+ *   concepts_covered: string[],
+ *   independence_score: number,
+ *   model_used: string,
+ * }} recap
+ */
+export async function saveRecap(userId, recap) {
+  const { error } = await supabase
+    .from('lesson_recaps')
+    .insert({
+      session_id:         recap.session_id,
+      student_id:         userId,
+      cohort_id:          recap.cohort_id ?? null,
+      student_summary:    recap.student_summary,
+      teacher_summary:    recap.teacher_summary,
+      concepts_covered:   recap.concepts_covered ?? [],
+      independence_score: recap.independence_score,
+      model_used:         recap.model_used ?? 'claude-haiku',
+    });
+
+  if (error) {
+    console.warn('[db] saveRecap error:', error.message);
+  }
+}
+
+/**
+ * Loads the most recent recap for a student.
+ *
+ * @param {string} userId
+ * @returns {Promise<object|null>}
+ */
+export async function loadLatestRecap(userId) {
+  const { data, error } = await supabase
+    .from('lesson_recaps')
+    .select('*')
+    .eq('student_id', userId)
+    .order('generated_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    console.warn('[db] loadLatestRecap error:', error.message);
+    return null;
+  }
+
+  return data;
+}
+
+/**
+ * Marks a recap as viewed by the student (sets student_viewed_at).
+ *
+ * @param {string} recapId
+ */
+export async function markRecapViewed(recapId) {
+  const { error } = await supabase
+    .from('lesson_recaps')
+    .update({ student_viewed_at: new Date().toISOString() })
+    .eq('id', recapId);
+
+  if (error) {
+    console.warn('[db] markRecapViewed error:', error.message);
+  }
+}
+
 // ── localStorage migration ────────────────────────────────────
 
 /**

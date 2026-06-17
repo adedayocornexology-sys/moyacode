@@ -190,6 +190,100 @@ CREATE POLICY "game_feedback: public submits"
   WITH CHECK (true);
 
 
+-- ── lesson_recaps ────────────────────────────────────────────
+-- Generated at the end of every session by the Watcher agent (Claude Haiku).
+-- Stores both the student-facing summary and the teacher diagnostic view.
+-- independence_score is computed app-side (never by the model) from intent_counts.
+CREATE TABLE IF NOT EXISTS public.lesson_recaps (
+  id                 uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
+  session_id         uuid        NOT NULL,
+  student_id         uuid        NOT NULL REFERENCES public.students (id) ON DELETE CASCADE,
+  cohort_id          uuid,                                   -- null = self-serve
+  generated_at       timestamptz NOT NULL DEFAULT now(),
+
+  -- student-facing
+  student_summary    jsonb       NOT NULL DEFAULT '{}',      -- { built, clicked, practice_one, next_quest }
+
+  -- teacher-facing
+  teacher_summary    jsonb       NOT NULL DEFAULT '{}',      -- { concepts, struggle_points, intervention }
+  concepts_covered   text[]      NOT NULL DEFAULT '{}',
+  independence_score numeric(3,2),                           -- 0.00–1.00, computed deterministically
+
+  -- engagement tracking
+  student_opted_in   boolean     NOT NULL DEFAULT true,
+  student_viewed_at  timestamptz,
+  teacher_viewed_at  timestamptz,
+
+  -- eval / observability ("we chose our model deliberately" pillar)
+  model_used         text        NOT NULL DEFAULT 'claude-haiku',
+  eval_passed        boolean     NOT NULL DEFAULT false       -- set by Examiner
+);
+
+ALTER TABLE public.lesson_recaps ENABLE ROW LEVEL SECURITY;
+
+-- Students read only their own recaps; use getUser() server-side, never getSession()
+CREATE POLICY "lesson_recaps: select own rows"
+  ON public.lesson_recaps
+  FOR SELECT
+  USING (auth.uid() = student_id);
+
+CREATE POLICY "lesson_recaps: insert own rows"
+  ON public.lesson_recaps
+  FOR INSERT
+  WITH CHECK (auth.uid() = student_id);
+
+-- Students update only the viewed timestamp (opt-in toggle)
+CREATE POLICY "lesson_recaps: update own rows"
+  ON public.lesson_recaps
+  FOR UPDATE
+  USING (auth.uid() = student_id)
+  WITH CHECK (auth.uid() = student_id);
+
+CREATE INDEX IF NOT EXISTS lesson_recaps_student_id_generated_at_idx
+  ON public.lesson_recaps (student_id, generated_at DESC);
+
+CREATE INDEX IF NOT EXISTS lesson_recaps_cohort_id_generated_at_idx
+  ON public.lesson_recaps (cohort_id, generated_at DESC);
+
+
+-- ── Recap metrics views ───────────────────────────────────────
+-- Instrument before users arrive; these power the fundraising metrics deck.
+
+-- Opt-in rate: what fraction of students accepted recaps
+CREATE OR REPLACE VIEW public.recap_opt_in AS
+SELECT
+  count(*) FILTER (WHERE student_opted_in)::float
+    / NULLIF(count(*), 0) AS opt_in_rate
+FROM public.lesson_recaps;
+
+-- Per-student engagement: recaps generated vs actually opened
+CREATE OR REPLACE VIEW public.recap_engagement AS
+SELECT
+  student_id,
+  count(*) FILTER (WHERE student_viewed_at IS NOT NULL) AS recaps_viewed,
+  count(*)                                               AS recaps_generated
+FROM public.lesson_recaps
+GROUP BY student_id;
+
+-- 90-day retention: active learners still opening recaps 90+ days after first use
+CREATE OR REPLACE VIEW public.recap_retention AS
+WITH first_view AS (
+  SELECT student_id, min(student_viewed_at) AS first_at
+  FROM   public.lesson_recaps
+  WHERE  student_viewed_at IS NOT NULL
+  GROUP BY student_id
+)
+SELECT
+  count(*) FILTER (
+    WHERE EXISTS (
+      SELECT 1 FROM public.lesson_recaps lr
+      WHERE  lr.student_id      = f.student_id
+        AND  lr.student_viewed_at > f.first_at + INTERVAL '90 days'
+    )
+  )::float / NULLIF(count(*), 0) AS retention_90d
+FROM first_view f;
+
+
 -- ── seed: a playable sample so the Arcade isn't empty ────────
 INSERT INTO public.games (title, author_name, class_level, description, play_url, status)
 SELECT 'Catch the Bug', 'MoyaCode Demo', 'JSS2',

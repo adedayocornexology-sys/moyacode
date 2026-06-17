@@ -265,3 +265,95 @@
   flex-wrap: wrap;
   justify-content: center;
 }
+
+/* ── Recap card ────────────────────────────────────────────────────────────── */
+.moya-recap-card {
+  width: 100%;
+  max-width: 480px;
+  margin: 8px auto 0;
+  background: var(--bg-2);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+}
+
+.recap-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px;
+  color: var(--t-400);
+  font-size: 0.9rem;
+}
+
+.recap-spinner { font-size: 1.2rem; }
+
+.recap-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 20px 0;
+}
+
+.recap-icon { font-size: 1.2rem; }
+
+.recap-title {
+  font-family: var(--f-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--t-100);
+  margin: 0;
+}
+
+.recap-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 20px 16px;
+}
+
+.recap-item { display: flex; flex-direction: column; gap: 2px; }
+
+.recap-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--t-400);
+}
+
+.recap-text {
+  font-size: 0.9rem;
+  color: var(--t-200);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.recap-score {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 10px 12px;
+  background: var(--bg-3, #1a1a2e);
+  border-radius: var(--r-md);
+}
+
+.score-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--t-400);
+  flex: 1;
+}
+
+.score-value {
+  font-family: var(--f-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--accent, #7c6cf4);
+}
+
+.score-desc {
+  font-size: 0.75rem;
+  color: var(--t-400);
+}
