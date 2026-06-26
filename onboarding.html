@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MoyaCode | Meet Moya</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --c-teal:#00E5A0;--c-teal-dim:rgba(0,229,160,0.15);--c-teal-faint:rgba(0,229,160,0.07);
+      --c-blue:#60A5FA;--c-blue-dim:rgba(96,165,250,0.12);
+      --c-coral:#FB7185;--c-coral-dim:rgba(251,113,133,0.12);
+      --c-amber:#FCD34D;--c-amber-dim:rgba(252,211,77,0.12);
+      --c-purple:#A78BFA;--c-purple-dim:rgba(167,139,250,0.12);
+      --c-pink:#F472B6;--c-pink-dim:rgba(244,114,182,0.12);
+      --bg-0:#030712;--bg-1:#060D1F;--bg-2:#0A1628;
+      --glass:rgba(10,22,40,0.6);--glass-border:rgba(255,255,255,0.07);--glass-hi:rgba(255,255,255,0.12);
+      --t-100:#F8FAFF;--t-200:#CBD5F0;--t-400:#7A8FAD;--t-600:#3D506A;--t-700:#243350;
+      --f-display:'Bricolage Grotesque',sans-serif;--f-body:'Space Grotesk',sans-serif;--f-mono:'DM Mono',monospace;
+      --ease:cubic-bezier(0.4,0,0.2,1);--spring:cubic-bezier(0.34,1.4,0.64,1);
+      --dur-fast:150ms;--dur-mid:250ms;--dur-slow:400ms;
+      --sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:20px;--sp-6:24px;--sp-8:32px;
+      --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:20px;--r-2xl:24px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{font-family:var(--f-body);background:var(--bg-0);color:var(--t-100);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+    .bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+    .orb{position:absolute;border-radius:50%;filter:blur(120px);will-change:transform}
+    .orb-1{width:900px;height:900px;background:radial-gradient(circle,rgba(0,229,160,0.16) 0%,transparent 65%);top:-30%;left:-20%;animation:da 25s ease-in-out infinite}
+    .orb-2{width:700px;height:700px;background:radial-gradient(circle,rgba(96,165,250,0.13) 0%,transparent 65%);top:10%;right:-15%;animation:db 30s ease-in-out infinite}
+    .orb-3{width:600px;height:600px;background:radial-gradient(circle,rgba(251,113,133,0.08) 0%,transparent 65%);bottom:0;left:25%;animation:dc 22s ease-in-out infinite}
+    @keyframes da{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(80px,-60px) scale(1.1)}70%{transform:translate(-30px,50px) scale(.92)}}
+    @keyframes db{0%,100%{transform:translate(0,0)}50%{transform:translate(-100px,80px) scale(1.08)}}
+    @keyframes dc{0%,100%{transform:translate(0,0)}60%{transform:translate(60px,-40px) scale(1.05)}}
+
+    /* top bar: brand + progress */
+    .topbar{position:fixed;top:0;left:0;right:0;z-index:10;padding:14px 0 12px;background:linear-gradient(to bottom,rgba(3,7,18,0.92),rgba(3,7,18,0.6) 70%,transparent);backdrop-filter:blur(6px)}
+    .topbar-inner{width:min(720px,92vw);margin:0 auto;display:flex;align-items:center;gap:14px}
+    .logo{display:flex;align-items:center;gap:8px;text-decoration:none;font-family:var(--f-display);font-size:1.05rem;font-weight:800;color:var(--t-100);letter-spacing:-0.03em;flex-shrink:0}
+    .logo-mark{width:26px;height:26px;border-radius:var(--r-sm);background:var(--c-teal);display:flex;align-items:center;justify-content:center}
+    .ptrack{flex:1;height:6px;border-radius:999px;background:var(--glass-border);overflow:hidden}
+    .pfill{height:100%;width:8%;border-radius:999px;background:linear-gradient(90deg,var(--c-teal),var(--c-blue));transition:width var(--dur-slow) var(--spring)}
+    .pskip{font-size:.78rem;font-weight:600;color:var(--t-600);text-decoration:none;flex-shrink:0}
+    .pskip:hover{color:var(--t-200)}
+
+    /* chat column */
+    .chat{position:relative;z-index:1;width:min(720px,92vw);margin:0 auto;padding:84px 0 28px;min-height:100%;display:flex;flex-direction:column;gap:14px}
+
+    .row{display:flex;gap:12px;align-items:flex-end;max-width:100%;animation:pop var(--dur-mid) var(--spring) both}
+    .row.you{flex-direction:row-reverse}
+    @keyframes pop{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+    .avatar{width:40px;height:40px;border-radius:12px;background:var(--glass);border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+
+    .bubble{max-width:78%;padding:14px 18px;border-radius:18px;line-height:1.5;font-size:1rem;box-shadow:0 6px 22px rgba(0,0,0,0.25)}
+    .moya .bubble{background:var(--glass);backdrop-filter:blur(18px) saturate(160%);border:1px solid var(--glass-border);border-bottom-left-radius:6px;color:var(--t-100)}
+    .you .bubble{background:var(--c-teal);color:var(--bg-0);font-weight:700;border-bottom-right-radius:6px;box-shadow:0 6px 26px rgba(0,229,160,0.28)}
+
+    /* typing indicator */
+    .typing{display:inline-flex;gap:5px;align-items:center;padding:16px 18px}
+    .typing span{width:7px;height:7px;border-radius:50%;background:var(--t-400);animation:blink 1.3s infinite}
+    .typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+    @keyframes blink{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+
+    /* chip choices */
+    .chips{display:flex;flex-wrap:wrap;gap:10px;padding:4px 0 4px 52px;animation:pop var(--dur-mid) var(--spring) both}
+    .chip{display:inline-flex;align-items:center;gap:9px;padding:12px 16px;border-radius:14px;background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--glass-border);color:var(--t-200);font-family:var(--f-body);font-size:.95rem;font-weight:600;cursor:pointer;transition:transform var(--dur-fast) var(--spring),border-color var(--dur-fast) var(--ease),color var(--dur-fast) var(--ease),background var(--dur-fast) var(--ease)}
+    .chip:hover{transform:translateY(-2px);color:var(--t-100);border-color:var(--glass-hi);background:rgba(255,255,255,0.06)}
+    .chip .ic{font-size:1.05rem}
+
+    /* summary card + CTA at the end */
+    .card{margin:6px 0 4px 52px;background:var(--glass);backdrop-filter:blur(18px) saturate(160%);border:1px solid var(--glass-border);border-radius:var(--r-2xl);padding:18px 20px;max-width:560px;animation:pop var(--dur-mid) var(--spring) both}
+    .card h3{font-family:var(--f-display);font-size:1.05rem;font-weight:800;letter-spacing:-.02em;margin-bottom:12px}
+    .sum-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--glass-border);font-size:.92rem}
+    .sum-row:first-of-type{border-top:0}
+    .sum-row .k{color:var(--t-600);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;width:96px;flex-shrink:0}
+    .sum-row .val{color:var(--t-100);font-weight:600}
+    .cta-wrap{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:10px 0 0 52px;animation:pop var(--dur-mid) var(--spring) both}
+    .btn-primary{display:inline-flex;align-items:center;gap:8px;padding:14px 26px;border-radius:var(--r-lg);background:var(--c-teal);color:var(--bg-0);font-family:var(--f-body);font-weight:700;font-size:1rem;text-decoration:none;cursor:pointer;box-shadow:0 0 36px rgba(0,229,160,0.35),0 4px 12px rgba(0,229,160,0.2);transition:transform var(--dur-fast) var(--spring),box-shadow var(--dur-mid) var(--ease)}
+    .btn-primary:hover{transform:translateY(-3px);box-shadow:0 0 56px rgba(0,229,160,0.5)}
+    .btn-primary .arr{transition:transform var(--dur-fast) var(--spring)}
+    .btn-primary:hover .arr{transform:translateX(4px)}
+    .save-hint{font-size:.86rem;color:var(--t-400)}
+    .save-hint a{color:var(--c-teal);text-decoration:none;font-weight:600}
+    .save-hint a:hover{text-decoration:underline}
+
+    @media(max-width:560px){
+      .bubble{max-width:84%;font-size:.96rem}
+      .chips,.card,.cta-wrap{padding-left:0;margin-left:0}
+      .avatar{width:34px;height:34px}
+    }
+    @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+  </style>
+</head>
+<body>
+
+<div class="bg-canvas" aria-hidden="true"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="logo" aria-label="MoyaCode home">
+      <span class="logo-mark" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M8 6l4-4 4 4M8 18l4 4 4-4M3 12h18" stroke="#030712" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      MoyaCode
+    </a>
+    <div class="ptrack" role="progressbar" aria-label="Onboarding progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="8"><div class="pfill" id="pfill"></div></div>
+    <a href="selection.html" class="pskip">Skip</a>
+  </div>
+</div>
+
+<main class="chat" id="chat" aria-live="polite"></main>
+
+<!-- Moya avatar template -->
+<template id="moya-svg">
+  <svg width="30" height="30" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Moya">
+    <rect x="68" y="70" width="124" height="96" rx="24" fill="#ffffff" stroke="#c9e2f5" stroke-width="8"/>
+    <circle cx="108" cy="114" r="11" fill="#60A5FA"/><circle cx="152" cy="114" r="11" fill="#60A5FA"/>
+    <rect x="102" y="136" width="56" height="10" rx="5" fill="#00E5A0"/>
+    <line x1="130" y1="70" x2="130" y2="46" stroke="#c9e2f5" stroke-width="8"/><circle cx="130" cy="40" r="8" fill="#00E5A0"/>
+  </svg>
+</template>
+
+<script>
+/* ===== Moya — conversational onboarding ===== */
+const chat = document.getElementById('chat');
+const pfill = document.getElementById('pfill');
+const moyaSvg = document.getElementById('moya-svg').innerHTML;
+const profile = { dream:'', motivation:'', goal:'', mode:'' };
+
+/* the conversation: four short steps, each a Moya line + tappable choices.
+   `react` gives a personalized line back before the next question. */
+const STEPS = [
+  {
+    key:'dream',
+    say:"Hi, I'm Moya 👋 I'll be your guide here. Quick question to make this yours — what do you dream of building?",
+    options:[
+      {ic:'🎮',label:'Build Games',     val:'Build Games',        react:"🎮 A game-maker! We'll get you making things that move and play."},
+      {ic:'🌐',label:'Create Websites', val:'Create Websites',    react:"🌐 Websites it is — you'll be shipping real pages to the world."},
+      {ic:'📱',label:'Mobile Apps',     val:'Design Mobile Apps', react:"📱 Apps — big dream. It all starts with the web skills underneath."},
+      {ic:'🤖',label:'Work with AI',    val:'Work with AI',       react:"🤖 AI — the frontier. Perfect place to be right now."},
+      {ic:'🔒',label:'Become a Hacker', val:'Become a Hacker',    react:"🔒 The security path — sharp. It starts with how code really works."},
+      {ic:'✨',label:'Just for Fun',    val:'Just for Fun',       react:"✨ For the joy of it — honestly the best reason there is."},
+    ]
+  },
+  {
+    key:'motivation',
+    say:"Love that. And what's the bigger reason behind it?",
+    options:[
+      {ic:'📚',label:'Support my education', val:'Support my education', react:"That'll help your studies more than you'd think."},
+      {ic:'💼',label:'Boost my career',      val:'Boost my future career',react:"Smart — these are skills employers actually want."},
+      {ic:'🚀',label:'Build a startup',      val:'Build my own startup', react:"A founder's mindset. Let's build your toolkit."},
+      {ic:'🤝',label:'Help my community',    val:'Help my community',    react:"The best kind of why — code that serves people."},
+      {ic:'🧩',label:'Solve hard problems', val:'Solve hard problems',  react:"A problem-solver. Code will give you superpowers."},
+      {ic:'😄',label:'Just for fun',         val:'Just for fun',         react:"Fun is fuel. We'll keep it that way."},
+    ]
+  },
+  {
+    key:'goal',
+    say:"Here's the secret: small and steady beats cramming. How much time can you give each day?",
+    options:[
+      {ic:'⚡',label:'5 min/day',  val:'5 min/day',  react:"5 minutes a day — perfect. Streaks start small. 🔥"},
+      {ic:'🔥',label:'10 min/day', val:'10 min/day', react:"10 a day — a solid daily habit. 🔥"},
+      {ic:'💪',label:'15 min/day', val:'15 min/day', react:"15 a day — you'll move fast. 🔥"},
+      {ic:'🏆',label:'20 min/day', val:'20 min/day', react:"20 a day — serious pace. Respect. 🔥"},
+    ]
+  },
+  {
+    key:'mode',
+    say:"Last one — how do you like to learn?",
+    options:[
+      {ic:'📖',label:'Read at my own pace', val:'read', react:"Self-paced reading — free, forever. I'll be one tap away if you get stuck."},
+      {ic:'💬',label:'Talk it through with me', val:'talk', react:"Let's talk it through — I'll teach you like a one-on-one. You can try this free right now."},
+    ]
+  },
+];
+
+let step = 0;
+const wait = ms => new Promise(r => setTimeout(r, ms));
+const scroll = () => window.scrollTo({ top: document.body.scrollHeight, behavior:'smooth' });
+function setProgress(p){ pfill.style.width = p + '%'; pfill.parentElement.setAttribute('aria-valuenow', Math.round(p)); }
+
+function addMoya(text){
+  const row = document.createElement('div'); row.className = 'row moya';
+  row.innerHTML = `<div class="avatar" aria-hidden="true">${moyaSvg}</div><div class="bubble">${text}</div>`;
+  chat.appendChild(row); scroll();
+}
+function addYou(text){
+  const row = document.createElement('div'); row.className = 'row you';
+  row.innerHTML = `<div class="avatar" aria-hidden="true">🙂</div><div class="bubble">${text}</div>`;
+  chat.appendChild(row); scroll();
+}
+async function moyaTypes(text, delay=750){
+  const row = document.createElement('div'); row.className = 'row moya';
+  row.innerHTML = `<div class="avatar" aria-hidden="true">${moyaSvg}</div><div class="bubble"><span class="typing"><span></span><span></span><span></span></span></div>`;
+  chat.appendChild(row); scroll();
+  await wait(delay);
+  row.querySelector('.bubble').textContent = text;
+  scroll();
+}
+function showChips(options, onPick){
+  const wrap = document.createElement('div'); wrap.className = 'chips';
+  options.forEach(o => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'chip';
+    b.innerHTML = `<span class="ic" aria-hidden="true">${o.ic}</span>${o.label}`;
+    b.addEventListener('click', () => { wrap.remove(); onPick(o); });
+    wrap.appendChild(b);
+  });
+  chat.appendChild(wrap); scroll();
+}
+
+async function runStep(){
+  const s = STEPS[step];
+  setProgress(8 + (step / STEPS.length) * 84);
+  await moyaTypes(s.say, step === 0 ? 500 : 750);
+  showChips(s.options, async (picked) => {
+    addYou(picked.label);
+    profile[s.key] = picked.val;
+    await wait(280);
+    await moyaTypes(picked.react, 650);
+    step++;
+    setProgress(8 + (step / STEPS.length) * 84);
+    if (step < STEPS.length) { await wait(350); runStep(); }
+    else finish();
+  });
+}
+
+async function finish(){
+  setProgress(100);
+  // persist (backward-compatible keys + new mode preference)
+  localStorage.setItem('moyacode_dream', profile.dream);
+  localStorage.setItem('moyacode_motivation', profile.motivation);
+  localStorage.setItem('moyacode_goal', profile.goal);
+  localStorage.setItem('moyacode_mode', profile.mode);
+  // if signed in, sync to the profile (best-effort)
+  syncProfile();
+
+  await wait(350);
+  await moyaTypes("Perfect — I've got what I need. Here's your plan:", 700);
+
+  const card = document.createElement('div'); card.className = 'card';
+  card.innerHTML = `
+    <h3>Your MoyaCode plan</h3>
+    <div class="sum-row"><span class="k">Dream</span><span class="val">${profile.dream}</span></div>
+    <div class="sum-row"><span class="k">Why</span><span class="val">${profile.motivation}</span></div>
+    <div class="sum-row"><span class="k">Daily goal</span><span class="val">${profile.goal}</span></div>
+    <div class="sum-row"><span class="k">Learning</span><span class="val">${profile.mode === 'talk' ? 'Conversational with Moya' : 'Read at your own pace'}</span></div>`;
+  chat.appendChild(card); scroll();
+
+  await wait(300);
+  await moyaTypes("Let's start with your first quest — you'll earn XP and your first MoyaCoins right away. 🪙", 750);
+
+  const cta = document.createElement('div'); cta.className = 'cta-wrap';
+  cta.innerHTML = `
+    <a class="btn-primary" href="selection.html">Start my first quest <span class="arr" aria-hidden="true">→</span></a>
+    <span class="save-hint">Want to keep your progress? <a href="auth.html">Create a free account</a> — takes 20 seconds.</span>`;
+  chat.appendChild(cta); scroll();
+}
+
+/* best-effort sync to Supabase profile if the visitor is already signed in */
+async function syncProfile(){
+  try{
+    const { getSession } = await import('./js/auth.js');
+    const { saveProfile } = await import('./js/db.js');
+    const session = await getSession();
+    if (!session) return;
+    await saveProfile(session.user.id, {
+      dream: profile.dream, motivation: profile.motivation, goal: profile.goal, mode: profile.mode,
+    });
+  }catch(e){ /* guest flow — localStorage is the source of truth */ }
+}
+
+runStep();
+</script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --teal:#00E5A0;--blue:#60A5FA;--amber:#FCD34D;--coral:#FB7185;--purple:#A78BFA;
+    --bg0:#030712;--bg1:#0A1628;--ink:#F7FAFF;--dim:#8094B0;--dim2:#3D506A;
+    --fd:'Bricolage Grotesque',sans-serif;--fb:'Space Grotesk',sans-serif;--fm:'DM Mono',monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{width:1080px;height:1920px;background:var(--bg0);color:var(--ink);font-family:var(--fb);overflow:hidden;position:relative}
+  .glow{position:absolute;border-radius:50%;filter:blur(150px);pointer-events:none}
+  .g1{width:760px;height:760px;background:radial-gradient(circle,rgba(0,229,160,.18),transparent 65%);top:-220px;left:-160px}
+  .g2{width:680px;height:680px;background:radial-gradient(circle,rgba(167,139,250,.16),transparent 65%);bottom:-200px;right:-180px}
+  .grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(circle at 50% 30%,#000,transparent 80%)}
+  .pad{position:relative;z-index:2;height:100%;padding:92px 80px;display:flex;flex-direction:column}
+
+  .brand{display:flex;align-items:center;gap:16px}
+  .mk{width:58px;height:58px;border-radius:16px;background:var(--teal);display:grid;place-items:center;box-shadow:0 0 34px rgba(0,229,160,.5)}
+  .brand .nm{font-family:var(--fd);font-weight:800;font-size:32px;letter-spacing:-.02em}
+  .brand .nm small{display:block;font-family:var(--fm);font-size:14px;color:var(--dim);letter-spacing:.14em;text-transform:uppercase;font-weight:500;margin-top:3px}
+
+  .eyebrow{margin-top:70px;display:inline-flex;align-items:center;gap:14px;font-family:var(--fm);font-size:22px;letter-spacing:.18em;text-transform:uppercase;color:var(--teal)}
+  .eyebrow::before{content:'';width:48px;height:2px;background:var(--teal);border-radius:9px}
+  h1{font-family:var(--fd);font-weight:800;font-size:92px;line-height:1.0;letter-spacing:-.03em;margin-top:24px}
+  h1 .em{color:var(--teal)}
+  .sub{margin-top:26px;font-size:31px;line-height:1.5;color:#C7D3E8;max-width:880px}
+  .sub b{color:var(--ink)}
+
+  /* character card lineup (VeeFriends-style) */
+  .lineup{margin-top:58px;display:flex;justify-content:center;align-items:flex-end;gap:-10px;height:430px}
+  .card{width:172px;height:300px;border-radius:20px;margin:0 -8px;position:relative;box-shadow:0 26px 60px rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:18px 10px;overflow:hidden;border:1px solid rgba(255,255,255,.12)}
+  .card .face{font-size:78px;position:absolute;top:38px;left:0;right:0;text-align:center;filter:drop-shadow(0 6px 12px rgba(0,0,0,.4))}
+  .card .top{position:absolute;top:12px;left:0;right:0;text-align:center;font-family:var(--fm);font-size:12px;letter-spacing:.1em;color:rgba(255,255,255,.65)}
+  .card .nm{font-family:var(--fd);font-weight:800;font-size:20px;text-align:center;line-height:1;color:#06121f}
+  .card .pw{font-family:var(--fm);font-size:11px;margin-top:5px;color:rgba(6,18,31,.75)}
+  .c1{background:linear-gradient(160deg,#36E0A6,#0FA877);transform:rotate(-9deg)}
+  .c2{background:linear-gradient(160deg,#7FB8FF,#3B7DD8);transform:rotate(-4deg)}
+  .c3{background:linear-gradient(160deg,#FCD867,#E0A82E);transform:rotate(0deg);z-index:3}
+  .c4{background:linear-gradient(160deg,#FB8FA3,#D85E76);transform:rotate(4deg)}
+  /* the YOURS slot */
+  .yours{background:rgba(0,229,160,.06);border:2px dashed var(--teal);transform:rotate(9deg);justify-content:center;gap:10px}
+  .yours .plus{font-size:62px;color:var(--teal);line-height:1}
+  .yours .lbl{font-family:var(--fd);font-weight:800;font-size:20px;color:var(--teal);text-align:center;line-height:1.1}
+  .yours .lbl small{display:block;font-family:var(--fm);font-size:11px;color:var(--dim);font-weight:500;margin-top:6px;letter-spacing:.04em}
+
+  .how{margin-top:auto;display:flex;gap:18px}
+  .step{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:22px 20px}
+  .step .n{font-family:var(--fm);font-size:14px;color:var(--teal)}
+  .step .t{font-family:var(--fd);font-weight:700;font-size:23px;margin-top:8px;line-height:1.15}
+  .step .d{font-size:18px;color:var(--dim);margin-top:6px;line-height:1.4}
+
+  .cta{margin-top:34px;display:flex;align-items:center;justify-content:space-between;gap:20px;border-top:1px solid rgba(255,255,255,.1);padding-top:34px}
+  .cta .l{font-family:var(--fd);font-weight:800;font-size:34px}
+  .cta .l small{display:block;font-family:var(--fm);font-size:20px;color:var(--dim);font-weight:500;margin-top:7px}
+  .cta .pill{font-family:var(--fb);font-weight:700;font-size:30px;color:#06121f;background:var(--teal);padding:22px 36px;border-radius:18px;box-shadow:0 0 42px rgba(0,229,160,.45);white-space:nowrap}
+</style>
+</head>
+<body>
+  <div class="glow g1"></div><div class="glow g2"></div><div class="grid-bg"></div>
+  <div class="pad">
+    <div class="brand">
+      <span class="mk"><svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M8 6l4-4 4 4M8 18l4 4 4-4M3 12h18" stroke="#030712" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <div class="nm">MoyaCode<small>Student Creators</small></div>
+    </div>
+
+    <div class="eyebrow">Call for characters</div>
+    <h1>Design a character.<br>We'll bring it <span class="em">to life.</span></h1>
+    <p class="sub">We're building games and comics starring characters <b>you</b> create. Send us yours. The best ones become playable in our Arcade and star in the MoyaCode comic.</p>
+
+    <div class="lineup">
+      <div class="card c1"><div class="top">MOYACODE</div><div class="face">🦸🏾</div><div class="nm">Coda</div><div class="pw">power: focus</div></div>
+      <div class="card c2"><div class="top">MOYACODE</div><div class="face">🐉</div><div class="nm">Byte</div><div class="pw">power: logic</div></div>
+      <div class="card c3"><div class="top">MOYACODE</div><div class="face">🤖</div><div class="nm">Moya</div><div class="pw">power: truth</div></div>
+      <div class="card c4"><div class="top">MOYACODE</div><div class="face">🦊</div><div class="nm">Pixel</div><div class="pw">power: speed</div></div>
+      <div class="card yours"><div class="plus">+</div><div class="lbl">YOUR<br>CHARACTER<small>this could be you</small></div></div>
+    </div>
+
+    <div class="how">
+      <div class="step"><div class="n">01</div><div class="t">Draw or describe</div><div class="d">A hero, a creature, anything. Sketch it or just tell us.</div></div>
+      <div class="step"><div class="n">02</div><div class="t">Name + one power</div><div class="d">Give your character a name and a single superpower or value.</div></div>
+      <div class="step"><div class="n">03</div><div class="t">Send it to us</div><div class="d">Message it on WhatsApp. We build the best ones.</div></div>
+    </div>
+
+    <div class="cta">
+      <div class="l">Send yours today<small>moyacode.com · for students, free to enter</small></div>
+      <div class="pill">WhatsApp 0704 599 5873</div>
+    </div>
+  </div>
+</body>
+</html>

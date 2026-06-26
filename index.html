@@ -74,7 +74,7 @@
     @keyframes orb-drift-c { 0%,100% { transform: translate(0,0);} 60% { transform: translate(60px,-40px) scale(1.05);} }
     .bg-canvas::after { content: ''; position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E"); opacity: 0.025; mix-blend-mode: overlay; }
 
-    nav { position: fixed; top: var(--sp-4); left: 0; right: 0; z-index: 900; pointer-events: none; }
+    body > nav { position: fixed; top: var(--sp-4); left: 0; right: 0; z-index: 900; pointer-events: none; }
     .nav-inner { width: min(1160px, 90vw); margin: 0 auto; background: rgba(6,13,31,0.75); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); border: 1px solid var(--glass-hi); border-radius: var(--r-2xl); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; pointer-events: all; box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.03) inset; }
     .logo { display: flex; align-items: center; gap: var(--sp-2); text-decoration: none; font-family: var(--f-display); font-size: 1.15rem; font-weight: 800; color: var(--t-100); letter-spacing: -0.03em; }
     .logo-mark { width: 28px; height: 28px; border-radius: var(--r-sm); background: var(--c-teal); display: flex; align-items: center; justify-content: center; }
@@ -110,24 +110,17 @@
     .stat-chip strong { color: var(--t-100); font-weight: 700; }
     .hero-right { position: relative; animation: reveal-up var(--dur-slow) var(--spring) 120ms both; }
     .hero-frame { position: relative; border-radius: var(--r-3xl); overflow: hidden; border: 1px solid var(--glass-hi); background: var(--bg-2); aspect-ratio: 4/5; box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset, 0 32px 80px rgba(0,0,0,0.6), 0 0 60px rgba(0,229,160,0.06); }
-    .hero-illustration { width: 100%; height: 100%; display: block; object-fit: cover; }
-    .frame-chrome { position: absolute; top: 0; left: 0; right: 0; height: 40px; z-index: 3; background: linear-gradient(to bottom, rgba(10,22,40,0.7), transparent); display: flex; align-items: center; padding: 0 16px; gap: 6px; }
-    .chrome-dot { width: 8px; height: 8px; border-radius: 50%; }
-    .cd-red { background: #FF5F57; } .cd-amber { background: #FFBD2E; } .cd-green { background: #28C840; }
-    .frame-badge { position: absolute; bottom: 16px; left: 16px; z-index: 4; background: rgba(6,13,31,0.85); backdrop-filter: blur(16px); border: 1px solid var(--glass-hi); border-radius: var(--r-lg); padding: 10px 14px; display: flex; align-items: center; gap: var(--sp-2); font-size: 0.8rem; font-weight: 600; color: var(--t-200); pointer-events: none; }
-    .frame-badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--c-teal); box-shadow: 0 0 8px var(--c-teal); }
-    .xp-float { position: absolute; top: 20px; right: -16px; z-index: 5; background: rgba(6,13,31,0.88); backdrop-filter: blur(16px); border: 1px solid var(--glass-hi); border-radius: var(--r-xl); padding: 14px 18px; display: flex; flex-direction: column; gap: 4px; animation: float-bob 4s ease-in-out infinite; box-shadow: 0 8px 28px rgba(0,0,0,0.4); min-width: 130px; }
-    @keyframes float-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-    .xp-label { font-size: 0.68rem; color: var(--t-600); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
-    .xp-value { font-family: var(--f-display); font-size: 1.4rem; font-weight: 800; color: var(--c-teal); line-height: 1; }
-    .xp-bar-track { height: 4px; border-radius: 999px; background: var(--glass-border); overflow: hidden; margin-top: 4px; }
-    .xp-bar-fill { height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, var(--c-teal), var(--c-blue)); animation: xp-grow 2s var(--ease) 1s forwards; }
-    @keyframes xp-grow { to { width: 73%; } }
-    .streak-float { position: absolute; bottom: 60px; right: -24px; z-index: 5; background: rgba(6,13,31,0.88); backdrop-filter: blur(16px); border: 1px solid var(--glass-hi); border-radius: var(--r-xl); padding: 12px 16px; display: flex; align-items: center; gap: var(--sp-3); animation: float-bob 4.5s ease-in-out 0.5s infinite; box-shadow: 0 8px 28px rgba(0,0,0,0.4); }
-    .streak-icon { width: 36px; height: 36px; border-radius: var(--r-md); background: var(--c-coral-dim); display: flex; align-items: center; justify-content: center; }
-    .streak-info { display: flex; flex-direction: column; }
-    .streak-val { font-family: var(--f-display); font-size: 1rem; font-weight: 800; color: var(--c-coral); line-height: 1.2; }
-    .streak-sub { font-size: 0.68rem; color: var(--t-600); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+    /* live playable game preview embedded in the hero frame */
+    .hero-game { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; pointer-events: none; }
+    .hero-play { position: absolute; inset: 0; z-index: 4; display: grid; place-items: center; gap: 10px; cursor: pointer; background: radial-gradient(circle at 50% 60%, rgba(3,7,18,0.15), rgba(3,7,18,0.55)); transition: opacity var(--dur-mid) var(--ease); border: 0; width: 100%; font: inherit; color: var(--t-100); }
+    .hero-play .play-disc { width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; background: var(--c-teal); color: var(--bg-0); font-size: 1.7rem; box-shadow: 0 0 40px rgba(0,229,160,0.55); transition: transform var(--dur-fast) var(--spring), filter var(--dur-fast) var(--ease); }
+    .hero-play:hover .play-disc { transform: scale(1.07); filter: brightness(1.08); }
+    .hero-play .play-cap { font-family: var(--f-display); font-weight: 700; font-size: 1.05rem; letter-spacing: -0.01em; text-shadow: 0 2px 14px rgba(0,0,0,0.6); }
+    .hero-play .play-sub { font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--c-teal); }
+    .hero-frame.playing .hero-play { display: none; }
+    .hero-frame.playing .hero-game { pointer-events: auto; }
+    .hero-fs { position: absolute; top: 12px; right: 12px; z-index: 6; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: rgba(6,13,31,0.78); backdrop-filter: blur(10px); border: 1px solid var(--glass-hi); color: var(--t-200); font-family: var(--f-mono); font-size: 0.72rem; text-decoration: none; }
+    .hero-fs:hover { color: var(--t-100); border-color: var(--c-teal); }
 
     .marquee-section { position: relative; z-index: 1; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); background: rgba(6,13,31,0.5); backdrop-filter: blur(8px); overflow: hidden; padding: 12px 0; }
     .marquee-section::before,.marquee-section::after { content: ''; position: absolute; top: 0; bottom: 0; width: 160px; z-index: 2; pointer-events: none; }
@@ -239,7 +232,7 @@
     <div class="nav-inner">
       <a href="#" class="logo" aria-label="MoyaCode home"><div class="logo-mark" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 6l4-4 4 4" stroke="#030712" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 18l4 4 4-4" stroke="#030712" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 12h18" stroke="#030712" stroke-width="2.2" stroke-linecap="round"/></svg></div>MoyaCode</a>
       <div class="nav-center" role="list"><a href="/features" class="nav-link" role="listitem">Features</a><a href="/tracks" class="nav-link" role="listitem">Tracks</a><a href="/arcade" class="nav-link" role="listitem">Arcade</a><a href="/about" class="nav-link" role="listitem">About</a><a href="/schools" class="nav-link" role="listitem">Schools</a></div>
-      <a href="welcome.html" class="nav-cta">Start Free</a>
+      <a href="onboarding.html" class="nav-cta">Start Free</a>
     </div>
   </nav>
 
@@ -249,32 +242,26 @@
         <div class="pill-badge" aria-label="Platform status"><div class="pill-dot" aria-hidden="true"></div>Free · Gamified · Owo, Nigeria</div>
         <h1 class="hero-h1">Stop<br><span class="crossed">watching.</span><br>Start<br><span class="em">building.</span></h1>
         <p class="hero-sub">MoyaCode is the gamified coding platform for Nigerian secondary school students. Earn XP, level up, and learn real code — from Scratch all the way to JavaScript.</p>
-        <div class="hero-actions"><a href="welcome.html" class="btn-primary">Start for Free</a><a href="quiz.html" class="btn-outline">View Quests</a></div>
+        <div class="hero-actions"><a href="onboarding.html" class="btn-primary">Start for Free</a><a href="quiz.html" class="btn-outline">View Quests</a></div>
         <div class="stat-row"><div class="stat-chip"><strong>500+</strong>&nbsp;Students</div><div class="stat-chip"><strong>6</strong>&nbsp;Quests</div><div class="stat-chip"><strong>100%</strong>&nbsp;Free</div></div>
       </div>
       <div class="hero-right">
-        <div class="hero-frame" role="img" aria-label="MoyaCode hero illustration">
-          <div class="frame-chrome" aria-hidden="true"><div class="chrome-dot cd-red"></div><div class="chrome-dot cd-amber"></div><div class="chrome-dot cd-green"></div></div>
-          <svg class="hero-illustration" viewBox="0 0 480 600" xmlns="http://www.w3.org/2000/svg">
-            <defs><radialGradient id="bg-grad" cx="50%" cy="40%" r="65%"><stop offset="0%" stop-color="#0A1628"/><stop offset="100%" stop-color="#030712"/></radialGradient></defs>
-            <rect width="480" height="600" fill="url(#bg-grad)"/>
-            <circle cx="240" cy="240" r="90" fill="#8B5E3C"/><ellipse cx="240" cy="165" rx="88" ry="58" fill="#1A0A00"/>
-            <rect x="120" y="340" width="240" height="230" rx="48" fill="#0F1F38" stroke="rgba(0,229,160,.2)"/>
-            <circle cx="210" cy="245" r="12" fill="#60A5FA"/><circle cx="270" cy="245" r="12" fill="#60A5FA"/>
-            <path d="M220 282 Q240 296 260 282" stroke="#6B3E1A" stroke-width="4" fill="none" stroke-linecap="round"/>
-            <rect x="42" y="200" width="90" height="34" rx="8" fill="rgba(10,22,40,.9)" stroke="rgba(0,229,160,.35)"/><text x="56" y="222" font-family="DM Mono" font-size="14" fill="#00E5A0">&lt;h1&gt;</text>
-            <rect x="340" y="190" width="110" height="34" rx="8" fill="rgba(10,22,40,.9)" stroke="rgba(96,165,250,.35)"/><text x="352" y="212" font-family="DM Mono" font-size="12" fill="#60A5FA">let xp = 0;</text>
-          </svg>
+        <div class="hero-frame" id="heroFrame" role="group" aria-label="Run the Stack — the MoyaCode Dev Run, a playable demo">
+          <iframe class="hero-game" id="heroGame" src="/torch?embed=1" title="Run the Stack — the MoyaCode Dev Run (playable demo)" loading="lazy" tabindex="-1"></iframe>
+          <a class="hero-fs" id="heroFs" href="/torch" target="_top">⤢ Fullscreen</a>
+          <button type="button" class="hero-play" id="heroPlay" aria-label="Play Run the Stack, the MoyaCode Dev Run">
+            <span class="play-disc" aria-hidden="true">▶</span>
+            <span class="play-cap">Run the Stack</span>
+            <span class="play-sub">Playable demo · code your way to web dev</span>
+          </button>
         </div>
-        <div class="xp-float"><div class="xp-label">Your XP</div><div class="xp-value">680</div><div class="xp-bar-track"><div class="xp-bar-fill"></div></div></div>
-        <div class="streak-float"><div class="streak-icon"></div><div class="streak-info"><div class="streak-val">5 Days</div><div class="streak-sub">Streak</div></div></div>
       </div>
     </div>
   </section>
 
   <div class="marquee-section" aria-hidden="true"><div class="marquee-track"><div class="marquee-group"><div class="tag-pill teal">Advanced Scratch</div><div class="tag-pill blue">HTML Fundamentals</div><div class="tag-pill amber">CSS &amp; Design</div><div class="tag-pill coral">JavaScript Logic</div><div class="tag-pill teal">AI-Powered Hints</div><div class="tag-pill blue">Web Projects</div></div><div class="marquee-group"><div class="tag-pill teal">Advanced Scratch</div><div class="tag-pill blue">HTML Fundamentals</div><div class="tag-pill amber">CSS &amp; Design</div><div class="tag-pill coral">JavaScript Logic</div><div class="tag-pill teal">AI-Powered Hints</div><div class="tag-pill blue">Web Projects</div></div></div></div>
 
-  <section class="cta-section" id="arcade" style="padding-bottom:0;">
+  <section class="cta-section" id="arcade" style="padding-top:var(--sp-20);padding-bottom:var(--sp-16);">
     <div class="section-header">
       <div class="section-eyebrow">Student Arcade</div>
       <h2 class="section-h2">Play games built<br>by our students.</h2>
@@ -302,9 +289,28 @@
     </div>
   </section>
 
-  <section class="cta-section"><div class="cta-card"><div class="cta-glow"></div><h2 class="cta-h2">Ready to write your<br><span style="color:var(--c-teal)">first line of code?</span></h2><p class="cta-p">Join hundreds of students in Owo already building their future. Free, fun, and it actually works.</p><div class="cta-actions"><a href="welcome.html" class="btn-primary">Start for Free</a><a href="/schools" class="btn-outline">MoyaCode for Schools</a></div></div></section>
+  <section class="cta-section"><div class="cta-card"><div class="cta-glow"></div><h2 class="cta-h2">Ready to write your<br><span style="color:var(--c-teal)">first line of code?</span></h2><p class="cta-p">Join hundreds of students in Owo already building their future. Free, fun, and it actually works.</p><div class="cta-actions"><a href="onboarding.html" class="btn-primary">Start for Free</a><a href="/schools" class="btn-outline">MoyaCode for Schools</a></div></div></section>
 
   <footer role="contentinfo"><div class="footer-inner"><div class="footer-left"><a href="#" class="logo" aria-label="MoyaCode home"><div class="logo-mark" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 6l4-4 4 4M8 18l4 4 4-4M3 12h18" stroke="#030712" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>MoyaCode</a><span class="footer-tagline">Built in Owo · For the next generation of African developers.</span></div><nav class="footer-links" aria-label="Footer navigation"><a href="/arcade">Arcade</a><a href="/about">About</a><a href="/schools">For Schools</a><a href="#">Terms</a><a href="#">Privacy</a></nav><div class="footer-status" role="status" aria-label="Platform status: free to learn"><div class="pill-dot" aria-hidden="true"></div>Free to Learn</div></div></footer>
+<script>
+  /* Hero playable demo: live "poster" until the visitor opts in.
+     Desktop → activate in place and tell the game to start. Mobile → go fullscreen. */
+  (function () {
+    var frame = document.getElementById('heroFrame');
+    var play = document.getElementById('heroPlay');
+    var game = document.getElementById('heroGame');
+    var right = frame && frame.closest('.hero-right');
+    if (!frame || !play || !game) return;
+    play.addEventListener('click', function () {
+      var mobile = window.matchMedia('(max-width: 960px)').matches;
+      if (mobile) { window.location.href = '/torch'; return; }
+      frame.classList.add('playing');
+      if (right) right.classList.add('playing');
+      try { game.contentWindow.postMessage({ type: 'moya-start' }, '*'); } catch (e) {}
+      game.focus();
+    });
+  })();
+</script>
 <script type="module" src="/js/assistant.js"></script>
 </body>
 </html>

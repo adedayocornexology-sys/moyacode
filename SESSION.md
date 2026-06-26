@@ -1,7 +1,31 @@
 # MoyaCode — Session Log
 
 > Resume point for the MoyaCode web app. Read this first to continue.
-> Last updated: **2026-06-14**
+> Last updated: **2026-06-24**
+
+---
+
+## 2026-06-24 — Hero game embedded + re-themed "Run the Stack" (the dev journey)
+
+Two things this session: (1) surfaced the `/torch` game on the homepage, and (2) **re-themed it away from Pa Ajasin** to the journey of learning to code. (User's call: the game should be about becoming a web developer, not about Ajasin.)
+
+**Homepage hero embed (`index.html`):**
+- Replaced the static SVG illustration in the `.hero-frame` with a **live `<iframe src="/torch?embed=1">`** — a playable preview sitting in the hero's right column.
+- The iframe is `pointer-events:none` until the visitor opts in, so **mobile page-scroll is never trapped** over it. A "▶ Run the Stack" overlay (`#heroPlay`) sits on top: **desktop** → activates in place + `postMessage({type:'moya-start'})` to start the run right there; **mobile (≤960px)** → navigates to fullscreen `/torch`. Plus a "⤢ Fullscreen" chip and the XP/streak floats fade out while playing.
+- `?embed=1` → `torch.html` adds `body.embed`, which hides the in-game brand + start screen so the host page's overlay is the single CTA over the idle scene.
+
+**Re-theme: "Light the Nation / Ajasin Torch Run" → "Run the Stack — The Dev Run" (`templates/torch.html`):**
+- The runner is now **you, learning to code** (not a torchbearer). Momentum meter (was "flame"), knowledge orbs = XP, obstacles = **bugs** (`!`) to jump.
+- Milestone gates = **the stacks**, passed in order and cycling: `STACKS = HTML → CSS → JavaScript → The DOM → Browser APIs → Web Dev` (6, mirrors the homepage "6 Quests"). Each gate is **labelled on the building**; passing it lights it gold, ticks "🧩 N stacks mastered", and shows a "✓ {stack} mastered" card with a one-line tip (replaced the Ajasin "story shard" quotes).
+- **WIN MOMENT:** mastering all 6 (ending on **Web Dev**) triggers `win()` — celebratory teal/gold spark burst (animated even though the run freezes), a rising `sfxWin` fanfare, then a **"You're a Web Developer 🎉"** screen (reuses the over-screen overlay; `#overTitle`/`#overEyebrow` are now set by both `win()` and `gameOver()` so win→retry→lose reads correctly). "Run again" replays.
+- Start/over/leaderboard copy all re-themed ("The Dev Run", "Your dev run", "Top Coders", dev quotes). No Ajasin/torch references remain in gameplay.
+
+**Verified** via Playwright screenshots on :8001 — start screen, mid-run (HTML gate visible), and the win screen all render; **no JS console errors**. The hero is `index.html` (served as FileResponse) and `torch.html` (Jinja) — both re-read per request, so a browser refresh shows changes (no server restart needed).
+
+**Open / next:**
+- [ ] Playtest the difficulty — the win needs surviving 6 gates on one run; tune flame/momentum drain + gate spacing if it feels too hard/easy.
+- [ ] (Optional) Swap the runner silhouette for illustrated "Neon Saga" coder art once image-gen is unblocked (still a code-drawn stick figure).
+- [ ] Global leaderboard still localStorage-only (Supabase migration blocker below unchanged).
 
 ---
 
@@ -58,11 +82,9 @@ The MoyaCode learning app (GitHub `adedayocornexology-sys/moyacode`) has been mi
 
 ## Locked design decisions (for the hero game)
 - **Tech:** faux-3D Canvas + leaderboard (chosen over real WebGL/Spline for low-end Android perf — audience is on Tecno Pop 7-class phones).
-- **Theme:** Pa Ajasin (Owo's son + free-education champion → MoyaCode = continuation of his legacy). Sourced from **"The Story of a Legend" (1992, yellow cover)** in `desktop\Ajasin_Book_Project\`.
-- **Ajasin's role:** dignified **guiding mentor** (portrait + real quotes), NOT a controllable avatar.
-- **Concept:** "Light the Nation + Collect a Legend" — emotional torch loop + unlock real story shards.
-- **Moat:** proprietary authorized content (the book) + Foundation endorsement + funnel into MoyaCode XP. Daily streak + school-vs-school leaderboard for retention.
-- **Art style:** "Neon Saga" — stylized vector + glow (Alto's Odyssey vibe).
+- **Theme (CURRENT, as of 2026-06-24):** **"Run the Stack — The Dev Run"** — the journey of learning to code. You scale the stacks (HTML → CSS → JS → DOM → Browser APIs → Web Dev), dodge bugs, and the win = **becoming a Web Developer**. NOT about Ajasin.
+- ~~**Theme:** Pa Ajasin / "Light the Nation" torch run~~ — **SUPERSEDED 2026-06-24.** The Ajasin torch framing was dropped per the user: the game is now about the dev journey, not the man. (The Ajasin biography content in `desktop\Ajasin_Book_Project\` is unrelated to the game now — keep it for the separate Ajasin book/Foundation work.)
+- **Art style:** "Neon Saga" — stylized vector + glow (Alto's Odyssey vibe). Runner is still a code-drawn neon silhouette.
 
 ## Open blockers
 - **AI image generation is blocked.** nano-banana (Gemini) free image tier is quota-exhausted (the key fix — writing the key to `~/.gemini/.env` — is applied and works for auth). Higgsfield has **0 credits**. So the torchbearer is currently a **code-crafted silhouette stand-in**; swap in an AI-illustrated Owo torchbearer when credits return (wait for daily reset, enable Gemini billing ~$0.04/img, or top up Higgsfield).

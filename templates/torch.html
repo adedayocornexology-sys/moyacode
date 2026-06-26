@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>MoyaCode | Light the Nation — The Ajasin Torch Run</title>
+<title>MoyaCode | Run the Stack — The Dev Run</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@10..48,400..800&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <style>
@@ -70,6 +70,11 @@
   #shard .tag{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);}
   #shard .txt{font-size:.98rem;line-height:1.45;margin-top:4px;}
   #shard .src{color:var(--dim);font-size:.78rem;margin-top:6px;}
+
+  /* embedded-in-hero mode: hide the standalone chrome so the host page's
+     own play overlay is the single call-to-action over the idle scene */
+  body.embed .brand{display:none;}
+  body.embed #startScreen{display:none;}
 </style>
 </head>
 <body>
@@ -78,7 +83,7 @@
 
   <div id="hud">
     <div class="score-box"><span id="score">0</span><br><small>SCORE</small></div>
-    <div class="lit-box">🏫 <span id="lit">0</span> schools lit</div>
+    <div class="lit-box">🧩 <span id="lit">0</span> stacks mastered</div>
     <div class="flame-meter"><div class="flame-fill" id="flame"></div></div>
   </div>
 
@@ -87,32 +92,32 @@
   <button class="pause-btn" id="pauseBtn" aria-label="Pause">⏸ Pause</button>
   <button class="pause-btn" id="soundBtn" aria-label="Toggle sound" style="display:flex;top:48px;">🔊</button>
 
-  <div id="shard"><div class="tag" id="shardTag">Echoes of Wisdom</div><div class="txt" id="shardTxt"></div><div class="src" id="shardSrc"></div></div>
+  <div id="shard"><div class="tag" id="shardTag">Stack mastered</div><div class="txt" id="shardTxt"></div><div class="src" id="shardSrc"></div></div>
 
   <!-- START -->
   <div class="overlay" id="startScreen">
     <div class="panel">
-      <div class="eyebrow">The Ajasin Torch Run · Owo</div>
-      <h1 class="title">Light the <span class="g">Nation</span></h1>
-      <p class="sub">Pa Ajasin lit the torch of free education. The schools ahead are dark. Run, keep your flame alive, and light up every school you pass.</p>
-      <blockquote class="quote">"Education in this State is free at all levels."<cite>— Chief M. A. Ajasin, sworn in as Ondo State's first Executive Governor, 1 Oct 1979</cite></blockquote>
+      <div class="eyebrow">MoyaCode · The Dev Run</div>
+      <h1 class="title">Run the <span class="g">Stack</span></h1>
+      <p class="sub">Every web developer starts at line one. Run the path, scale each stack — HTML, CSS, JavaScript, the DOM — dodge the bugs, and level up to a full web developer.</p>
+      <blockquote class="quote">"Every expert was once a beginner. Keep building."<cite>— The MoyaCode way</cite></blockquote>
       <button class="btn" id="startBtn">▶ Start the run</button>
-      <div class="hint">Tap / click / <kbd>Space</kbd> to leap. Collect glowing knowledge to feed your flame.</div>
+      <div class="hint">Tap / click / <kbd>Space</kbd> to leap. Grab knowledge to keep your momentum — and jump the bugs.</div>
     </div>
   </div>
 
   <!-- GAME OVER -->
   <div class="overlay hidden" id="overScreen">
     <div class="panel">
-      <div class="eyebrow" id="overEyebrow">The flame went out</div>
-      <h1 class="title" style="font-size:clamp(1.6rem,6vw,2.4rem)">Your <span class="g">legacy</span> run</h1>
+      <div class="eyebrow" id="overEyebrow">You ran out of momentum</div>
+      <h1 class="title" id="overTitle" style="font-size:clamp(1.6rem,6vw,2.4rem)">Your <span class="g">dev</span> run</h1>
       <div class="stat-row">
         <div class="stat"><b id="finalScore">0</b><span>SCORE</span></div>
-        <div class="stat"><b id="finalLit">0</b><span>SCHOOLS LIT</span></div>
+        <div class="stat"><b id="finalLit">0</b><span>STACKS MASTERED</span></div>
       </div>
       <blockquote class="quote" id="overQuote"></blockquote>
       <input class="name-in" id="nameIn" maxlength="16" placeholder="Enter your name for the leaderboard" />
-      <div class="lb"><h4>Top Torchbearers</h4><div id="lbList"></div></div>
+      <div class="lb"><h4>Top Coders</h4><div id="lbList"></div></div>
       <button class="btn" id="againBtn" style="margin-top:16px;">↻ Run again</button>
       <div class="hint">Leaderboard saves on this device. Global ranking unlocks with the live database.</div>
     </div>
@@ -131,41 +136,44 @@
 </div>
 
 <script>
-/* ===== Light the Nation — Ajasin Torch Run (Neon Saga prototype) ===== */
+/* ===== Run the Stack — The MoyaCode Dev Run (Neon Saga prototype) ===== */
 const cv = document.getElementById('game');
 const ctx = cv.getContext('2d');
 let W=0,H=0,DPR=Math.min(window.devicePixelRatio||1,2);
 function resize(){ W=window.innerWidth; H=window.innerHeight; cv.width=W*DPR; cv.height=H*DPR; ctx.setTransform(DPR,0,0,DPR,0,0); groundY=H*0.82; }
 let groundY; window.addEventListener('resize',resize); resize();
 
-/* authentic content from "The Story of a Legend" (1992) */
-const QUOTES=[
-  {t:"A human being is not in any proper sense a human being until he is educated.",s:"— Chief M. A. Ajasin, 17 Jan 1980",tag:"Echoes of Wisdom"},
-  {t:"It is on sound education for the people that the security and destiny of every nation mainly rest.",s:"— Chief M. A. Ajasin, 17 Jan 1980",tag:"Echoes of Wisdom"},
-  {t:"No road is too long for the man who advances deliberately and with determination.",s:"— Chief M. A. Ajasin",tag:"Echoes of Wisdom"},
-  {t:"Victory belongs to the most persevering.",s:"— Chief M. A. Ajasin",tag:"Echoes of Wisdom"},
-  {t:"Founder and first Principal of Owo High School, 1963.",s:"The Story of a Legend",tag:"From the Legend"},
-  {t:"First Executive Governor of Ondo State, 1979–1983 — he made education free at every level.",s:"The Story of a Legend",tag:"From the Legend"},
-  {t:"A pioneer school principal for 15 years (1947–1962) before he ever held office.",s:"The Story of a Legend",tag:"From the Legend"},
-  {t:"Asiwaju of Owo — a son of Owo who lit the way for a generation.",s:"The Story of a Legend",tag:"From the Legend"},
+/* embedded preview mode (homepage hero): host page supplies the play CTA */
+const EMBED = new URLSearchParams(location.search).has('embed');
+if(EMBED) document.body.classList.add('embed');
+
+/* the journey to web developer — each milestone you pass is a stack mastered */
+const STACKS=[
+  {name:"HTML",         tip:"The skeleton of every page — structure first."},
+  {name:"CSS",          tip:"Style & layout — now make it beautiful."},
+  {name:"JavaScript",   tip:"Logic & interactivity — bring the page to life."},
+  {name:"The DOM",      tip:"The live tree your code reaches in and controls."},
+  {name:"Browser APIs", tip:"Fetch, storage, events — the platform's powers."},
+  {name:"Web Dev",      tip:"You're shipping for the world now. Keep going."},
 ];
 const OVER_QUOTES=[
-  {t:"No road is too long for the man who advances deliberately and with determination.",s:"— Chief M. A. Ajasin"},
-  {t:"Victory belongs to the most persevering.",s:"— Chief M. A. Ajasin"},
+  {t:"Every expert was once a beginner. Keep building.",s:"— The MoyaCode way"},
+  {t:"You don't have to be great to start, but you have to start to be great.",s:"— Code a little, every day"},
 ];
+const WIN_QUOTE={t:"From your first line of code to a full web developer. This is just the beginning — keep building.",s:"— MoyaCode"};
 
 /* ---- game state ---- */
 let state='start', t=0, last=0;
 let scrollX=0, speed=0, baseSpeed=300;
 let score=0, schoolsLit=0, flame=100;
 let hero, orbs, schools, obstacles, embers, sparks, lit;
-let nextOrb=0, nextSchool=0, nextObstacle=0, shardTimer=0, usedQuotes=[];
+let nextOrb=0, nextSchool=0, nextObstacle=0, shardTimer=0, stackIdx=0;
 
 function reset(){
   t=0; scrollX=0; speed=baseSpeed; score=0; schoolsLit=0; flame=100;
   hero={x:W*0.22,y:groundY,vy:0,onGround:true,runPhase:0};
   orbs=[]; schools=[]; obstacles=[]; embers=[]; sparks=[]; lit=[];
-  nextOrb=0; nextSchool=900; nextObstacle=1400; shardTimer=0; usedQuotes=[];
+  nextOrb=0; nextSchool=900; nextObstacle=1400; shardTimer=0; stackIdx=0;
 }
 
 /* ---- input ---- */
@@ -185,6 +193,7 @@ const sfxOrb =()=>tone(900,0.12,'triangle',0.15,1400);
 const sfxLight=()=>[523,659,784,1046].forEach((f,i)=>setTimeout(()=>tone(f,0.45,'sawtooth',0.10),i*55));
 const sfxHit =()=>tone(150,0.28,'sawtooth',0.22,55);
 const sfxOver=()=>[523,392,330,247].forEach((f,i)=>setTimeout(()=>tone(f,0.4,'square',0.16),i*150));
+const sfxWin =()=>[523,659,784,1046,1318,1568].forEach((f,i)=>setTimeout(()=>tone(f,0.5,'sawtooth',0.13),i*90));
 const BASS=[131,131,165,196];
 const LEAD=[523,0,659,587,0,784,659,523,0,587,659,0,784,880,784,0];
 function startMusic(){ if(musicTimer)return; const stepMs=60000/108/2;
@@ -198,19 +207,15 @@ document.getElementById('soundBtn').addEventListener('click',e=>{e.stopPropagati
 
 /* ---- spawns ---- */
 function spawnOrb(){ const y=groundY-60-Math.random()*150; orbs.push({x:W+40,y,r:11,bob:Math.random()*6}); }
-function spawnSchool(){ schools.push({x:W+80,w:120,h:120+Math.random()*40,lit:false}); }
+function spawnSchool(){ const st=STACKS[stackIdx%STACKS.length]; stackIdx++; schools.push({x:W+80,w:120,h:120+Math.random()*40,lit:false,stack:st}); }
 function spawnObstacle(){ obstacles.push({x:W+40,w:30+Math.random()*14,h:34+Math.random()*26}); }
 
-function showShard(){
-  const pool=QUOTES.filter((_,i)=>!usedQuotes.includes(i));
-  const src=pool.length?pool:QUOTES; const idx=QUOTES.indexOf(src[Math.floor(Math.random()*src.length)]);
-  usedQuotes.push(idx); if(usedQuotes.length>QUOTES.length-1) usedQuotes=[];
-  const q=QUOTES[idx];
-  document.getElementById('shardTag').textContent=q.tag;
-  document.getElementById('shardTxt').textContent='“'+q.t+'”';
-  document.getElementById('shardSrc').textContent=q.s;
+function showStack(st){
+  document.getElementById('shardTag').textContent='Stack mastered';
+  document.getElementById('shardTxt').textContent='✓ '+st.name;
+  document.getElementById('shardSrc').textContent=st.tip;
   const el=document.getElementById('shard'); el.classList.add('show');
-  clearTimeout(showShard._tm); showShard._tm=setTimeout(()=>el.classList.remove('show'),4200);
+  clearTimeout(showStack._tm); showStack._tm=setTimeout(()=>el.classList.remove('show'),4200);
 }
 
 /* ---- update ---- */
@@ -243,7 +248,8 @@ function update(dt){
   schools.forEach(s=>{ s.x-=speed*dt;
     if(!s.lit && s.x < hero.x+10){ s.lit=true; schoolsLit++; flame=Math.min(100,flame+5); sfxLight();
       for(let i=0;i<26;i++)sparks.push({x:s.x+s.w/2,y:groundY-s.h/2,vx:(Math.random()-0.5)*320,vy:-Math.random()*300,life:1,c:'252,211,77'});
-      showShard();
+      showStack(s.stack);
+      if(schoolsLit>=STACKS.length && state==='play'){ win(); }
     }
   });
   schools=schools.filter(s=>s.x>-200);
@@ -296,6 +302,11 @@ function drawSchool(s){
     ctx.fillRect(wx,wy,22,28); ctx.shadowBlur=0;
   }
   if(s.lit){ const gg=ctx.createRadialGradient(bx+w/2,by+h/2,10,bx+w/2,by+h/2,w); gg.addColorStop(0,'rgba(252,211,77,.18)'); gg.addColorStop(1,'rgba(252,211,77,0)'); ctx.fillStyle=gg; ctx.fillRect(bx-w,by-h,w*3,h*3); }
+  // stack name on the gate
+  if(s.stack){ ctx.save(); ctx.textAlign='center'; ctx.font='700 14px "DM Mono", monospace';
+    ctx.fillStyle=s.lit?'rgba(252,211,77,.95)':'rgba(122,143,173,.85)';
+    ctx.shadowColor=s.lit?'rgba(252,211,77,.6)':'transparent'; ctx.shadowBlur=s.lit?12:0;
+    ctx.fillText(s.stack.name, bx+w/2, by-36); ctx.restore(); }
 }
 function drawHero(){
   const x=hero.x, y=hero.y, run=Math.sin(hero.runPhase), run2=Math.sin(hero.runPhase+Math.PI);
@@ -344,7 +355,7 @@ function drawObstacle(o){
   const by=groundY-o.h;
   ctx.fillStyle='rgba(40,18,30,1)'; ctx.strokeStyle='rgba(251,113,133,.7)'; ctx.lineWidth=2;
   ctx.fillRect(o.x,by,o.w,o.h); ctx.strokeRect(o.x,by,o.w,o.h);
-  ctx.fillStyle='rgba(251,113,133,.9)'; ctx.font='14px DM Mono'; ctx.fillText('×',o.x+o.w/2-4,by+o.h/2+5);
+  ctx.fillStyle='rgba(251,113,133,.95)'; ctx.font='700 15px "DM Mono", monospace'; ctx.textAlign='center'; ctx.fillText('!',o.x+o.w/2,by+o.h/2+5); ctx.textAlign='left';
 }
 function render(){
   drawBg();
@@ -360,6 +371,10 @@ function render(){
 function frame(ts){
   const dt=Math.min((ts-last)/1000||0,0.05); last=ts;
   if(state==='play'){ update(dt); }
+  else if(state==='win'){ // keep the celebratory burst alive after the run freezes
+    sparks.forEach(s=>{s.x+=s.vx*dt;s.y+=s.vy*dt;s.vy+=300*dt;s.life-=dt*1.3;});
+    sparks=sparks.filter(s=>s.life>0);
+  }
   render();
   requestAnimationFrame(frame);
 }
@@ -381,6 +396,8 @@ window.addEventListener('keydown',e=>{ if((e.code==='Escape'||e.code==='KeyP')&&
 window.addEventListener('blur',()=>{ if(state==='play') togglePause(); }); // auto-pause when tab loses focus
 function gameOver(){
   state='over'; pauseBtn.style.display='none'; sfxOver();
+  document.getElementById('overEyebrow').textContent='You ran out of momentum';
+  document.getElementById('overTitle').innerHTML='Your <span class="g">dev</span> run';
   document.getElementById('finalScore').textContent=score;
   document.getElementById('finalLit').textContent=schoolsLit;
   const q=OVER_QUOTES[Math.floor(Math.random()*OVER_QUOTES.length)];
@@ -389,10 +406,24 @@ function gameOver(){
   renderLB(null);
   document.getElementById('overScreen').classList.remove('hidden');
 }
+function win(){
+  state='win'; pauseBtn.style.display='none'; sfxWin();
+  // celebratory burst from the hero
+  for(let i=0;i<70;i++)sparks.push({x:hero.x,y:hero.y-60,vx:(Math.random()-0.5)*460,vy:-Math.random()*460,life:1.2,c:i%2?'0,229,160':'252,211,77'});
+  document.getElementById('overEyebrow').textContent='You made it 🎉';
+  document.getElementById('overTitle').innerHTML='You\'re a <span class="g">Web Developer</span>';
+  document.getElementById('finalScore').textContent=score;
+  document.getElementById('finalLit').textContent=schoolsLit;
+  document.getElementById('overQuote').innerHTML='“'+WIN_QUOTE.t+'”<cite>'+WIN_QUOTE.s+'</cite>';
+  document.getElementById('nameIn').value=localStorage.getItem('torch_name')||'';
+  renderLB(null);
+  // let the burst breathe for a beat, then reveal the screen
+  setTimeout(()=>document.getElementById('overScreen').classList.remove('hidden'),650);
+}
 function getLB(){ try{return JSON.parse(localStorage.getItem('torch_lb')||'[]');}catch(e){return [];} }
 function renderLB(youIdx){
   const lb=getLB(); const el=document.getElementById('lbList');
-  if(!lb.length){ el.innerHTML='<div class="lb-row"><span class="nm" style="color:var(--dim)">Be the first torchbearer on the board.</span></div>'; return; }
+  if(!lb.length){ el.innerHTML='<div class="lb-row"><span class="nm" style="color:var(--dim)">Be the first coder on the board.</span></div>'; return; }
   el.innerHTML=lb.slice(0,6).map((r,i)=>`<div class="lb-row ${i===youIdx?'you':''}"><span class="rk">#${i+1}</span><span class="nm">${(r.n||'Anon').replace(/[<>&]/g,'')}</span><span class="sc">${r.s}</span></div>`).join('');
 }
 function saveScore(){
@@ -404,6 +435,8 @@ function saveScore(){
 }
 document.getElementById('startBtn').addEventListener('click',start);
 document.getElementById('againBtn').addEventListener('click',start);
+/* allow an embedding page (e.g. homepage hero) to start the run in place */
+window.addEventListener('message',e=>{ if(e.data&&e.data.type==='moya-start'&&state==='start')start(); });
 document.getElementById('nameIn').addEventListener('change',saveScore);
 document.getElementById('nameIn').addEventListener('blur',saveScore);
 </script>

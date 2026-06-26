@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<title>MoyaCode — Send Us Your Character</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --teal:#00E5A0;--teal-dim:rgba(0,229,160,.14);--teal-faint:rgba(0,229,160,.06);
+    --coral:#FB7185;--amber:#FCD34D;
+    --bg0:#030712;--bg1:#0A1628;--ink:#F5F8FF;--mut:#8094B0;--mut2:#4A5C78;--line:rgba(255,255,255,.10);
+    --fd:'Bricolage Grotesque',sans-serif;--fb:'Space Grotesk',sans-serif;--fm:'DM Mono',monospace;
+    --ease:cubic-bezier(.4,0,.2,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:var(--fb);background:var(--bg0);color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden}
+  .glow{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+  .glow span{position:absolute;border-radius:50%;filter:blur(130px)}
+  .g1{width:560px;height:560px;background:radial-gradient(circle,rgba(0,229,160,.13),transparent 65%);top:-180px;right:-120px}
+  .g2{width:520px;height:520px;background:radial-gradient(circle,rgba(167,139,250,.12),transparent 65%);bottom:-200px;left:-160px}
+  .wrap{max-width:600px;margin:0 auto;padding:clamp(28px,6vw,56px) clamp(18px,5vw,28px)}
+  .brand{display:flex;align-items:center;gap:11px;margin-bottom:30px}
+  .mk{width:34px;height:34px;border-radius:10px;background:var(--teal);display:grid;place-items:center;box-shadow:0 0 20px rgba(0,229,160,.4)}
+  .brand b{font-family:var(--fd);font-weight:800;font-size:1.15rem;letter-spacing:-.02em}
+  .eyebrow{font-family:var(--fm);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--teal)}
+  h1{font-family:var(--fd);font-size:clamp(1.9rem,5vw,2.6rem);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin:10px 0 10px}
+  h1 .em{color:var(--teal)}
+  .lede{color:var(--mut);line-height:1.6;font-size:1rem;margin-bottom:30px}
+  .lede b{color:var(--ink)}
+
+  form{display:flex;flex-direction:column;gap:18px}
+  .field label{display:block;font-weight:600;font-size:.92rem;margin-bottom:7px}
+  .field label .req{color:var(--teal)}
+  .field .hint{color:var(--mut2);font-size:.8rem;font-weight:400}
+  input,textarea,select{width:100%;background:var(--bg1);border:1px solid var(--line);border-radius:12px;padding:13px 15px;color:var(--ink);font-family:var(--fb);font-size:1rem;transition:border-color var(--ease) .15s}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--teal)}
+  textarea{resize:vertical;min-height:110px;line-height:1.5}
+  .count{text-align:right;font-family:var(--fm);font-size:.72rem;color:var(--mut2);margin-top:5px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:480px){.row{grid-template-columns:1fr}}
+  /* honeypot: hidden from humans, visible to dumb bots */
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+  .btn{margin-top:6px;background:var(--teal);color:#06121f;border:0;border-radius:13px;padding:15px 20px;font-family:var(--fb);font-weight:700;font-size:1.02rem;cursor:pointer;transition:filter var(--ease) .15s,transform var(--ease) .15s}
+  .btn:hover:not(:disabled){filter:brightness(1.06);transform:translateY(-2px)}
+  .btn:disabled{opacity:.55;cursor:not-allowed}
+  .note{font-size:.82rem;color:var(--mut2);line-height:1.5;margin-top:4px}
+  .msg{display:none;border-radius:12px;padding:13px 16px;font-size:.92rem;line-height:1.5;margin-top:4px}
+  .msg.err{display:block;background:rgba(251,113,133,.1);border:1px solid rgba(251,113,133,.3);color:#FCA5B4}
+  .ok-screen{display:none;text-align:center;padding:30px 10px}
+  .ok-screen .big{font-size:3rem}
+  .ok-screen h2{font-family:var(--fd);font-size:1.8rem;font-weight:800;margin:14px 0 8px}
+  .ok-screen p{color:var(--mut);line-height:1.6}
+</style>
+</head>
+<body>
+<div class="glow" aria-hidden="true"><span class="g1"></span><span class="g2"></span></div>
+<main class="wrap">
+  <div class="brand">
+    <span class="mk" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M8 6l4-4 4 4M8 18l4 4 4-4M3 12h18" stroke="#030712" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    <b>MoyaCode</b>
+  </div>
+
+  <div id="formWrap">
+    <div class="eyebrow">Student Creators · Call for characters</div>
+    <h1>Send us your <span class="em">character</span></h1>
+    <p class="lede">Design a character and we may build it into a MoyaCode game or comic. <b>No account needed.</b> Just tell us about you and your character below.</p>
+
+    <form id="form" autocomplete="off" novalidate>
+      <div class="row">
+        <div class="field">
+          <label for="student_name">Your name <span class="req">*</span></label>
+          <input id="student_name" name="student_name" type="text" maxlength="80" required placeholder="e.g. Ada Bello" />
+        </div>
+        <div class="field">
+          <label for="school_class">School &amp; class <span class="hint">(optional)</span></label>
+          <input id="school_class" name="school_class" type="text" maxlength="120" placeholder="e.g. JSS2, RSS Owo" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="contact">WhatsApp or email <span class="hint">(optional, so we can reach you)</span></label>
+        <input id="contact" name="contact" type="text" maxlength="60" placeholder="e.g. 0801 234 5678" />
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="character_name">Character's name <span class="req">*</span></label>
+          <input id="character_name" name="character_name" type="text" maxlength="80" required placeholder="e.g. Zuri the Brave" />
+        </div>
+        <div class="field">
+          <label for="character_power">Its power or value <span class="hint">(optional)</span></label>
+          <input id="character_power" name="character_power" type="text" maxlength="120" placeholder="e.g. courage / super speed" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="character_description">Describe your character <span class="req">*</span></label>
+        <textarea id="character_description" name="character_description" maxlength="1000" required placeholder="What does your character look like? What do they do? What makes them special?"></textarea>
+        <div class="count"><span id="count">0</span> / 1000</div>
+      </div>
+
+      <!-- honeypot: real students never see or fill this -->
+      <div class="hp" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off" /></label></div>
+
+      <div class="msg err" id="err"></div>
+      <button class="btn" id="submit" type="submit">Send my character</button>
+      <p class="note">By sending, you agree MoyaCode may feature your character in our games and comics. We only collect what you type above.</p>
+    </form>
+  </div>
+
+  <div class="ok-screen" id="ok">
+    <div class="big">🎉</div>
+    <h2>Got it, thank you!</h2>
+    <p id="okMsg">Your character is in. If it gets picked, we'll reach out. Keep creating.</p>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  // MoyaCode Supabase (public anon key — safe to expose; the table is insert-only via RLS)
+  const SB_URL = 'https://bzlchdijdpjjobemrcci.supabase.co';
+  const SB_KEY = 'sb_publishable_qm4IIrY9y-Hal7LVBqBW8Q_a8eyO708';
+  const sb = window.supabase.createClient(SB_URL, SB_KEY);
+
+  const $ = id => document.getElementById(id);
+  const loadedAt = Date.now();
+  const desc = $('character_description');
+  desc.addEventListener('input', () => { $('count').textContent = desc.value.length; });
+
+  function showErr(t){ const e=$('err'); e.textContent=t; e.style.display='block'; }
+
+  $('form').addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    $('err').style.display='none';
+
+    // bot traps: honeypot filled, or submitted impossibly fast
+    if ($('form').website.value) { fakeSuccess(); return; }
+    if (Date.now() - loadedAt < 2500) { showErr('Please take a moment to fill the form, then try again.'); return; }
+
+    const v = k => $(k).value.trim();
+    const payload = {
+      student_name: v('student_name').slice(0,80),
+      school_class: v('school_class').slice(0,120) || null,
+      contact: v('contact').slice(0,60) || null,
+      character_name: v('character_name').slice(0,80),
+      character_power: v('character_power').slice(0,120) || null,
+      character_description: v('character_description').slice(0,1000),
+    };
+    if (!payload.student_name || !payload.character_name || !payload.character_description) {
+      showErr('Please fill in your name, your character\'s name, and the description.'); return;
+    }
+
+    const btn = $('submit'); btn.disabled = true; btn.textContent = 'Sending...';
+    try {
+      const { error } = await sb.from('character_submissions').insert(payload);
+      if (error) throw error;
+      const name = payload.student_name.replace(/[^\p{L}\p{N}\s'.-]/gu,'').slice(0,40);
+      $('okMsg').textContent = (name ? name + ', your' : 'Your') + " character is in. If it gets picked, we'll reach out. Keep creating.";
+      $('formWrap').style.display='none'; $('ok').style.display='block';
+      window.scrollTo({top:0,behavior:'smooth'});
+    } catch (e) {
+      btn.disabled = false; btn.textContent = 'Send my character';
+      showErr('Sorry, that did not send. Check your connection and try again.');
+    }
+  });
+</script>
+</body>
+</html>

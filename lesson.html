@@ -223,6 +223,7 @@
     .xp-val { font-family: var(--f-display); font-size: .92rem; font-weight: 800; color: var(--c-teal); }
     .xp-bonus { font-size: .65rem; font-weight: 700; color: var(--c-teal); opacity: .75; }
     .lesson-main {
+      grid-column: 2;
       margin-left: 0;
       padding: 40px 52px 120px;
       display: flex;
@@ -482,14 +483,20 @@
     .step-animated-4 { animation: step-fade-in var(--dur-slow) var(--spring) 240ms both; }
     .step-animated-5 { animation: step-fade-in var(--dur-slow) var(--spring) 320ms both; }
     @media (max-width: 860px) {
+      .lesson-shell { grid-template-columns: 1fr; }
       .sidebar { transform: translateX(-100%); transition: transform var(--dur-mid) var(--ease); }
       .sidebar.open { transform: translateX(0); }
-      .lesson-main { margin-left: 0; padding: 24px 20px 120px; max-width: 100%; width: 100%; }
+      .lesson-main { grid-column: 1; margin-left: 0; padding: 24px 20px 120px; max-width: 100%; width: 100%; }
       .bottom-nav { left: 0; padding: 14px 20px; }
       .mob-menu-btn { display: flex !important; }
     }
     .sidebar-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:499; }
     .sidebar-backdrop.visible { display:block; }
+    /* lift the global "Ask Moya" button + panel clear of the fixed bottom action bar
+       so it never sits on top of the Next / Start Quest button */
+    .moya-fab { bottom: 92px !important; }
+    .moya-panel { bottom: 92px !important; }
+    @media (max-width: 860px) { .moya-fab, .moya-panel { bottom: 86px !important; } }
     /* ── Agent banner (sidebar) ── */
     .sb-agent-banner {
       padding: 12px 20px;

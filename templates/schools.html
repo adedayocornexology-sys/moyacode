@@ -1,37 +1,164 @@
 {% extends "base.html" %}
-{% block title %}MoyaCode | For Schools{% endblock %}
+{% block title %}MoyaCode | Bring Coding & AI to Your School{% endblock %}
 {% block nav_schools %}active{% endblock %}
 
 {% block head %}
 <style>
-  .feat-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; margin-top: 48px; }
-  .feat { background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--r-xl); padding: 24px; }
-  .feat h3 { font-family: var(--f-display); font-size: 1.1rem; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
-  .feat p { color: var(--t-400); line-height: 1.55; font-size: 0.95rem; }
-  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--c-teal); box-shadow: 0 0 12px var(--c-teal); }
-  .cta-row { margin-top: 44px; display: flex; gap: 14px; flex-wrap: wrap; }
-  .btn-primary { padding: 13px 26px; border-radius: var(--r-lg); background: var(--c-teal); color: var(--bg-0); font-weight: 700; box-shadow: 0 0 28px rgba(0,229,160,0.3); transition: transform var(--dur-fast) var(--spring); }
-  .btn-primary:hover { transform: translateY(-2px); }
-  .btn-outline { padding: 13px 26px; border-radius: var(--r-lg); border: 1px solid var(--glass-hi); color: var(--t-100); font-weight: 600; }
+  .sch-glow { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+  .sch-glow span { position: absolute; border-radius: 50%; filter: blur(120px); }
+  .sch-glow .g1 { width: 620px; height: 620px; background: radial-gradient(circle, rgba(0,229,160,0.14), transparent 65%); top: -180px; right: -120px; }
+  .sch-glow .g2 { width: 520px; height: 520px; background: radial-gradient(circle, rgba(96,165,250,0.12), transparent 65%); bottom: -160px; left: -120px; }
+
+  .badge-now { display: inline-flex; align-items: center; gap: 8px; margin-left: 10px; padding: 5px 12px; border-radius: 999px; background: var(--c-teal-faint); border: 1px solid var(--c-teal-dim); color: var(--c-teal); font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; vertical-align: middle; }
+  .badge-now .pdot { width: 6px; height: 6px; border-radius: 50%; background: var(--c-teal); box-shadow: 0 0 8px var(--c-teal); }
+  .page-h1 .em { color: var(--c-teal); }
+  .empower { color: var(--c-teal); font-family: var(--f-mono); font-size: 0.84rem; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 22px; }
+
+  .hero-cta { margin-top: 26px; display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .btn-primary { display: inline-flex; align-items: center; gap: 9px; padding: 14px 26px; border-radius: var(--r-lg); background: var(--c-teal); color: var(--bg-0); font-weight: 700; box-shadow: 0 0 32px rgba(0,229,160,0.32); transition: transform var(--dur-fast) var(--spring), filter var(--dur-fast) var(--ease); }
+  .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.06); }
+  .btn-outline { display: inline-flex; align-items: center; gap: 9px; padding: 13px 24px; border-radius: var(--r-lg); border: 1px solid var(--glass-hi); color: var(--t-100); font-weight: 600; transition: border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease); }
+  .btn-outline:hover { border-color: rgba(0,229,160,0.4); background: var(--c-teal-faint); color: var(--c-teal); }
+
+  .stat-strip { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 12px; }
+  .stat-chip { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: var(--r-lg); background: var(--glass); border: 1px solid var(--glass-border); font-size: 0.9rem; color: var(--t-200); }
+  .stat-chip b { color: var(--c-teal); font-family: var(--f-display); }
+
+  .sec { max-width: 1120px; margin: 0 auto; padding: clamp(36px,5vw,64px) clamp(16px,5vw,56px); }
+  .sec-eyebrow { font-family: var(--f-mono); font-size: 0.76rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-teal); display: flex; align-items: center; gap: 10px; }
+  .sec-eyebrow::before { content: ''; width: 22px; height: 1.5px; background: var(--c-teal); border-radius: 999px; }
+  .sec-h2 { font-family: var(--f-display); font-size: clamp(1.6rem, 3.5vw, 2.4rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin-top: 12px; }
+  .sec-sub { color: var(--t-400); max-width: 620px; margin-top: 12px; line-height: 1.6; }
+
+  /* student benefits list */
+  .benefits { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px 28px; margin-top: 30px; }
+  .benefit { display: flex; gap: 13px; align-items: flex-start; }
+  .benefit .tick { color: var(--c-teal); flex-shrink: 0; margin-top: 1px; font-weight: 700; }
+  .benefit b { font-family: var(--f-display); font-weight: 700; }
+  .benefit span { color: var(--t-400); }
+
+  /* principal value props */
+  .invest { background: linear-gradient(160deg, var(--bg-1), var(--bg-0)); border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin-top: 32px; }
+  .card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--r-2xl); padding: 24px 22px; transition: transform var(--dur-mid) var(--spring), border-color var(--dur-mid) var(--ease); }
+  .card:hover { transform: translateY(-4px); border-color: rgba(0,229,160,0.25); }
+  .card .ic { width: 46px; height: 46px; border-radius: var(--r-lg); display: grid; place-items: center; font-size: 22px; margin-bottom: 14px; }
+  .ic.teal { background: var(--c-teal-dim); } .ic.blue { background: rgba(96,165,250,0.14); } .ic.amber { background: rgba(252,211,77,0.14); } .ic.coral { background: rgba(251,113,133,0.14); }
+  .card h3 { font-family: var(--f-display); font-size: 1.08rem; font-weight: 700; margin-bottom: 7px; }
+  .card p { color: var(--t-400); line-height: 1.55; font-size: 0.92rem; }
+
+  /* how it works */
+  .how { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 30px; }
+  .step { background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--r-xl); padding: 22px; }
+  .step .n { font-family: var(--f-mono); font-size: 0.8rem; color: var(--c-teal); }
+  .step h4 { font-family: var(--f-display); font-size: 1.02rem; margin: 8px 0 6px; }
+  .step p { color: var(--t-400); font-size: 0.9rem; line-height: 1.55; }
+
+  /* one-pager feature */
+  .onepager { display: grid; grid-template-columns: 1.1fr 1fr; gap: 36px; align-items: center; }
+  .onepager img { width: 100%; border-radius: var(--r-2xl); border: 1px solid var(--glass-border); box-shadow: 0 24px 70px rgba(0,0,0,0.5); display: block; }
+  @media (max-width: 760px) { .onepager { grid-template-columns: 1fr; } }
+
+  .final { max-width: 1120px; margin: 0 auto clamp(40px,6vw,80px); padding: 0 clamp(16px,5vw,56px); }
+  .final-card { position: relative; overflow: hidden; background: var(--glass); border: 1px solid rgba(0,229,160,0.3); border-radius: var(--r-3xl); padding: clamp(32px,5vw,56px); text-align: center; box-shadow: 0 0 80px rgba(0,229,160,0.06); }
+  .final-card h2 { font-family: var(--f-display); font-size: clamp(1.8rem,4vw,2.8rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; }
+  .final-card h2 .em { color: var(--c-teal); }
+  .final-card p { color: var(--t-400); max-width: 540px; margin: 14px auto 26px; line-height: 1.6; }
+  .final-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .contact-line { margin-top: 20px; font-family: var(--f-mono); font-size: 0.86rem; color: var(--t-400); }
+  .contact-line a { color: var(--c-teal); }
 </style>
 {% endblock %}
 
 {% block content %}
-<section class="wrap">
-  <span class="eyebrow">For Schools</span>
-  <h1 class="page-h1">Bring real coding<br>to <span style="color:var(--c-teal)">your classroom.</span></h1>
-  <p class="lead">MoyaCode gives teachers a ready-made, game-style coding curriculum mapped to JSS1–SS3 — no setup, no licences, no expensive lab software. Students learn on any browser.</p>
+<div class="sch-glow" aria-hidden="true"><span class="g1"></span><span class="g2"></span></div>
 
-  <div class="feat-list">
-    <div class="feat"><h3><span class="dot"></span>Curriculum-ready</h3><p>Quests aligned to class levels, from Scratch fundamentals to web building blocks and Python.</p></div>
-    <div class="feat"><h3><span class="dot"></span>Teacher visibility</h3><p>See progress, streaks, and at-risk students so you know exactly who needs a nudge.</p></div>
-    <div class="feat"><h3><span class="dot"></span>Zero cost to learn</h3><p>Every lesson and quest is free for students. We never charge a child to learn.</p></div>
-    <div class="feat"><h3><span class="dot"></span>Showcase student work</h3><p>Your students' best games get featured in the public <a href="/arcade" style="color:var(--c-teal)">Arcade</a> — real motivation, real pride.</p></div>
+<!-- HERO -->
+<section class="wrap">
+  <span class="eyebrow">MoyaCode for Schools</span><span class="badge-now"><span class="pdot"></span>Now in Akure</span>
+  <h1 class="page-h1">Build games.<br>Code with <span class="em">AI.</span></h1>
+  <p class="lead">Bring a coding &amp; AI program into your school — designed to inspire, engage and transform your students. They learn on any phone or browser, no computer lab required.</p>
+  <p class="empower">Empower your school · Prepare your students for tomorrow</p>
+
+  <div class="hero-cta">
+    <a class="btn-primary" href="https://wa.me/2347045995873?text=Hi%20MoyaCode%2C%20I%27d%20like%20to%20bring%20coding%20%26%20AI%20into%20my%20school." target="_blank" rel="noopener">📲 Book a school demo</a>
+    <a class="btn-outline" href="/school-outreach/design-target.png" target="_blank" rel="noopener">View the one-pager →</a>
   </div>
 
-  <div class="cta-row">
-    <a href="mailto:hello@moyacode.com?subject=MoyaCode%20for%20Schools" class="btn-primary">Talk to us</a>
-    <a href="/arcade" class="btn-outline">See student games →</a>
+  <div class="stat-strip">
+    <div class="stat-chip"><b>JSS &amp; SSS</b> students</div>
+    <div class="stat-chip"><b>100%</b> free to learn</div>
+    <div class="stat-chip"><b>Any</b> phone or browser</div>
+    <div class="stat-chip"><b>Online</b> &amp; in person</div>
   </div>
 </section>
+
+<!-- WHY BRING CODING & AI -->
+<section class="sec">
+  <div class="sec-eyebrow">Why bring coding &amp; AI to your school?</div>
+  <h2 class="sec-h2">Future-ready skills, made engaging.</h2>
+  <p class="sec-sub">A program designed for Junior &amp; Senior Secondary students — age-appropriate, hands-on, and aligned with where the world is heading.</p>
+  <div class="benefits">
+    <div class="benefit"><span class="tick">✓</span><div><b>21st-century digital skills.</b> <span>The literacy every future career now assumes.</span></div></div>
+    <div class="benefit"><span class="tick">✓</span><div><b>Creativity &amp; critical thinking.</b> <span>Build problem-solving that carries into every subject.</span></div></div>
+    <div class="benefit"><span class="tick">✓</span><div><b>Confidence through projects.</b> <span>Students build real games and apps they're proud of.</span></div></div>
+    <div class="benefit"><span class="tick">✓</span><div><b>Use AI responsibly.</b> <span>They learn to understand and work with AI, not fear it.</span></div></div>
+    <div class="benefit"><span class="tick">✓</span><div><b>Ready for the future.</b> <span>Prepared for careers in tech — and beyond.</span></div></div>
+  </div>
+</section>
+
+<!-- SMART INVESTMENT (principal-facing) -->
+<section class="invest">
+  <div class="sec">
+    <div class="sec-eyebrow">A smart investment in your school's future</div>
+    <h2 class="sec-h2">Coding &amp; AI education leads to:</h2>
+    <div class="cards">
+      <div class="card"><div class="ic teal">🚀</div><h3>Future ready</h3><p>Students gain the skills the future actually demands — well ahead of their peers.</p></div>
+      <div class="card"><div class="ic blue">📈</div><h3>Stronger performance</h3><p>Coding sharpens logic, focus and discipline that lift academic outcomes across subjects.</p></div>
+      <div class="card"><div class="ic amber">💡</div><h3>Innovation-driven</h3><p>A culture of creativity and problem-solving that your whole school feels.</p></div>
+      <div class="card"><div class="ic coral">🏆</div><h3>Competitive advantage</h3><p>Position your school as a forward-looking leader in education.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="sec">
+  <div class="sec-eyebrow">How it works in your school</div>
+  <h2 class="sec-h2">No lab. No licences. No setup headache.</h2>
+  <div class="how">
+    <div class="step"><div class="n">01</div><h4>Runs on any device</h4><p>Students learn on the phones and browsers they already have — built for low-bandwidth classrooms.</p></div>
+    <div class="step"><div class="n">02</div><h4>Curriculum that's ready</h4><p>Game-style quests mapped to JSS &amp; SSS — teachers don't prepare a thing.</p></div>
+    <div class="step"><div class="n">03</div><h4>Teacher visibility</h4><p>See each student's progress and streaks — know exactly who needs a nudge.</p></div>
+    <div class="step"><div class="n">04</div><h4>We come to you</h4><p>Delivered online and in person. We help you launch with your students and stay with you after.</p></div>
+  </div>
+</section>
+
+<!-- ONE-PAGER -->
+<section class="sec">
+  <div class="onepager">
+    <img src="/school-outreach/design-target.png" alt="MoyaCode for Schools one-pager — build games and code with AI" loading="lazy" />
+    <div>
+      <div class="sec-eyebrow">The one-pager</div>
+      <h2 class="sec-h2">Share it with your team.</h2>
+      <p class="sec-sub">Everything on this page, on a single sheet — perfect for forwarding to a head teacher or printing for a staff meeting.</p>
+      <div class="hero-cta">
+        <a class="btn-outline" href="/school-outreach/design-target.png" target="_blank" rel="noopener" download>⬇ Download the one-pager</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<div class="final">
+  <div class="final-card">
+    <div class="sch-glow" aria-hidden="true"><span class="g1"></span></div>
+    <h2>Let's build the next generation of<br><span class="em">innovators — together.</span></h2>
+    <p>Partner with MoyaCode to bring cutting-edge coding &amp; AI education to your school. Book a free demo and we'll show you exactly how it works with your students.</p>
+    <div class="final-actions">
+      <a class="btn-primary" href="https://wa.me/2347045995873?text=Hi%20MoyaCode%2C%20I%27d%20like%20to%20bring%20coding%20%26%20AI%20into%20my%20school." target="_blank" rel="noopener">📲 Book a school demo</a>
+      <a class="btn-outline" href="mailto:hello@moyacode.com?subject=MoyaCode%20for%20Schools">Email us</a>
+    </div>
+    <div class="contact-line">WhatsApp <a href="https://wa.me/2347045995873" target="_blank" rel="noopener">0704 599 5873</a> &nbsp;·&nbsp; <a href="https://moyacode.com">moyacode.com</a></div>
+  </div>
+</div>
 {% endblock %}
