@@ -101,6 +101,11 @@
         <div class="count"><span id="count">0</span> / 1000</div>
       </div>
 
+      <div class="field">
+        <label for="character_image">Upload a drawing of your character <span class="hint">(optional, image up to 5 MB)</span></label>
+        <input id="character_image" name="character_image" type="file" accept="image/png,image/jpeg,image/webp,image/gif" />
+      </div>
+
       <!-- honeypot: real students never see or fill this -->
       <div class="hp" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off" /></label></div>
 
@@ -155,15 +160,30 @@
 
     const btn = $('submit'); btn.disabled = true; btn.textContent = 'Sending...';
     try {
+      // optional image upload (images only, 5 MB cap; bucket also enforces this server-side)
+      const file = $('character_image').files[0];
+      if (file) {
+        if (!/^image\/(png|jpe?g|webp|gif)$/.test(file.type)) throw new Error('bad-type');
+        if (file.size > 5 * 1024 * 1024) throw new Error('too-big');
+        const ext = (file.type.split('/')[1] || 'png').replace('jpeg', 'jpg');
+        const path = Date.now() + '-' + Math.random().toString(36).slice(2, 10) + '.' + ext;
+        const up = await sb.storage.from('moyacode-characters').upload(path, file, { contentType: file.type, upsert: false });
+        if (up.error) throw new Error('upload-failed');
+        payload.character_image_url = sb.storage.from('moyacode-characters').getPublicUrl(path).data.publicUrl;
+      }
       const { error } = await sb.from('moyacode_character_submissions').insert(payload);
       if (error) throw error;
-      const name = payload.student_name.replace(/[^\p{L}\p{N}\s'.-]/gu,'').slice(0,40);
+      const name = payload.student_name.replace(/[^\p{L}\p{N}\s'.-]/gu, '').slice(0, 40);
       $('okMsg').textContent = (name ? name + ', your' : 'Your') + " character is in. If it gets picked, we'll reach out. Keep creating.";
-      $('formWrap').style.display='none'; $('ok').style.display='block';
-      window.scrollTo({top:0,behavior:'smooth'});
+      $('formWrap').style.display = 'none'; $('ok').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (e) {
       btn.disabled = false; btn.textContent = 'Send my character';
-      showErr('Sorry, that did not send. Check your connection and try again.');
+      const m = e && e.message;
+      if (m === 'bad-type') showErr('Please upload an image (PNG, JPG, WEBP, or GIF).');
+      else if (m === 'too-big') showErr('That image is too large. Maximum is 5 MB.');
+      else if (m === 'upload-failed') showErr('Could not upload the image. Try a smaller one, or skip it.');
+      else showErr('Sorry, that did not send. Check your connection and try again.');
     }
   });
 </script>
