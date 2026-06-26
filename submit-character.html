@@ -119,9 +119,10 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-  // MoyaCode Supabase (public anon key — safe to expose; the table is insert-only via RLS)
-  const SB_URL = 'https://bzlchdijdpjjobemrcci.supabase.co';
-  const SB_KEY = 'sb_publishable_qm4IIrY9y-Hal7LVBqBW8Q_a8eyO708';
+  // Temp DB: Sellam Supabase project (public anon key, safe to expose; table is insert-only via RLS).
+  // Co-located here while MoyaCode's own Supabase is over its free-tier limit; migrate later.
+  const SB_URL = 'https://meskscsjwiseelrvzqaj.supabase.co';
+  const SB_KEY = 'sb_publishable_wAAwr4ISpIXRlhz2ZdfGXQ_0nJaw8QH';
   const sb = window.supabase.createClient(SB_URL, SB_KEY);
 
   const $ = id => document.getElementById(id);
@@ -154,7 +155,7 @@
 
     const btn = $('submit'); btn.disabled = true; btn.textContent = 'Sending...';
     try {
-      const { error } = await sb.from('character_submissions').insert(payload);
+      const { error } = await sb.from('moyacode_character_submissions').insert(payload);
       if (error) throw error;
       const name = payload.student_name.replace(/[^\p{L}\p{N}\s'.-]/gu,'').slice(0,40);
       $('okMsg').textContent = (name ? name + ', your' : 'Your') + " character is in. If it gets picked, we'll reach out. Keep creating.";
