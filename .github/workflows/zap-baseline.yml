@@ -1,0 +1,29 @@
+name: OWASP ZAP Baseline Security Scan
+
+# Runs the OWASP ZAP baseline (passive) scan against the live site in a clean
+# cloud environment. Trigger manually ("Run workflow") or it runs on push to main.
+# Findings are uploaded as a build artifact (zap_scan report) on each run.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  zap_baseline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: OWASP ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.12.0
+        with:
+          target: 'https://moyacode-live.vercel.app'
+          # Do not open GitHub issues automatically; we read the artifact report.
+          allow_issue_writing: false
+          # Surface findings without failing the whole pipeline.
+          fail_action: false
