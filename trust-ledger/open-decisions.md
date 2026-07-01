@@ -23,16 +23,30 @@ export of raw events makes gaming easier for the next cohort if that data ever l
 shared. A middle path — (b) — is worth considering as a starting recommendation, but this is a
 product/values decision, not a technical one. **Needs an explicit answer before this ships.**
 
-## 2. Faculty agent naming mismatch
+## 2. Faculty agent naming — RESOLVED
 
-The spec names teaching agents **Archie (HTML), Aura (CSS), Logic (JS)**. The actual code
-(`js/agents.js`) names them **Tolu (Scratch), Chidi (HTML), Amaka (CSS), Emeka (JS)**, and
-includes a Scratch track the spec doesn't mention at all.
+**Resolution: Tolu / Chidi / Amaka / Emeka is canonical.** The spec's "Archie/Aura/Logic"
+naming does not appear anywhere in the actual product and was almost certainly placeholder
+shorthand written without cross-referencing the existing code.
 
-Action needed: confirm which naming is canonical going forward. If the spec's naming is the
-intended rebrand, `js/agents.js` needs updating (and anywhere else these names appear, e.g.
-lesson content, if any). If the existing code names are canonical, update future specs/pitch
-materials to match — don't let two names for the same agents drift in parallel docs.
+Evidence this is a deliberate, settled product decision — not a coincidence to reconcile away:
+
+- `js/agents.js` — full agent definitions with distinct intro/farewell copy per teacher.
+- `js/assistant.js` — Moya's own system prompt references these four names directly.
+- `home.html`, `placement.html`, `script.js` — agent names drive UI copy, placement-quiz
+  results, and course routing across the live product.
+- **`VISION.md` § "The Faculty"** (the product's own vision doc) — names Tolu/Chidi/Amaka/Emeka
+  as the four Teachers alongside Watcher/Examiner/Administrator, and calls the handoffs between
+  them ("Tolu handing to Chidi, Chidi to Amaka, Amaka to Emeka") **"the emotional spine of the
+  product."** This is character design with real narrative investment, not a stub.
+
+Also resolved: the spec's 3-agent list (HTML/CSS/JS) omitted the Scratch agent entirely. The
+real Faculty is **four** teachers across six courses — Tolu owns JSS1+JSS2 (Scratch), Chidi
+owns JSS3+SS1 (HTML), Amaka owns SS2 (CSS), Emeka owns SS3 (JavaScript). Any future spec or
+pitch material referencing "the Faculty" should use this four-agent structure, not three.
+
+**Action for future docs:** use Tolu/Chidi/Amaka/Emeka going forward. If "Archie/Aura/Logic"
+resurfaces in another draft, treat it as a drafting error to fix, not a rename to consider.
 
 ## 3. Infrastructure reality gap
 

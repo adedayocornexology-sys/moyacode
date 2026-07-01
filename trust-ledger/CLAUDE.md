@@ -57,8 +57,10 @@ see `SPEC.md` § Differentiation Framing.
 The spec this department is based on describes infrastructure that is **partially aspirational**
 relative to what's actually in this repo today:
 
-- ✅ Faculty teaching agents exist (`js/agents.js`) — but named Tolu/Chidi/Amaka/Emeka, not the
-  spec's Archie/Aura/Logic. See `open-decisions.md`.
+- ✅ Faculty teaching agents exist (`js/agents.js`), canonically named **Tolu (Scratch),
+  Chidi (HTML), Amaka (CSS), Emeka (JavaScript)** — confirmed against `VISION.md` § "The
+  Faculty". The spec's "Archie/Aura/Logic" naming was a drafting placeholder, now resolved;
+  see `open-decisions.md` § 2.
 - ✅ Watcher exists (`js/watcher.js`) — reads `localStorage` session logs only, no `trust_events`
   table yet.
 - ✅ Examiner exists (`js/examiner.js`) — rule-based, synchronous, tied to quiz completion.
