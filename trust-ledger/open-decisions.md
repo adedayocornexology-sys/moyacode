@@ -41,15 +41,24 @@ This means:
 - Tolu is removed as an agent entirely — not renamed, retired.
 - **Naming — DECIDED:** the 3 agents are **Archie (HTML), Aura (CSS), Logic (JavaScript)** —
   the spec's original naming, now adopted as canonical since the structure matches it 1:1.
-- **Not yet decided:** the course → agent mapping for JSS1–JSS2 (currently Tolu/Scratch).
-  Options: fold JSS1–JSS2 into Archie's HTML track (Archie owns 4 courses: JSS1–SS1), or split
-  differently. And the JSS1–JSS2 content itself still needs authoring — replacing Scratch
-  exercises with HTML exercises appropriate for that age/level is real curriculum work, not a
-  mechanical rename.
-- Files that will need updating once course mapping is final: `js/agents.js` (remove Tolu,
-  rename Chidi→Archie/Amaka→Aura/Emeka→Logic, remap courses), `js/assistant.js` (system prompt
-  references agents by name), `home.html`, `placement.html`, `script.js` (course→agent mapping
-  + new JSS1/JSS2 quiz content), and `VISION.md` §"The Faculty" + its course table.
+- **Course mapping — DECIDED (2026-07-01), and bigger than originally scoped.** This stopped
+  being just a "what happens to JSS1-JSS2" question and became a full curriculum pivot:
+  - JSS1–JSS3 = "Build a Game" (Archie/HTML → Aura/CSS → Logic/JS, progressive, same 3 skills
+    as before, now themed instead of abstract).
+  - SS1–SS3 = "Solve a Real Problem" — SS1 Fintech, SS2 Edtech, SS3 Science/Engineering +
+    Physical AI (**simulated**, no hardware kits for now). All three agents co-teach each SS
+    capstone.
+  - AI-directed coding is now an explicit curriculum skill, which required redefining the
+    Trust Ledger's *Delegating* signal — see `SPEC.md` § signal 2 for the update.
+  - Full rationale lives in `VISION.md` § "Curriculum Pivot" — that is now the source of truth
+    for course structure, not this file.
+- **Still not done:** lesson content and quiz banks for all 6 courses were written for the old
+  Scratch/HTML/CSS/JS sequence and need a full rewrite for the new themes. This is a real
+  content-authoring project, not a rename — tracked as its own follow-up, not yet started.
+- Code files that will need updating once content authoring is ready: `js/agents.js` (remove
+  Tolu, rename Chidi→Archie/Amaka→Aura/Emeka→Logic, remap courses), `js/assistant.js` (system
+  prompt references agents by name), `home.html`, `placement.html`, `script.js` (course→agent
+  mapping + entirely new quiz content for all 6 courses).
 
 **Lesson for this department going forward:** "what does the code currently do" and "what
 should the product be" are different questions. Default to asking, not inferring from existing

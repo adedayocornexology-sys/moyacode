@@ -33,8 +33,18 @@ confidence or completion claim.
 2. **Independence Score** — derived from a three-intent classifier:
    - *Stuck* → full hint given, weighted as low-independence signal
    - *Confused* → Socratic half-cost hint, weighted as medium-independence signal
-   - *Delegating* (asking the bot to just do the work) → free in-character refusal, weighted
-     as a red flag signal if frequent
+   - *Delegating* (asking the bot to just do the work, or accepting AI-generated code without
+     engaging with it) → free in-character refusal, weighted as a red flag signal if frequent
+
+   > **Redefined 2026-07-01** following the curriculum pivot to AI-directed coding (see
+   > `VISION.md` § "Curriculum Pivot"): students are now explicitly taught to direct AI as a
+   > coding partner — prompting it, reviewing its output, steering it — as a real, encouraged
+   > skill. *Delegating* must **not** flag "the student used an AI tool." It flags **skipping
+   > the understanding/review step** — accepting AI-generated code without reading, testing, or
+   > being able to explain what it does. The intent classifier needs a way to distinguish
+   > "directed the AI, then engaged with the result" (independence) from "asked the AI to solve
+   > it and moved on without looking" (delegating). This distinction is not yet designed in
+   > detail — flagging as follow-up work, not solved by this spec revision alone.
 3. **Recovery behavior** — how a student responds after failing a challenge or exercise: do
    they retry and progress, or abandon and never return to that topic?
 4. **Progression integrity** — does time-to-completion for later, harder challenges scale

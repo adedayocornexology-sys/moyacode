@@ -67,36 +67,68 @@ A school administrator, teacher, or MoyaCode staff member.
                  (future — beyond v1)
 ```
 
-The six courses, in order:
+The six courses, in order (revised 2026-07-01 — see "Curriculum Pivot" below):
 
-| Course | Agent | Stack         | Level       |
-|--------|-------|---------------|-------------|
-| JSS1   | Tolu  | Scratch       | Beginner    |
-| JSS2   | Tolu  | Scratch+      | Beginner+   |
-| JSS3   | Chidi | HTML (Intro)  | Intermediate|
-| SS1    | Chidi | HTML (Advanced)| Intermediate|
-| SS2    | Amaka | CSS           | Advanced    |
-| SS3    | Emeka | JavaScript    | Advanced    |
+| Course | Agent(s)              | Project Theme                                    | Skill Focus                        | Level         |
+|--------|-----------------------|---------------------------------------------------|-------------------------------------|---------------|
+| JSS1   | Archie                | Build a Game — Structure                          | HTML                                | Beginner      |
+| JSS2   | Aura                  | Build a Game — Style & Feel                       | CSS                                 | Beginner+     |
+| JSS3   | Logic                 | Build a Game — Bring It to Life                   | JavaScript + AI-assisted logic      | Intermediate  |
+| SS1    | Archie + Aura + Logic | Fintech — Real-World Project                      | HTML + CSS + JS, AI-directed coding | Intermediate+ |
+| SS2    | Archie + Aura + Logic | Edtech — Real-World Project                       | HTML + CSS + JS, AI-directed coding | Advanced      |
+| SS3    | Archie + Aura + Logic | Science/Engineering + Physical AI (simulated)     | HTML + CSS + JS, AI-directed coding | Advanced      |
+
+---
+
+## Curriculum Pivot (2026-07-01)
+
+The original 6-course sequence taught **Scratch → HTML → CSS → JavaScript** as standalone
+language lessons, one per agent (Tolu/Chidi/Amaka/Emeka). This has been replaced with a
+**project-based, AI-native curriculum**:
+
+- **JSS1–JSS3 — "Build a Game."** Students learn HTML, CSS, and JavaScript exactly as before,
+  but the container is now a game they build progressively across all three courses, not
+  abstract language lessons. Scratch is dropped entirely — students start directly with real
+  code from JSS1.
+- **SS1–SS3 — "Solve a Real Problem."** Three capstone projects, one per real-world domain:
+  SS1 Fintech, SS2 Edtech, SS3 Science/Engineering (with a **simulated** — not hardware —
+  Physical AI/robotics component). All three teaching agents co-teach each SS capstone, since
+  each project draws on HTML + CSS + JavaScript together rather than one skill in isolation.
+- **AI-directed coding is now an explicit, taught skill**, not just a background hint system.
+  Students learn to write real code themselves *and* to direct an AI tool as a coding partner —
+  prompting, reviewing, and steering AI-generated code rather than accepting it blindly. This
+  directly reshapes what counts as the Trust Ledger's "Delegating" red flag: delegating means
+  **skipping the understanding/review step**, not "using AI tools" in general. See
+  `trust-ledger/SPEC.md` for the corresponding signal definition.
+
+**Faculty renamed to match:** Tolu → *(retired, Scratch dropped)*, Chidi → **Archie** (HTML),
+Amaka → **Aura** (CSS), Emeka → **Logic** (JavaScript). Full decision trail in
+`trust-ledger/open-decisions.md`.
+
+**Not yet done:** the lesson content and quiz banks for all 6 courses (see "What's Built Today"
+below) were written for the *old* Scratch/HTML/CSS/JS sequence and now need rewriting to match
+the new game-dev / real-world-domain themes. This is real content-authoring work, tracked
+separately from this planning update.
 
 ---
 
 ## The Faculty
 
-Four agents, one Watcher, one Examiner, one Administrator.
+Three teaching agents, one Watcher, one Examiner, one Administrator.
 
-| Role          | Name  | Responsibility                                           |
-|---------------|-------|----------------------------------------------------------|
-| Teacher       | Tolu  | Scratch. First agent. Sets the tone.                     |
-| Teacher       | Chidi | HTML. The bridge from visual to text-based coding.       |
-| Teacher       | Amaka | CSS. Makes things beautiful. Creative energy.            |
-| Teacher       | Emeka | JavaScript. Final boss. Brings it all to life.           |
-| Watcher       | —     | Reads all logs. Writes the parent report and student reflection. |
-| Examiner      | —     | Independent verdict (pass / fail / at-risk) per course.  |
-| Administrator | Human | Reviews watcher output. Approves or edits. Sends to parent. |
+| Role          | Name  | Responsibility                                                                          |
+|---------------|-------|------------------------------------------------------------------------------------------|
+| Teacher       | Archie | HTML. First agent. Owns JSS1's game-structure module, then co-teaches every SS capstone. |
+| Teacher       | Aura   | CSS. Owns JSS2's game-styling module, then co-teaches every SS capstone.                 |
+| Teacher       | Logic  | JavaScript. Owns JSS3's game-logic module, then co-teaches every SS capstone.            |
+| Watcher       | —     | Reads all logs. Writes the parent report and student reflection.                        |
+| Examiner      | —     | Independent verdict (pass / fail / at-risk) per course.                                 |
+| Administrator | Human | Reviews watcher output. Approves or edits. Sends to parent.                              |
 
-The handoff moments — Tolu handing to Chidi, Chidi to Amaka, Amaka to Emeka —
-are the emotional spine of the product. They must feel like a real baton pass,
-not a redirect.
+The handoff moments — Archie handing to Aura, Aura to Logic across the JSS game-dev arc — are
+the emotional spine of the JSS journey. For SS1–SS3, the beat changes: instead of a handoff,
+**the whole Faculty assembles** for each real-world capstone. Both moments must feel earned,
+not like a redirect or a formality.
 
 ---
 
@@ -173,15 +205,15 @@ quiz gameplay, and parent reports all need to work on a 375px screen.
 
 ---
 
-## What's Built Today (May 2026)
+## What's Built Today (May 2026, curriculum status revised 2026-07-01)
 
 | Area                        | Status                                      |
 |-----------------------------|---------------------------------------------|
 | Marketing landing page      | ✅ Done                                     |
 | Onboarding (3 steps)        | ✅ Done                                     |
-| Lesson content (all 6)      | ✅ Done (text + callouts + code examples)   |
-| Quiz engine (all 6)         | ✅ Done (5 Qs, XP, lives, streak, feedback) |
-| Agent definitions (4)       | ✅ Done (intro, farewell, handoff)          |
+| Lesson content (all 6)      | ⚠️  Built for the *old* Scratch/HTML/CSS/JS sequence — needs rewriting for the game-dev / real-world-domain curriculum (see "Curriculum Pivot") |
+| Quiz engine (all 6)         | ⚠️  Engine works (5 Qs, XP, lives, streak, feedback) but question content is stale — same rewrite needed |
+| Agent definitions (3)       | ⚠️  `js/agents.js` still defines the old 4 (Tolu/Chidi/Amaka/Emeka) — needs updating to Archie/Aura/Logic per the pivot |
 | Agent handoff moments       | ✅ Done (logged, displayed at lesson + quiz)|
 | Watcher (activity record)   | ✅ Done                                     |
 | Examiner (verdicts)         | ✅ Done                                     |
@@ -224,7 +256,8 @@ The content is text. Real learning needs interaction.
 - [ ] Live code preview in lesson.html for HTML/CSS courses (iframe or sandbox)
 - [ ] Richer lesson steps: diagrams, short animations, or embedded video clips
 - [ ] Practice challenges within lessons (before the quiz gate)
-- [ ] Make agents sound different (Tolu uses gaming voice, Chidi uses builder voice)
+- [ ] Make agents sound different (Archie/Aura/Logic each need a distinct voice — see the
+      old Tolu/Chidi pairing for the tone this replaced: playful vs. builder-minded)
 
 ### Phase 3 — Make progress visible and social
 Students need to feel the journey, not just move through it.
@@ -262,6 +295,6 @@ When a school wants to adopt MoyaCode, it should be easy.
 
 ---
 
-*Last updated: May 2026*
+*Last updated: 2026-07-01 (curriculum pivot to game-dev/real-world-domain structure)*
 *Maintained by: the MoyaCode team*
 *This file is the north star. When decisions are unclear, come back here.*
