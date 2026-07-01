@@ -39,15 +39,17 @@ This means:
   this is a real content-authoring task, not a find-and-replace. The existing JSS1/JSS2 quiz
   banks in `script.js` (currently Scratch-based) will need to be rewritten.
 - Tolu is removed as an agent entirely — not renamed, retired.
-- **Still open:** what the remaining 3 agents are called. Two options on the table:
-  (a) keep the existing built names **Chidi (HTML) / Amaka (CSS) / Emeka (JavaScript)**, just
-  drop Tolu, or (b) adopt the spec's original **Archie (HTML) / Aura (CSS) / Logic (JavaScript)**
-  naming now that the structure actually matches 1:1 (3 agents, 3 languages). This needs a
-  decision before implementation — see the follow-up conversation for the answer once made.
-- Files that will need updating once naming + course mapping is final: `js/agents.js`,
-  `js/assistant.js` (system prompt references the 4-agent list by name), `home.html`,
-  `placement.html`, `script.js` (course→agent mapping + new JSS1/JSS2 content), and `VISION.md`
-  §"The Faculty" + its course table.
+- **Naming — DECIDED:** the 3 agents are **Archie (HTML), Aura (CSS), Logic (JavaScript)** —
+  the spec's original naming, now adopted as canonical since the structure matches it 1:1.
+- **Not yet decided:** the course → agent mapping for JSS1–JSS2 (currently Tolu/Scratch).
+  Options: fold JSS1–JSS2 into Archie's HTML track (Archie owns 4 courses: JSS1–SS1), or split
+  differently. And the JSS1–JSS2 content itself still needs authoring — replacing Scratch
+  exercises with HTML exercises appropriate for that age/level is real curriculum work, not a
+  mechanical rename.
+- Files that will need updating once course mapping is final: `js/agents.js` (remove Tolu,
+  rename Chidi→Archie/Amaka→Aura/Emeka→Logic, remap courses), `js/assistant.js` (system prompt
+  references agents by name), `home.html`, `placement.html`, `script.js` (course→agent mapping
+  + new JSS1/JSS2 quiz content), and `VISION.md` §"The Faculty" + its course table.
 
 **Lesson for this department going forward:** "what does the code currently do" and "what
 should the product be" are different questions. Default to asking, not inferring from existing
