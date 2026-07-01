@@ -90,6 +90,13 @@ language lessons, one per agent (Tolu/Chidi/Amaka/Emeka). This has been replaced
   but the container is now a game they build progressively across all three courses, not
   abstract language lessons. Scratch is dropped entirely — students start directly with real
   code from JSS1.
+  **Comic creation is part of this track** (added 2026-07-01): before writing any code,
+  students storyboard and hand-draw a short comic. That drawing then becomes the actual
+  teaching material — photographed and rebuilt as a web page (panel grid in HTML, hand-drawn
+  styling in CSS, motion/sound-effect animation in JS). This deliberately rehearses the same
+  structure→style→motion arc needed for the JSS "Build a Game" capstone, using something every
+  student already loves making. See `curriculum/CLAUDE.md` and the working reference
+  implementation in `curriculum/comic-demo/`.
 - **SS1–SS3 — "Solve a Real Problem."** Three capstone projects, one per real-world domain:
   SS1 Fintech, SS2 Edtech, SS3 Science/Engineering (with a **simulated** — not hardware —
   Physical AI/robotics component). All three teaching agents co-teach each SS capstone, since

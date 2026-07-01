@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MoyaCode — Comic to Life Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --teal: #00E5A0;
+    --ink: #1a2036;
+    --paper: #fbfaf5;
+    --rule: #b9c9e8;
+    --red: #c0392b;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0c1220;
+    font-family: 'Space Grotesk', sans-serif;
+    color: #eef2ff;
+    padding: 40px 16px 120px;
+  }
+
+  /* ── Header ── */
+  .top {
+    max-width: 900px;
+    margin: 0 auto 36px;
+    text-align: center;
+  }
+  .top .eyebrow {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: var(--teal);
+    text-transform: uppercase;
+  }
+  .top h1 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 800;
+    font-size: clamp(28px, 5vw, 46px);
+    letter-spacing: -0.02em;
+    margin: 8px 0 10px;
+  }
+  .top h1 span { color: var(--teal); }
+  .top p {
+    color: #9fb0d8;
+    font-size: 15px;
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.55;
+  }
+
+  .controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 22px;
+  }
+  .controls button {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    background: var(--teal);
+    color: #06101c;
+    border: none;
+    border-radius: 100px;
+    padding: 12px 22px;
+    cursor: pointer;
+    transition: transform .15s ease;
+  }
+  .controls button:hover { transform: translateY(-2px); }
+  .controls button.secondary {
+    background: transparent;
+    color: var(--teal);
+    border: 1.5px solid rgba(0,229,160,0.5);
+  }
+
+  /* ── Comic sheet: notebook paper aesthetic ── */
+  .sheet {
+    max-width: 900px;
+    margin: 40px auto 0;
+    background:
+      repeating-linear-gradient(
+        var(--paper) 0px, var(--paper) 37px,
+        var(--rule) 38px, var(--paper) 39px
+      );
+    border-radius: 6px;
+    padding: 26px;
+    box-shadow: 0 30px 90px rgba(0,0,0,0.55);
+    position: relative;
+    overflow: hidden;
+  }
+  .sheet::before {
+    /* red margin line, like a real exercise book */
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0; left: 58px;
+    width: 2px;
+    background: rgba(192,57,43,0.35);
+  }
+
+  .panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    position: relative;
+  }
+  .panel {
+    position: relative;
+    border: 3px solid var(--ink);
+    border-radius: 3px;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background: #fff;
+    opacity: 0;
+    transform: scale(0.85) rotate(-2deg);
+    transition: opacity .5s cubic-bezier(.2,.8,.3,1.4), transform .5s cubic-bezier(.2,.8,.3,1.4);
+    cursor: pointer;
+  }
+  .panel:nth-child(even) { transform: scale(0.85) rotate(2deg); }
+  .panel.in-view {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  .panel img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: contrast(1.08) saturate(0.95);
+  }
+  .panel .num {
+    position: absolute;
+    top: 6px; left: 6px;
+    background: var(--ink);
+    color: #fff;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 800;
+    font-size: 12px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 3;
+  }
+
+  /* impact sound-effect overlay, added by JS on top of each panel */
+  .sfx {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 10%;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .sfx span {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 800;
+    font-size: clamp(28px, 6vw, 46px);
+    color: var(--red);
+    -webkit-text-stroke: 2px #fff;
+    paint-order: stroke fill;
+    letter-spacing: -0.02em;
+    transform: scale(0) rotate(-8deg);
+    opacity: 0;
+    text-shadow: 3px 3px 0 rgba(0,0,0,0.15);
+  }
+  .panel.impact .sfx span {
+    animation: punchIn .55s cubic-bezier(.17,.89,.32,1.49) forwards;
+  }
+  @keyframes punchIn {
+    0%   { transform: scale(0) rotate(-8deg); opacity: 0; }
+    55%  { transform: scale(1.35) rotate(4deg); opacity: 1; }
+    75%  { transform: scale(0.92) rotate(-2deg); }
+    100% { transform: scale(1.08) rotate(0deg); opacity: 1; }
+  }
+
+  /* screen shake on the whole sheet during a big impact */
+  .sheet.shake { animation: shake .32s linear; }
+  @keyframes shake {
+    0%,100% { transform: translate(0,0); }
+    20% { transform: translate(-6px,3px) rotate(-0.4deg); }
+    40% { transform: translate(5px,-4px) rotate(0.4deg); }
+    60% { transform: translate(-4px,-2px) rotate(-0.3deg); }
+    80% { transform: translate(4px,3px) rotate(0.3deg); }
+  }
+
+  .caption {
+    margin-top: 14px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    color: #6b7fa8;
+    text-align: center;
+  }
+
+  /* teaching notes below */
+  .lesson {
+    max-width: 900px;
+    margin: 56px auto 0;
+  }
+  .lesson h2 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 22px;
+    margin-bottom: 18px;
+    color: var(--teal);
+  }
+  .stack {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 18px 20px;
+  }
+  .card b {
+    display: block;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+  .card.html b { color: #FB7185; }
+  .card.css b { color: #60A5FA; }
+  .card.js b { color: #FCD34D; }
+  .card p { font-size: 13.5px; color: #a9b7d6; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+  <div class="top">
+    <div class="eyebrow">MoyaCode Curriculum Demo</div>
+    <h1>This student's comic, <span>brought to life.</span></h1>
+    <p>Four real panels from a student's exercise book — scanned, then animated with
+       plain HTML, CSS, and JavaScript. Scroll down, or hit play.</p>
+    <div class="controls">
+      <button id="playBtn">▶ Play the comic</button>
+      <button id="resetBtn" class="secondary">↺ Reset</button>
+    </div>
+  </div>
+
+  <div class="sheet" id="sheet">
+    <div class="panels" id="panels">
+      <div class="panel" data-sfx="SCANNING..." data-impact="false">
+        <span class="num">1</span>
+        <img src="assets/panel_scanning.jpg" alt="Panel 1: scanning the target" />
+        <div class="sfx"><span>SCANNING...</span></div>
+      </div>
+      <div class="panel" data-sfx="POW!" data-impact="true">
+        <span class="num">2</span>
+        <img src="assets/panel_pow.jpg" alt="Panel 2: POW impact" />
+        <div class="sfx"><span>POW!</span></div>
+      </div>
+      <div class="panel" data-sfx="FWOOSH!" data-impact="true">
+        <span class="num">3</span>
+        <img src="assets/panel_fwoosh.jpg" alt="Panel 3: FWOOSH energy blast" />
+        <div class="sfx"><span>FWOOSH!</span></div>
+      </div>
+      <div class="panel" data-sfx="THOOOOM!" data-impact="true">
+        <span class="num">4</span>
+        <img src="assets/panel_thoom.jpg" alt="Panel 4: THOOOOM double blast" />
+        <div class="sfx"><span>THOOOOM!</span></div>
+      </div>
+    </div>
+    <div class="caption">Real panels, photographed from the original notebook page — the animation layer is 100% HTML/CSS/JS.</div>
+  </div>
+
+  <div class="lesson">
+    <h2>How this maps to what JSS1–JSS3 actually learn</h2>
+    <div class="stack">
+      <div class="card html">
+        <b>Archie — HTML (JSS1)</b>
+        <p>The panel grid itself: each comic panel is just a <code>&lt;div class="panel"&gt;</code>
+        holding an image. Structure first — a comic page is a grid, and a grid is
+        exactly what HTML is for.</p>
+      </div>
+      <div class="card css">
+        <b>Aura — CSS (JSS2)</b>
+        <p>The "hand-drawn" feel: panel borders, the slight rotation on each panel, the
+        notebook-paper background, and the punchy sound-effect typography (the red
+        outlined "POW!" text) are all CSS — no drawing tool needed.</p>
+      </div>
+      <div class="card js">
+        <b>Logic — JavaScript (JSS3)</b>
+        <p>The "alive" part: JS watches when each panel scrolls into view and triggers
+        its reveal + sound-effect animation, and the shake effect on impact panels.
+        This is the same skill as game feedback/juice — timing, triggers, feel.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const panels = document.querySelectorAll('.panel');
+    const sheet = document.getElementById('sheet');
+
+    function triggerImpact(panel) {
+      const isImpact = panel.dataset.impact === 'true';
+      panel.classList.remove('impact');
+      void panel.offsetWidth; // restart animation
+      panel.classList.add('impact');
+      if (isImpact) {
+        sheet.classList.remove('shake');
+        void sheet.offsetWidth;
+        sheet.classList.add('shake');
+      }
+    }
+
+    // Reveal on scroll
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          triggerImpact(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+    panels.forEach(p => io.observe(p));
+
+    // Click a panel to replay its impact
+    panels.forEach(p => {
+      p.addEventListener('click', () => triggerImpact(p));
+    });
+
+    // Play button — sequence all panels regardless of scroll position
+    document.getElementById('playBtn').addEventListener('click', () => {
+      panels.forEach((p, i) => {
+        setTimeout(() => {
+          p.classList.add('in-view');
+          triggerImpact(p);
+        }, i * 700);
+      });
+    });
+
+    // Reset button
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      panels.forEach(p => {
+        p.classList.remove('in-view', 'impact');
+      });
+    });
+  </script>
+</body>
+</html>
