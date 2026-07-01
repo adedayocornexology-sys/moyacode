@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zed-0X — Drawn &amp; Colored in HTML/CSS/JS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=Space+Grotesk:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --teal: #00E5A0;
+    --red: #ff3b4e;
+    --red-dim: #7a1420;
+    --blue: #3b6fe0;
+    --blue-dim: #16224a;
+    --steel-lo: #1c2230;
+    --steel-hi: #6b7690;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: radial-gradient(120% 90% at 50% 20%, #241017 0%, #0a0710 55%, #050308 100%);
+    min-height: 100vh;
+    font-family: 'Space Grotesk', sans-serif;
+    color: #eef1fb;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 16px 90px;
+  }
+
+  .eyebrow {
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    color: var(--red);
+    text-transform: uppercase;
+  }
+  h1 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 800;
+    font-size: clamp(26px, 5vw, 42px);
+    margin: 8px 0 6px;
+    letter-spacing: -0.02em;
+    text-align: center;
+  }
+  h1 span { color: var(--teal); }
+  .sub {
+    color: #a89bb0;
+    font-size: 14.5px;
+    max-width: 560px;
+    text-align: center;
+    line-height: 1.55;
+    margin-bottom: 34px;
+  }
+
+  .stage {
+    position: relative;
+    width: min(640px, 92vw);
+    aspect-ratio: 1 / 1;
+    filter: drop-shadow(0 30px 60px rgba(255,40,60,0.15));
+  }
+
+  /* faint scanline + vignette over the whole illustration */
+  .scanlines {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px,
+      transparent 2px, transparent 4px
+    );
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    border-radius: 18px;
+    z-index: 5;
+  }
+
+  svg { width: 100%; height: 100%; display: block; overflow: visible; }
+
+  /* pulsing glow on the eye + power node */
+  .glow-eye, .glow-node {
+    animation: pulse 2.1s ease-in-out infinite;
+    transform-origin: center;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+  }
+
+  .hud {
+    margin-top: 30px;
+    width: min(420px, 92vw);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,59,78,0.4);
+    border-radius: 14px;
+    padding: 18px 20px;
+    font-family: 'DM Mono', monospace;
+  }
+  .hud .row1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+  }
+  .hud .name {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    color: var(--red);
+    letter-spacing: 0.02em;
+  }
+  .hud .tag {
+    font-size: 11px;
+    color: #8a94b8;
+    letter-spacing: 0.08em;
+  }
+  .barTrack {
+    height: 10px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.08);
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .barFill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--red-dim), var(--red));
+    border-radius: 6px;
+    transition: width 1.8s cubic-bezier(.2,.8,.2,1);
+  }
+  .pct {
+    font-size: 12px;
+    color: #cbd2ef;
+    margin-top: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .pct b { color: var(--red); }
+
+  .toggleRow {
+    margin-top: 26px;
+    display: flex;
+    gap: 10px;
+  }
+  .toggleRow button {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    background: transparent;
+    color: var(--teal);
+    border: 1.5px solid rgba(0,229,160,0.45);
+    border-radius: 100px;
+    padding: 10px 18px;
+    cursor: pointer;
+  }
+  .toggleRow button.active {
+    background: var(--teal);
+    color: #06101c;
+  }
+
+  .compare {
+    margin-top: 26px;
+    width: min(640px, 92vw);
+    display: none;
+  }
+  .compare.show { display: block; }
+  .compare img {
+    width: 100%;
+    border-radius: 10px;
+    border: 2px solid rgba(255,255,255,0.15);
+  }
+  .compare p {
+    font-size: 12.5px;
+    color: #8a94b8;
+    text-align: center;
+    margin-top: 8px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="eyebrow">MoyaCode Curriculum Demo — Character Illustration</div>
+  <h1>Zed-0X, <span>drawn and colored in code.</span></h1>
+  <p class="sub">The same villain from the student's comic — this time built entirely from
+     SVG shapes and gradients, animated with CSS and JavaScript. No image file, no drawing
+     app. Every line below is math and markup.</p>
+
+  <div class="stage" id="stage">
+    <div class="scanlines"></div>
+    <svg viewBox="0 0 620 620" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#7c8aa8"/>
+          <stop offset="45%" stop-color="#3c4a68"/>
+          <stop offset="100%" stop-color="#161c2c"/>
+        </linearGradient>
+        <linearGradient id="steelFace" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#aab6cf"/>
+          <stop offset="60%" stop-color="#5a6788"/>
+          <stop offset="100%" stop-color="#232c42"/>
+        </linearGradient>
+        <linearGradient id="redGlow" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#ff8a95"/>
+          <stop offset="100%" stop-color="#c9101f"/>
+        </linearGradient>
+        <radialGradient id="lensGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#bcd4ff"/>
+          <stop offset="55%" stop-color="#3b6fe0"/>
+          <stop offset="100%" stop-color="#132049"/>
+        </radialGradient>
+        <radialGradient id="bgHalo" cx="50%" cy="45%" r="60%">
+          <stop offset="0%" stop-color="rgba(255,59,78,0.18)"/>
+          <stop offset="100%" stop-color="rgba(255,59,78,0)"/>
+        </radialGradient>
+      </defs>
+
+      <circle cx="310" cy="300" r="290" fill="url(#bgHalo)"/>
+
+      <!-- neck / collar spikes -->
+      <g fill="url(#redGlow)" stroke="#3a0810" stroke-width="2">
+        <polygon points="150,470 190,430 205,500 165,520"/>
+        <polygon points="195,500 235,455 245,530 200,545"/>
+      </g>
+      <g fill="url(#steel)" stroke="#0c0f18" stroke-width="2">
+        <polygon points="230,480 265,440 280,510 240,535"/>
+      </g>
+
+      <!-- back of head / skull mass -->
+      <path d="M 165,230
+               C 140,180 160,110 230,85
+               C 300,60 370,75 410,120
+               L 430,220
+               C 435,270 420,330 395,375
+               L 330,430
+               C 290,460 235,455 200,420
+               C 165,385 155,300 165,230 Z"
+            fill="url(#steel)" stroke="#0c0f18" stroke-width="4"/>
+
+      <!-- front face plate (angular jaw to nose point) -->
+      <path d="M 330,200
+               L 420,150
+               L 470,230
+               L 500,300
+               L 460,360
+               L 405,420
+               L 350,430
+               L 320,370
+               L 335,290 Z"
+            fill="url(#steelFace)" stroke="#0c0f18" stroke-width="4"/>
+
+      <!-- jagged crest spikes on top of head, alternating red/blue -->
+      <g stroke="#0c0f18" stroke-width="2">
+        <polygon points="205,140 225,60 245,150" fill="url(#redGlow)"/>
+        <polygon points="245,135 268,45 288,145" fill="url(#steel)"/>
+        <polygon points="288,130 312,50 330,140" fill="url(#redGlow)"/>
+        <polygon points="328,125 352,55 368,135" fill="url(#steel)"/>
+        <polygon points="366,125 388,70 400,140" fill="url(#redGlow)"/>
+      </g>
+
+      <!-- big circular side lens -->
+      <circle cx="270" cy="270" r="52" fill="url(#lensGlow)" stroke="#0c0f18" stroke-width="5"/>
+      <circle cx="270" cy="270" r="52" fill="none" stroke="#8fb4ff" stroke-width="2" opacity="0.6"/>
+      <line x1="270" y1="228" x2="270" y2="312" stroke="#0c0f18" stroke-width="6"/>
+      <circle cx="270" cy="270" r="10" fill="#0c0f18"/>
+
+      <!-- main glowing red eye (angular slit) -->
+      <g class="glow-eye">
+        <polygon points="380,205 445,220 440,245 375,235" fill="#8a0f1c" stroke="#2c0509" stroke-width="2"/>
+        <polygon points="388,212 435,222 432,236 385,229" fill="#ff2e3f"/>
+        <ellipse cx="410" cy="224" rx="8" ry="5" fill="#ffd7da"/>
+      </g>
+
+      <!-- angular brow ridge above eye -->
+      <polygon points="365,195 450,175 460,195 375,215" fill="url(#steel)" stroke="#0c0f18" stroke-width="3"/>
+
+      <!-- jagged red jaw / vent stripes -->
+      <g fill="url(#redGlow)" stroke="#3a0810" stroke-width="1.5">
+        <polygon points="345,330 372,322 366,348 340,354"/>
+        <polygon points="366,325 393,317 389,344 362,350"/>
+        <polygon points="388,320 413,312 411,340 384,346"/>
+        <polygon points="410,316 433,308 433,336 406,342"/>
+      </g>
+
+      <!-- nose/chin edge highlight -->
+      <polygon points="470,230 500,300 460,360 448,330 458,270" fill="#232c42" opacity="0.55"/>
+
+      <!-- power node at chin with connector to HUD -->
+      <line x1="440" y1="360" x2="520" y2="400" stroke="#c9101f" stroke-width="3"/>
+      <circle class="glow-node" cx="520" cy="400" r="10" fill="#ff2e3f" stroke="#3a0810" stroke-width="3"/>
+
+    </svg>
+  </div>
+
+  <div class="hud">
+    <div class="row1">
+      <div class="name">ZED-0X</div>
+      <div class="tag">ANDROID UNIT</div>
+    </div>
+    <div class="barTrack"><div class="barFill" id="barFill"></div></div>
+    <div class="pct"><span>POWER LEVEL</span><b id="pctLabel">0%</b></div>
+  </div>
+
+  <div class="toggleRow">
+    <button id="compareBtn">Compare with the original drawing</button>
+  </div>
+  <div class="compare" id="compare">
+    <img src="assets/zedox_face.jpg" alt="Original hand-drawn Zed-0X panel" />
+    <p>Original panel, photographed from the student's notebook.</p>
+  </div>
+
+  <script>
+    // Animate power level to 49%, matching the original panel's label
+    const barFill = document.getElementById('barFill');
+    const pctLabel = document.getElementById('pctLabel');
+    let current = 0;
+    const target = 49;
+    requestAnimationFrame(() => { barFill.style.width = target + '%'; });
+    const tick = setInterval(() => {
+      current += 1;
+      pctLabel.textContent = current + '%';
+      if (current >= target) clearInterval(tick);
+    }, 1800 / target);
+
+    // Compare toggle
+    const btn = document.getElementById('compareBtn');
+    const compare = document.getElementById('compare');
+    btn.addEventListener('click', () => {
+      compare.classList.toggle('show');
+      btn.classList.toggle('active');
+      btn.textContent = compare.classList.contains('show')
+        ? 'Hide original'
+        : 'Compare with the original drawing';
+    });
+  </script>
+</body>
+</html>
