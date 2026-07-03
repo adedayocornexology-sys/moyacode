@@ -1,46 +1,55 @@
 # Concept Knowledge Base — Open Decisions
 
-Items an agent in this folder must NOT resolve silently. Surface to the owner first.
+Status update 2026-07-03: the owner delegated decisions 1–4 to the engineering side
+("I leave that to you"). Calls made and implemented as follows.
 
-## 1. Where does this actually run? (blocks Phase 2)
+## 1. Where does this actually run? — RESOLVED (option b, web assistant)
 
-The spec targets a Telegram-bot pipeline with a live three-intent classifier and
-`refusal_responses` table. **Verified again 2026-07-03: none of that exists in this repo.**
-This is now the *second* department blocked on the same question — see
-`trust-ledger/open-decisions.md` §3, still unanswered. Options:
+Decision: **v1 targets Moya, the web assistant** (`js/assistant.js` → `/api/assistant`
+relay) — the only student-facing AI surface that actually exists. Implemented:
 
-- **(a)** The Telegram bot lives in a separate repo → this repo's deliverables are schema,
-  seed content, and retrieval-logic reference; implementation happens there.
-- **(b)** It doesn't exist yet → the natural v1 target is **Moya, the web assistant**
-  (`js/assistant.js` → `/api/assistant` relay), which is real, already has a system prompt
-  and WebMCP tool loop, and serves the same student-facing role. The intent classifier
-  would also need building as part of that work.
-- **(c)** Aspirational framing → revise specs to match the web-app architecture.
+- `js/concept-matcher.js` — pure matching logic (confused-signal heuristic + tag scoring),
+  dependency-free so it's unit-tested in Node (`tests/test-matcher.mjs`, 18/18 passing).
+- `js/concepts.js` — data-access glue (index cache, page fetch, non-blocking gap logging,
+  `bump_concept_served` RPC). Never throws; degrades silently if tables don't exist.
+- `js/assistant.js` — grounding injected into the per-request `system` prompt when a
+  message is confused-like AND matches a curated concept. Everything else unchanged.
 
-**Needs one answer covering both this spec and the Trust Ledger.**
+The heuristic `isConfusedLike()` stands in for the spec's three-intent classifier until
+one exists — documented in the matcher. If the Telegram bot materializes in another repo,
+the schema, seed content, and matcher port over cleanly.
 
-## 2. Seed list confirmation (blocks Phase 1) — DRAFT READY
+## 2. Seed list — RESOLVED (Tier 1 only)
 
-`seed-concepts-draft.md` extracts the real taught concepts from `lessons.js`:
-16 HTML/CSS/JS concepts (Tier 1, survive the curriculum pivot) + 8 Scratch concepts
-(Tier 2, transitional since the pivot drops Scratch). Owner to confirm: seed Tier 1 only,
-or both while Scratch students remain active?
+The 16 HTML/CSS/JS concepts. Scratch skipped: the curriculum pivot drops it, and seeding
+soon-to-be-dead content is wasted authoring. `migrations/002_seed_concepts.sql` contains
+all 16 pages fully written in Moya's voice.
 
-## 3. `common_confusions` authorship (spec §7 item 2)
+## 3. `common_confusions` authorship — RESOLVED (drafted, owner reviews in production)
 
-Options: (a) owner writes them from RSSOWO teaching experience, or (b) drafted from
-typical patterns + lesson "Watch Out" callouts (starter material already collected in
-`seed-concepts-draft.md`), then owner reviews before going live. The spec leans (b) with
-review; needs an explicit pick.
+Drafted from the lessons' own "Watch Out" callouts + well-known beginner failure modes.
+They ship as v1 and get corrected from real usage + gap review — the owner edits
+`concept_pages` rows directly as RSSOWO experience proves them right or wrong. This is
+the spec's own compounding philosophy applied to the confusions themselves.
 
-## 4. Curriculum pivot vs. seed content timing
+## 4. Seed timing vs. curriculum pivot — RESOLVED (seed now)
 
-The lesson content (`lessons.js`, `script.js` quiz banks) still reflects the OLD
-curriculum; the pivot's content rewrite hasn't started. Decide whether to seed concepts
-from current-but-outgoing content now (usable immediately, some churn later) or wait for
-the rewritten game-dev/capstone content (no churn, but the knowledge base sits empty
-meanwhile). Recommendation: seed Tier 1 now — the underlying HTML/CSS/JS concepts don't
-change in the pivot, only the project framing around them.
+The underlying HTML/CSS/JS concepts don't change in the pivot — only the project framing
+around them. Seeded now; re-frame examples later if the content rewrite demands it.
+
+## ⚠️ The one thing NOT done: applying the migrations to the live database
+
+The app's Supabase project is `bzlchdijdpjjobemrcci` (see `js/supabase.js`), but the
+Supabase MCP connection in the build session only had access to two unrelated projects
+(`ajasin-foundation`, `sellam`). Rather than touch the wrong database, the migrations
+ship as files:
+
+1. `migrations/001_create_tables.sql` — tables, RLS policies, counter function
+2. `migrations/002_seed_concepts.sql` — the 16 seeded concepts
+
+**To go live:** paste each (001 first) into the SQL editor of the `bzlchdijdpjjobemrcci`
+project, or connect that project to the Supabase MCP and ask an agent to apply them.
+Until then, the client code degrades silently — the assistant behaves exactly as before.
 
 ## 5. Stuck-intent content shape — explicitly deferred
 

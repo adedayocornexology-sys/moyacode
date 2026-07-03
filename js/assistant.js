@@ -13,6 +13,7 @@
  */
 
 import MoyaMCP from './webmcp.js';
+import { conceptGroundingFor } from './concepts.js';
 
 const MODEL_HINT = undefined; // server picks a sensible default
 
@@ -144,12 +145,27 @@ async function ask(text) {
   body.append(typing);
   body.scrollTop = body.scrollHeight;
 
+  // Concept Knowledge Base: if this looks like a concept question with a curated
+  // page, ground the answer in it — consistent substance, personalized wording.
+  // Degrades silently to normal behavior if there's no match or no KB tables.
+  let system = SYSTEM_PROMPT;
+  try {
+    const grade = (localStorage.getItem('moyacode_last_class') || '').toLowerCase() || null;
+    const grounding = await conceptGroundingFor(text, grade);
+    if (grounding) {
+      system += `\n\n## Curated concept notes: ${grounding.title}\nGround your answer in these notes — keep their substance and teaching approach, but phrase it naturally for this student's exact question. Stay in your own voice.\n\n${grounding.content}` +
+        (grounding.confusions.length
+          ? `\n\nCommon ways students get this wrong (address if relevant): ${grounding.confusions.join('; ')}`
+          : '');
+    }
+  } catch { /* grounding must never block the chat */ }
+
   try {
     for (let hop = 0; hop < 6; hop++) {
       const res = await fetch('/api/assistant', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ system: SYSTEM_PROMPT, messages: history, tools: MoyaMCP.tools, model: MODEL_HINT }),
+        body: JSON.stringify({ system, messages: history, tools: MoyaMCP.tools, model: MODEL_HINT }),
       });
 
       if (res.status === 503) { typing.remove(); fallback(); return; }

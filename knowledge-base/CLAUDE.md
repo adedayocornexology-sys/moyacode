@@ -18,9 +18,20 @@ instead of generating a fresh explanation every time; log unmatched concepts to
 | File | Purpose |
 |---|---|
 | `SPEC.md` | The full handoff spec (problem, data model, retrieval logic, phases, DoD) |
-| `data-model.sql` | Corrected schema (see note below) — design artifact, not yet applied |
-| `seed-concepts-draft.md` | Concept list extracted from the repo's real lesson content, awaiting owner confirmation |
-| `open-decisions.md` | Items requiring the owner's answer before Phase 1 starts |
+| `data-model.sql` | Corrected schema (see note below) — reference copy |
+| `migrations/001_create_tables.sql` | Ready-to-run: tables + RLS + counter function |
+| `migrations/002_seed_concepts.sql` | Ready-to-run: all 16 Tier-1 concepts, written in Moya's voice |
+| `seed-concepts-draft.md` | Concept list extracted from the repo's real lesson content |
+| `open-decisions.md` | Decision log — items 1–4 RESOLVED 2026-07-03; see the ⚠️ on DB access |
+| `tests/test-matcher.mjs` | Node test of the pure matcher — 18 realistic student messages, run with `node test-matcher.mjs` |
+
+## Implementation status (2026-07-03)
+
+Code side is DONE and live in the repo: `js/concept-matcher.js` (pure logic),
+`js/concepts.js` (data access), grounding wired into `js/assistant.js`. The ONLY missing
+step is running the two migration files against the real Supabase project
+(`bzlchdijdpjjobemrcci`) — see `open-decisions.md` ⚠️ for why and how. Until then the
+feature is dormant and the assistant behaves exactly as before.
 
 ## Non-negotiables (from the spec — don't relitigate silently)
 
