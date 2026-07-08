@@ -22,6 +22,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field
 
+import wiki_store
+
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -197,6 +199,27 @@ async def assistant(payload: AssistantIn):
         return r.json()
     except httpx.HTTPError:
         raise HTTPException(status_code=502, detail="assistant_upstream_unavailable")
+
+
+# ── Knowledge base (the wiki Moya searches and cites) ────────────────
+# SQLite in-process for now (see wiki_store.py); same shape as the
+# Supabase wiki tables in supabase/wiki_knowledge.sql for later.
+
+
+@app.get("/api/wiki/search")
+async def wiki_search(q: str = ""):
+    q = q.strip()[:300]
+    if not q:
+        raise HTTPException(status_code=400, detail="q required")
+    return {"results": wiki_store.search(q)}
+
+
+@app.get("/api/wiki/page/{slug}")
+async def wiki_page(slug: str):
+    page = wiki_store.get_page(slug.strip()[:200])
+    if not page:
+        raise HTTPException(status_code=404, detail="page not found")
+    return page
 
 
 # ── Static assets + legacy .html pages ───────────────────────────────

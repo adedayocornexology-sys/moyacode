@@ -24,7 +24,46 @@ Rules:
 - To continue/resume, call resume_learning. To open a named class, call start_course.
 - The courses, in order, are: JSS1 & JSS2 = Scratch (teacher Tolu), JSS3 & SS1 = HTML (Chidi), SS2 = CSS (Amaka), SS3 = JavaScript (Emeka).
 - When a tool navigates the page, tell the student in one short line what's happening.
-- You can answer beginner coding questions directly, but stay brief.`;
+- You can answer beginner coding questions directly, but stay brief.
+
+Knowledge base:
+- For questions about MoyaCode itself (how it works, what's free, MoyaCoin, tutors, the bootcamp, the Arcade) or about what a track/lesson covers, call search_wiki first, then read_page on the best match. Each page lists related pages; follow one when it clearly helps.
+- Answer from what the pages say. If the knowledge base doesn't cover it, say so honestly instead of guessing.`;
+
+// ── Knowledge tools (executed against the server's wiki store) ────────
+const WIKI_TOOLS = [
+  {
+    name: 'search_wiki',
+    description: 'Search the MoyaCode knowledge base (how MoyaCode works, tracks and lessons, MoyaCoin, tutors, bootcamp, Arcade). Returns matching entries with a page_slug to read.',
+    input_schema: {
+      type: 'object',
+      properties: { query: { type: 'string', description: "The student's question or its key words." } },
+      required: ['query'],
+    },
+  },
+  {
+    name: 'read_page',
+    description: 'Read one knowledge-base page in full by page_slug (from search_wiki results or a related-pages list). Returns the content and related pages.',
+    input_schema: {
+      type: 'object',
+      properties: { slug: { type: 'string', description: 'The page_slug to read.' } },
+      required: ['slug'],
+    },
+  },
+];
+
+async function runWikiTool(name, input) {
+  try {
+    if (name === 'search_wiki') {
+      const r = await fetch(`/api/wiki/search?q=${encodeURIComponent(String(input?.query ?? ''))}`);
+      return r.ok ? await r.json() : { error: `search failed (${r.status})` };
+    }
+    const r = await fetch(`/api/wiki/page/${encodeURIComponent(String(input?.slug ?? ''))}`);
+    return r.ok ? await r.json() : { error: `page not found` };
+  } catch {
+    return { error: 'knowledge base unreachable' };
+  }
+}
 
 // ── Tiny DOM helpers ──────────────────────────────────────────────────
 const el = (tag, props = {}, ...kids) => {
@@ -149,7 +188,7 @@ async function ask(text) {
       const res = await fetch('/api/assistant', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ system: SYSTEM_PROMPT, messages: history, tools: MoyaMCP.tools, model: MODEL_HINT }),
+        body: JSON.stringify({ system: SYSTEM_PROMPT, messages: history, tools: [...MoyaMCP.tools, ...WIKI_TOOLS], model: MODEL_HINT }),
       });
 
       if (res.status === 503) { typing.remove(); fallback(); return; }
@@ -169,7 +208,8 @@ async function ask(text) {
 
       const results = [];
       for (const tu of toolUses) {
-        const out = await MoyaMCP.call(tu.name, tu.input);
+        const isWiki = tu.name === 'search_wiki' || tu.name === 'read_page';
+        const out = isWiki ? await runWikiTool(tu.name, tu.input) : await MoyaMCP.call(tu.name, tu.input);
         results.push({ type: 'tool_result', tool_use_id: tu.id, content: JSON.stringify(out) });
       }
       history.push({ role: 'user', content: results });

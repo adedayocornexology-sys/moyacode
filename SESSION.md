@@ -1,7 +1,24 @@
 # MoyaCode — Session Log
 
 > Resume point for the MoyaCode web app. Read this first to continue.
-> Last updated: **2026-06-24**
+> Last updated: **2026-07-08**
+
+---
+
+## 2026-07-08 — Moya wired to Claude + knowledge base (the "curriculum brain" v1)
+
+Moya's free-text chat is LIVE locally, powered by the founder's new Anthropic key (same Cornexology key as the Ajasin site, in `.env` as `ANTHROPIC_API_KEY`; server default model stays `claude-haiku-4-5-20251001` for cost).
+
+**Knowledge base (SQLite, in-repo):** the MoyaCode Supabase project is paused (free-tier slot squeeze), so the wiki lives in-process for now:
+- `knowledge/wiki_seed.py` — 13 pages / index entries / 17 typed relations distilled from `lessons.js` + `CONSTITUTION.md`: how MoyaCode works, the learning path, all six tracks, MoyaCoin, Moya, tutors, Arcade, Owo bootcamp. **Update this file when curriculum or Constitution change.**
+- `wiki_store.py` — builds an in-memory SQLite DB with FTS5 at startup; `search()` (OR-semantics over title/summary/tags, bm25 x relevance_weight) and `get_page()` (content + both relation directions). Same shape as `supabase/wiki_knowledge.sql` for the eventual Postgres migration.
+- `main.py` — new public read-only endpoints `GET /api/wiki/search?q=` and `GET /api/wiki/page/{slug}`.
+
+**Agent wiring (`js/assistant.js`):** added `search_wiki` + `read_page` tool definitions to Moya's client-side loop (WebMCP tools untouched); wiki tools execute via fetch to the server endpoints; system prompt now says search-first for questions about MoyaCode/curriculum and answer only from pages.
+
+**Verified end to end** with a scripted stand-in for the browser loop: "Is MoyaCode really free? What is MoyaCoin then?" → search_wiki → read_page x2 → grounded, on-voice answer (free floor + MoyaCoin explained correctly). Run the server with `python -m uvicorn main:app --host 0.0.0.0 --port 8001` and test in the browser via the Ask Moya button.
+
+**Next for Moya:** browser playtest on the founder's phone; then MoyaCoin metering hooks; migrate wiki to Supabase when the DB slot frees.
 
 ---
 
