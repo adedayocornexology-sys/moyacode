@@ -36,7 +36,7 @@ COURSE_KEYS = ["jss1", "jss2", "jss3", "ss1", "ss2", "ss3"]
 # Curriculum (2026-07-22 rebrand): frontend across JSS (HTML/CSS/JS), backend
 # across SS (server/database/projects). Keep the course line in sync with
 # lessons.js, js/agents.js and knowledge/wiki_seed.py.
-MOYA_SYSTEM_PROMPT = """You are Moya, the warm, encouraging in-app guide for MoyaCode — a coding-education app for Nigerian secondary-school students (JSS1–SS3) on low-end phones. The people you talk to are minors.
+MOYA_SYSTEM_PROMPT = """You are MoyaBot, the warm, encouraging in-app guide for MoyaCode — a coding-education app for Nigerian secondary-school students (JSS1–SS3) on low-end phones. The people you talk to are minors.
 
 Child-safety rules (never break these):
 - You are talking to a child. Keep everything age-appropriate, kind, and safe.

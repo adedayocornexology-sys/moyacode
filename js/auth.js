@@ -52,12 +52,25 @@ export async function requireAuth(redirectTo) {
 /**
  * Creates a new account and inserts a row in the `students` table.
  *
+ * The student's name/full_name is also sent as auth user metadata so it's
+ * available immediately. The `students` row upsert only succeeds here when a
+ * session exists (email confirmation off); otherwise the profile is persisted
+ * on first sign-in via db.js `migrateLocalStorage` from the localStorage the
+ * sign-up page saved.
+ *
  * @param {string} email
  * @param {string} password
+ * @param {{fullName?:string, classLevel?:string, school?:string, guardianEmail?:string}} [profile]
  * @returns {Promise<{user: object|null, session: object|null, error: object|null}>}
  */
-export async function signUp(email, password) {
-  const { data, error } = await supabase.auth.signUp({ email, password });
+export async function signUp(email, password, profile = {}) {
+  const { fullName, classLevel, school, guardianEmail } = profile;
+
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { data: { full_name: fullName || '' } },
+  });
 
   if (error) {
     return { user: null, session: null, error };
@@ -65,19 +78,50 @@ export async function signUp(email, password) {
 
   const user = data?.user ?? null;
 
-  // Insert the student row so foreign keys from other tables can resolve.
-  // Use upsert in case the trigger or a previous attempt already created it.
+  // Insert the student row (works when a session exists, i.e. confirmation off).
+  // Upsert in case a previous attempt already created it.
   if (user) {
+    const row = { id: user.id };
+    if (fullName)      row.full_name      = fullName;
+    if (classLevel)    row.class_level    = classLevel;
+    if (school)        row.school         = school;
+    if (guardianEmail) row.guardian_email = guardianEmail;
+
     const { error: rowError } = await supabase
       .from('students')
-      .upsert({ id: user.id }, { onConflict: 'id' });
+      .upsert(row, { onConflict: 'id' });
 
     if (rowError) {
-      console.warn('[auth] Could not create students row:', rowError.message);
+      // Expected when email confirmation is on (no session yet) — the profile
+      // is saved from localStorage on first sign-in instead. Not fatal.
+      console.warn('[auth] students row deferred to first sign-in:', rowError.message);
     }
   }
 
   return { user, session: data?.session ?? null, error: null };
+}
+
+// ── Google OAuth ──────────────────────────────────────────────
+
+/**
+ * Starts the Google (Gmail) sign-in flow. Redirects the browser to Google and
+ * back to `redirectTo`. Requires the Google provider to be enabled in the
+ * Supabase project (Auth → Providers → Google).
+ *
+ * @param {string} [nextUrl] - where to land after auth completes.
+ * @returns {Promise<{error: object|null}>}
+ */
+export async function signInWithGoogle(nextUrl) {
+  const base = window.location.href.split('?')[0];
+  const redirectTo = nextUrl
+    ? `${base}?next=${encodeURIComponent(nextUrl)}`
+    : base;
+
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo },
+  });
+  return { error: error ?? null };
 }
 
 // ── Sign in ───────────────────────────────────────────────────

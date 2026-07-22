@@ -92,7 +92,7 @@ const LESSON_BANKS = {
       ], codeBlock:{ label:'A tiny Node program', code:`// hello.js  →  run with:  node hello.js\nconsole.log("This ran on the server, not the browser.");` }},
       { id:'http', title:'Requests and Responses', readMins:4, sections:[
         { type:'prose', text:'The web works by request and response. The browser sends a request ("give me the home page"), and the server sends back a response (the page, or some data). Each request has a method: GET to read, POST to send new data.' },
-        { type:'callout', variant:'tip', title:'Real life', text:'When you tap "Ask Moya", your browser sends a POST request to a server; the server thinks and sends a response back.' }
+        { type:'callout', variant:'tip', title:'Real life', text:'When you tap "Ask MoyaBot", your browser sends a POST request to a server; the server thinks and sends a response back.' }
       ]},
       { id:'api', title:'Building a Simple API', readMins:4, sections:[
         { type:'prose', text:'A server exposes URLs called routes. When a request hits a route, your code runs and returns a response — often JSON, a simple text format for data. This is how the frontend and backend talk.' }

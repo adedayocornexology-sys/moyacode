@@ -5,10 +5,12 @@
 
 -- ── students ─────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS public.students (
-  id          uuid        PRIMARY KEY REFERENCES auth.users (id) ON DELETE CASCADE,
-  full_name   text,
-  school      text,
-  created_at  timestamptz NOT NULL DEFAULT now()
+  id             uuid        PRIMARY KEY REFERENCES auth.users (id) ON DELETE CASCADE,
+  full_name      text,
+  school         text,
+  class_level    text,        -- self-declared class at sign-up: jss1..ss3
+  guardian_email text,        -- optional parent/guardian contact (minors)
+  created_at     timestamptz NOT NULL DEFAULT now()
 );
 
 ALTER TABLE public.students ENABLE ROW LEVEL SECURITY;

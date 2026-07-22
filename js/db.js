@@ -221,6 +221,23 @@ export async function migrateLocalStorage(userId) {
       await saveProfile(userId, { dream, motivation, goal });
     }
 
+    // 1b. Account profile from sign-up (name/class/school/guardian) → students row.
+    // Written here (not only at signUp) so it persists even when email
+    // confirmation means there was no authenticated session at signup time.
+    const fullName      = localStorage.getItem('moyacode_full_name')      ?? '';
+    const classLevel    = localStorage.getItem('moyacode_class')          ?? '';
+    const school        = localStorage.getItem('moyacode_school')         ?? '';
+    const guardianEmail = localStorage.getItem('moyacode_guardian_email') ?? '';
+    if (fullName || classLevel || school || guardianEmail) {
+      const row = { id: userId };
+      if (fullName)      row.full_name      = fullName;
+      if (classLevel)    row.class_level    = classLevel;
+      if (school)        row.school         = school;
+      if (guardianEmail) row.guardian_email = guardianEmail;
+      const { error: sErr } = await supabase.from('students').upsert(row, { onConflict: 'id' });
+      if (sErr) console.warn('[db] migrate students profile error:', sErr.message);
+    }
+
     // 2. Course progress
     // Scan all localStorage keys that look like moyacode_progress_<classKey>
     const progressKeys = Object.keys(localStorage).filter(k =>

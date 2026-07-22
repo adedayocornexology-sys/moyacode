@@ -137,6 +137,11 @@ async def child_safety(request: Request):
     return templates.TemplateResponse("child-safety.html", {"request": request})
 
 
+@app.get("/contact")
+async def contact(request: Request):
+    return templates.TemplateResponse("contact.html", {"request": request})
+
+
 # ── Arcade API ───────────────────────────────────────────────────────
 class FeedbackIn(BaseModel):
     game_id: int

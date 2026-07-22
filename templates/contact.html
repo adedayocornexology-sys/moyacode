@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Contact · MoyaCode{% endblock %}
+
+{% block head %}
+<style>
+  .contact { max-width: 720px; }
+  .contact h2 { font-family: var(--f-display); font-size: clamp(1.2rem, 3vw, 1.6rem); font-weight: 700; margin: 34px 0 8px; letter-spacing: -0.01em; }
+  .contact p { color: var(--t-200); line-height: 1.65; font-size: 1rem; margin-top: 8px; }
+  .contact a { color: var(--c-teal); }
+  .email-card {
+    margin-top: 22px; padding: 22px 24px;
+    border: 1px solid var(--c-teal-dim); background: var(--c-teal-faint);
+    border-radius: var(--r-lg);
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .email-card .label { font-family: var(--f-mono); font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-teal); }
+  .email-card .addr { font-family: var(--f-display); font-size: clamp(1.15rem, 3.5vw, 1.5rem); font-weight: 700; color: var(--t-100); word-break: break-all; }
+  .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 26px; }
+  .contact-grid .cc { padding: 18px 20px; border: 1px solid var(--glass-border); border-radius: var(--r-lg); background: var(--glass); }
+  .contact-grid .cc h3 { font-size: 1rem; margin-bottom: 6px; color: var(--t-100); }
+  .contact-grid .cc p { font-size: 0.9rem; margin-top: 4px; color: var(--t-400); }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="wrap contact">
+  <span class="eyebrow">Contact</span>
+  <h1 class="page-h1">Get in touch</h1>
+  <p class="lead">Questions, feedback, a school partnership, or a concern about a student's safety — we'd love to hear from you.</p>
+
+  <a class="email-card" href="mailto:hello@moyacode.dev">
+    <span class="label">Email us</span>
+    <span class="addr">hello@moyacode.dev</span>
+  </a>
+
+  <div class="contact-grid">
+    <div class="cc">
+      <h3>Parents &amp; teachers</h3>
+      <p>Worried about something, or want to report a problem? See our <a href="/child-safety#report">Child-Safety page</a> — a parent or teacher can reach us any time.</p>
+    </div>
+    <div class="cc">
+      <h3>Schools</h3>
+      <p>Want MoyaCode for your school or a coding club? Email us and tell us your class sizes and levels.</p>
+    </div>
+    <div class="cc">
+      <h3>Students</h3>
+      <p>Stuck on a lesson? Tap <strong>Ask MoyaBot</strong> on any page for instant help — day or night.</p>
+    </div>
+  </div>
+
+  <h2>Where we are</h2>
+  <p>MoyaCode is built in Owo, Nigeria, for the next generation of African developers. We usually reply within a couple of days.</p>
+</section>
+{% endblock %}

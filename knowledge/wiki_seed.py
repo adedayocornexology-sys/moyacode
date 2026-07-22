@@ -128,7 +128,7 @@ PAGES = [
             "- A server keeps secrets safe, stores data for everyone, and does work "
             "the browser shouldn't be trusted with.\n"
             "- The web works by request and response. GET reads data; POST sends new "
-            "data. When you tap 'Ask Moya', the browser sends a POST request.\n"
+            "data. When you tap 'Ask MoyaBot', the browser sends a POST request.\n"
             "- A server exposes URLs called routes; when a request hits a route your "
             "code runs and returns a response, often JSON (a simple data format).\n\n"
             "The quest covers frontend vs backend, GET vs POST, Node.js and JSON. "
@@ -168,7 +168,7 @@ PAGES = [
             "- The frontend sends requests to the backend, which reads and writes "
             "the database and responds. That round trip is a full-stack app.\n"
             "- Build one piece at a time and test before moving on. Use AI (like "
-            "Moya) to explain errors, the way real developers do. Then deploy so "
+            "MoyaBot) to explain errors, the way real developers do. Then deploy so "
             "anyone can visit — the way MoyaCode is live for you.\n\n"
             "This is the final track. Teacher: Kunle. References: MDN, roadmap.sh."
         ),
@@ -195,14 +195,14 @@ PAGES = [
     {
         "slug": "moya-assistant",
         "page_type": "concept",
-        "title": "Moya, your learning guide",
+        "title": "MoyaBot, your learning guide",
         "content_md": (
-            "Moya is the in-app guide every student pairs with. Moya remembers "
+            "MoyaBot is the in-app guide every student pairs with. MoyaBot remembers "
             "where you stopped, greets you with a continue-where-you-left-off card, "
             "recommends what to learn next, opens lessons for you, and answers "
             "questions about coding and about MoyaCode itself.\n\n"
-            "Moya acts for you, in your own session, and never guesses your "
-            "progress: it checks your real learner state first. Tap the Ask Moya "
+            "MoyaBot acts for you, in your own session, and never guesses your "
+            "progress: it checks your real learner state first. Tap the Ask MoyaBot "
             "button on any page to start."
         ),
     },
@@ -238,7 +238,7 @@ PAGES = [
             "MoyaCode runs a 5-day AI-Fluency Bootcamp in Owo at the Ajasin "
             "Foundation, teaching students to work with AI tools hands-on. Seats "
             "are limited (about 50 per run). Fees are kept low, in the 10 to 20 "
-            "thousand naira range per week. Ask Moya for the current dates or see "
+            "thousand naira range per week. Ask MoyaBot for the current dates or see "
             "the bootcamp briefing site for details.\n\n"
             "Unlike the bootcamp (a paid, in-person event), everything on "
             "moyacode.com's learning platform stays free."
@@ -266,8 +266,8 @@ INDEX = [
      ["project", "ss3", "fullstack", "deploy", "ship", "plan", "build", "capstone", "ai"], "ss3-projects", 1.0),
     ("MoyaCoin and XP", "The two currencies: XP is earned status that cannot be spent; MoyaCoin is earned and spent on AI help like deep tutoring and code review. Learning itself is always free.",
      ["moyacoin", "coins", "xp", "wallet", "spend", "earn", "levels", "free", "money", "cash"], "moyacoin", 1.3),
-    ("Moya, your guide", "What Moya the assistant does: remembers progress, resumes learning, recommends next steps, opens lessons, answers questions.",
-     ["moya", "assistant", "guide", "help", "resume", "continue", "agent"], "moya-assistant", 1.1),
+    ("MoyaBot, your guide", "What MoyaBot the assistant does: remembers progress, resumes learning, recommends next steps, opens lessons, answers questions.",
+     ["moyabot", "moya", "assistant", "guide", "help", "resume", "continue", "agent", "bot"], "moya-assistant", 1.1),
     ("Near-peer tutors", "Human tutors who just finished the track themselves, starting with SS3 graduates of RSS Owo. How tutoring and the protege programme work.",
      ["tutor", "tutors", "protege", "teacher", "human", "help", "rss", "owo", "mentor"], "tutors-proteges", 1.1),
     ("The Arcade", "Where students' own games live. Play games built by other MoyaCode students at /arcade.",

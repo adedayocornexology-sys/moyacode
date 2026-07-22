@@ -109,7 +109,7 @@ async function showWelcome() {
   body.replaceChildren();
   // AI disclosure (required for a product serving minors) — always shown first.
   const note = el('div', { className: 'moya-note' });
-  note.innerHTML = "You're chatting with Moya, an <b>AI assistant</b> — not a person. " +
+  note.innerHTML = "You're chatting with MoyaBot, an <b>AI assistant</b> — not a person. " +
     "Keep personal details (full name, address, school, phone, passwords) private. " +
     "<a href=\"/child-safety#report\" target=\"_blank\" rel=\"noopener\" style=\"color:var(--c-teal,#00e5a0)\">Report a problem</a>";
   body.append(note);
@@ -137,7 +137,7 @@ async function showWelcome() {
   } else {
     const nm = state.nextCourse ? esc(state.nextCourse.label) : 'JSS1 — HTML';
     card.innerHTML =
-      `<h4>👋 Hi, I'm Moya</h4>` +
+      `<h4>👋 Hi, I'm MoyaBot</h4>` +
       `<p>Your coding guide. ${state.signedIn ? "Let's pick up your journey." : "Start your journey — I'll remember where you reach."} First stop: <b>${nm}</b>.</p>`;
     body.append(card);
     chips([
@@ -154,7 +154,7 @@ async function ask(text) {
   input.value = '';
   sendBtn.disabled = true;
 
-  const typing = el('div', { className: 'moya-typing', textContent: 'Moya is thinking…' });
+  const typing = el('div', { className: 'moya-typing', textContent: 'MoyaBot is thinking…' });
   body.append(typing);
   body.scrollTop = body.scrollHeight;
 
@@ -216,19 +216,19 @@ function fallback() {
 function mount() {
   document.head.append(el('style', { textContent: CSS }));
 
-  const fab = el('button', { className: 'moya-fab', title: 'Ask Moya' });
-  fab.innerHTML = `<svg viewBox="0 0 24 24" fill="none"><path d="M12 3l2.1 5.9L20 11l-5.9 2.1L12 19l-2.1-5.9L4 11l5.9-2.1L12 3z" fill="#030712"/></svg> Ask Moya`;
+  const fab = el('button', { className: 'moya-fab', title: 'Ask MoyaBot' });
+  fab.innerHTML = `<svg viewBox="0 0 24 24" fill="none"><path d="M12 3l2.1 5.9L20 11l-5.9 2.1L12 19l-2.1-5.9L4 11l5.9-2.1L12 3z" fill="#030712"/></svg> Ask MoyaBot`;
 
   panel = el('div', { className: 'moya-panel' });
   panel.innerHTML = `
     <div class="moya-head">
       <span class="dot">M</span>
-      <div><b>Moya</b><small>AI learning assistant</small></div>
+      <div><b>MoyaBot</b><small>AI learning assistant</small></div>
       <button class="moya-x" aria-label="Close">×</button>
     </div>
     <div class="moya-body"></div>
     <div class="moya-foot">
-      <input type="text" placeholder="Ask Moya anything…" autocomplete="off" />
+      <input type="text" placeholder="Ask MoyaBot anything…" autocomplete="off" />
       <button>➤</button>
     </div>`;
 
