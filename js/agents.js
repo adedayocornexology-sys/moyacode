@@ -4,32 +4,15 @@
 
 export const AGENTS = [
   {
-    id:     "scratch",
-    name:   "Tolu",
-    role:   "Scratch & Visual Programming",
-    emoji:  "🎮",
-    tracks: ["jss1", "jss2"],
-    intro(profile) {
-      const opener = profile.dream
-        ? `You said you want to "${profile.dream}" — visual programming is the perfect place to start.`
-        : `Welcome to visual programming.`;
-      return `${opener} In Scratch, you build real programs by snapping blocks together — no typing required yet. By the end of this track, you'll have sprites moving, reacting, and talking to each other. Let's go.`;
-    },
-    farewell(nextAgent) {
-      if (!nextAgent) return "You've completed everything. You are a MoyaCode legend.";
-      return `Scratch done. You can make things move, react, and communicate — that is real programming logic. I'm passing you to ${nextAgent.emoji} ${nextAgent.name}, who'll teach you HTML. The web starts here.`;
-    },
-  },
-  {
     id:     "html",
     name:   "Chidi",
     role:   "HTML & Web Structure",
     emoji:  "🌐",
-    tracks: ["jss3", "ss1"],
+    tracks: ["jss1"],
     intro(profile) {
       const opener = profile.dream
-        ? `You're aiming for "${profile.dream}".`
-        : `Good to have you here.`;
+        ? `You said you want to "${profile.dream}" — every website that dream needs starts right here.`
+        : `Welcome — this is where the web begins.`;
       return `${opener} Every website you've ever visited was built with HTML. I'm Chidi, and I'll show you how web pages are structured — from a blank file to a real page with headings, images, and links. By the end of this track, you'll read and write HTML with confidence.`;
     },
     farewell(nextAgent) {
@@ -42,12 +25,12 @@ export const AGENTS = [
     name:   "Amaka",
     role:   "CSS Styling",
     emoji:  "🎨",
-    tracks: ["ss2"],
+    tracks: ["jss2"],
     intro(profile) {
       const opener = profile.dream
         ? `You're building toward "${profile.dream}".`
         : `Ready to make things look good?`;
-      return `${opener} CSS is what makes the web beautiful. I'm Amaka. You already know how to structure a page — now I'll teach you how to control colors, fonts, spacing, and layout. This is where your pages start looking like real products.`;
+      return `${opener} CSS is what makes the web beautiful. I'm Amaka. You already know how to structure a page — now I'll teach you how to control colours, fonts, spacing, and layout. This is where your pages start looking like real products.`;
     },
     farewell(nextAgent) {
       if (!nextAgent) return "You've completed everything. You are a MoyaCode legend.";
@@ -59,15 +42,49 @@ export const AGENTS = [
     name:   "Emeka",
     role:   "JavaScript",
     emoji:  "⚡",
-    tracks: ["ss3"],
+    tracks: ["jss3"],
     intro(profile) {
       const opener = profile.dream
         ? `You said you want to "${profile.dream}" — JavaScript is what makes that possible.`
         : `This is where everything comes to life.`;
-      return `${opener} I'm Emeka. You've got structure from HTML and style from CSS. Now we add behavior — buttons that do things, logic that responds, code that runs. This is the track that turns a webpage into a product.`;
+      return `${opener} I'm Emeka. You've got structure from HTML and style from CSS. Now we add behaviour — buttons that do things, logic that responds, code that runs. Finish this and you've mastered the whole frontend.`;
+    },
+    farewell(nextAgent) {
+      if (!nextAgent) return "You've completed everything. You are a MoyaCode legend.";
+      return `That's the frontend done — HTML, CSS, and JavaScript. Real websites, built by you. Now ${nextAgent.emoji} ${nextAgent.name} takes you behind the scenes, to the server.`;
+    },
+  },
+  {
+    id:     "backend",
+    name:   "Ngozi",
+    role:   "Servers & Databases",
+    emoji:  "🖥️",
+    tracks: ["ss1", "ss2"],
+    intro(profile) {
+      const opener = profile.dream
+        ? `To really build "${profile.dream}", you need the backend — and that's me.`
+        : `Welcome behind the scenes.`;
+      return `I'm Ngozi. So far your code ran in the browser; now we go to the server, where the real power lives. You'll learn to run JavaScript on a server with Node.js, build simple APIs, and store real data safely in a database with Supabase. This is what turns a website into an app.`;
+    },
+    farewell(nextAgent) {
+      if (!nextAgent) return "You've completed everything. You are a MoyaCode legend.";
+      return `Backend done — servers, APIs, and databases. You now have every piece of the stack. I'm handing you to ${nextAgent.emoji} ${nextAgent.name} to put it all together into a real project.`;
+    },
+  },
+  {
+    id:     "projects",
+    name:   "Kunle",
+    role:   "Full-Stack Projects",
+    emoji:  "🚀",
+    tracks: ["ss3"],
+    intro(profile) {
+      const opener = profile.dream
+        ? `Time to build "${profile.dream}" for real.`
+        : `Time to build something real.`;
+      return `I'm Kunle. You know the whole stack now — frontend, server, and database. In this final track we plan, build, test, and ship a full-stack project to the internet, using AI as your pair the way real developers do. This is what a junior developer actually does.`;
     },
     farewell(_nextAgent) {
-      return "All four tracks done — Scratch, HTML, CSS, JavaScript. You are a MoyaCode graduate.";
+      return "All tracks done — HTML, CSS, JavaScript, servers, databases, and a shipped project. You are a MoyaCode graduate and a full-stack developer.";
     },
   },
 ];

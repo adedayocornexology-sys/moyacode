@@ -150,11 +150,11 @@ const CH = {
     {who:'Moya',role:'ai',av:'M',t:'8:00',text:"Welcome to your MoyaCode workspace. Each channel is a class. I'm Moya, your sidekick. Tag <span class='mention'>@moya</span> in any message and I'll explain, check facts, or help you practice."},
   ]},
   html:{name:'html', topic:'Learn HTML with your class and Moya', msgs:[
-    {who:'Tolu',role:'tutor',av:'T',c:'#60A5FA',t:'9:12',text:"Today: every page is built from tags. <code>&lt;h1&gt;</code> is a heading, <code>&lt;p&gt;</code> is a paragraph. Try writing a heading that says your name."},
+    {who:'Chidi',role:'tutor',av:'C',c:'#60A5FA',t:'9:12',text:"Today: every page is built from tags. <code>&lt;h1&gt;</code> is a heading, <code>&lt;p&gt;</code> is a paragraph. Try writing a heading that says your name."},
     {who:'Ade',role:'you',av:'A',c:'#FCD34D',t:'9:14',text:"so &lt;h1&gt;Ade&lt;/h1&gt; ? and does the order of tags matter"},
-    {who:'Tolu',role:'tutor',av:'T',c:'#60A5FA',t:'9:15',text:"Yes that's correct. Order matters for how things stack top to bottom."},
+    {who:'Chidi',role:'tutor',av:'C',c:'#60A5FA',t:'9:15',text:"Yes that's correct. Order matters for how things stack top to bottom."},
     {who:'Ade',role:'you',av:'A',c:'#FCD34D',t:'9:16',text:"<span class='mention'>@moya</span> is it true that a page can have more than one h1?"},
-    {who:'Moya',role:'ai',av:'M',t:'9:16',text:"Good truth-check. Technically yes, a page can contain multiple <code>&lt;h1&gt;</code> tags and it will still render. But the clean practice is one <code>&lt;h1&gt;</code> per page (your main title), then <code>&lt;h2&gt;</code> and <code>&lt;h3&gt;</code> for sections. Screen readers and search engines rely on that order. So Tolu is right that order matters, and one h1 is the habit to build."},
+    {who:'Moya',role:'ai',av:'M',t:'9:16',text:"Good truth-check. Technically yes, a page can contain multiple <code>&lt;h1&gt;</code> tags and it will still render. But the clean practice is one <code>&lt;h1&gt;</code> per page (your main title), then <code>&lt;h2&gt;</code> and <code>&lt;h3&gt;</code> for sections. Screen readers and search engines rely on that order. So Chidi is right that order matters, and one h1 is the habit to build."},
   ]},
   css:{name:'css', topic:'Style and layout', msgs:[
     {who:'Moya',role:'ai',av:'M',t:'10:01',text:"This is the CSS class. Ask me <span class='mention'>@moya</span> anything, like why your box is not centering."},
@@ -175,7 +175,7 @@ function renderChannels(){
     const c = CH[k];
     return `<button class="chan ${k===active?'active':''}" onclick="openCh('${k}')"><span class="h">#</span>${c.name}</button>`;
   }).join('') + `<div class="grp">Tutors</div>
-    <button class="chan"><span class="av" style="background:#60A5FA;color:#06121f">T</span>Tolu</button>
+    <button class="chan"><span class="av" style="background:#60A5FA;color:#06121f">C</span>Chidi</button>
     <button class="chan"><span class="av" style="background:#A78BFA;color:#06121f">B</span>Mr. Bayo</button>`;
 }
 function avatar(m){

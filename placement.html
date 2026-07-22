@@ -198,33 +198,33 @@
   <!-- ── SCREEN 0: Faculty intro ── -->
   <div class="screen active" id="s0" role="main">
     <div class="eyebrow">Your MoyaCode Faculty</div>
-    <h1 class="s-h1">Four specialists.<br/>One is yours.</h1>
-    <p class="s-p">Each agent owns a track of the curriculum. Answer 2 questions and we'll place you with the right one.</p>
+    <h1 class="s-h1">Four specialists.<br/>One starts you off.</h1>
+    <p class="s-p">Each agent owns part of the curriculum, frontend to backend. Answer 2 questions and we'll place you with the right one.</p>
 
     <div class="fac-grid" aria-label="Teaching faculty">
       <div class="fc fc-teal">
-        <div class="fc-emoji" aria-hidden="true">🎮</div>
-        <div class="fc-name">Tolu</div>
-        <div class="fc-role">Scratch &amp; Visual Programming</div>
-        <div class="fc-badge">JSS1 · JSS2</div>
-      </div>
-      <div class="fc fc-blue">
         <div class="fc-emoji" aria-hidden="true">🌐</div>
         <div class="fc-name">Chidi</div>
         <div class="fc-role">HTML &amp; Web Structure</div>
-        <div class="fc-badge">JSS3 · SS1</div>
+        <div class="fc-badge">JSS1</div>
       </div>
       <div class="fc fc-amber">
         <div class="fc-emoji" aria-hidden="true">🎨</div>
         <div class="fc-name">Amaka</div>
         <div class="fc-role">CSS Styling</div>
-        <div class="fc-badge">SS2</div>
+        <div class="fc-badge">JSS2</div>
       </div>
       <div class="fc fc-coral">
         <div class="fc-emoji" aria-hidden="true">⚡</div>
         <div class="fc-name">Emeka</div>
-        <div class="fc-role">JavaScript Logic</div>
-        <div class="fc-badge">SS3</div>
+        <div class="fc-role">JavaScript</div>
+        <div class="fc-badge">JSS3</div>
+      </div>
+      <div class="fc fc-blue">
+        <div class="fc-emoji" aria-hidden="true">🖥️</div>
+        <div class="fc-name">Ngozi</div>
+        <div class="fc-role">Servers &amp; Databases</div>
+        <div class="fc-badge">SS1 · SS2</div>
       </div>
     </div>
 
@@ -251,7 +251,7 @@
       <button class="opt" data-val="little" onclick="selectExp(this)" role="radio" aria-checked="false">
         <div class="opt-icon" aria-hidden="true">🧩</div>
         <div class="opt-text">
-          <strong>A little — tried Scratch or similar</strong>
+          <strong>A little — I've dabbled</strong>
           <span>Played around but didn't go deep</span>
         </div>
         <span class="opt-arrow" aria-hidden="true">→</span>
@@ -325,13 +325,13 @@
   <!-- ── SCREEN 4: Result ── -->
   <div class="screen" id="s4">
     <div class="result-wrap">
-      <div class="result-badge" id="rEmoji" data-color="teal" aria-label="Your agent">🎮</div>
+      <div class="result-badge" id="rEmoji" data-color="teal" aria-label="Your agent">🌐</div>
       <div class="result-label">Your guide is</div>
-      <div class="result-agent" id="rName">Tolu</div>
-      <div class="result-chip" id="rChip">JSS1 · Scratch Basics</div>
+      <div class="result-agent" id="rName">Chidi</div>
+      <div class="result-chip" id="rChip">JSS1 · HTML</div>
       <p class="result-intro" id="rIntro"></p>
       <div class="result-cta-wrap">
-        <button class="btn-primary" id="rCTA" onclick="startJourney()">Start with Tolu →</button>
+        <button class="btn-primary" id="rCTA" onclick="startJourney()">Start with Chidi →</button>
         <a class="skip-link" href="selection.html">Browse all courses instead</a>
       </div>
     </div>
@@ -346,29 +346,29 @@ let diagIdx = 0, diagScore = 0, diagBank = [];
 
 // ── Course data ─────────────────────────────────────────
 const COURSES = {
-  jss1:{ agent:'Tolu',  emoji:'🎮', label:'JSS1 · Scratch Basics',  color:'teal'  },
-  jss2:{ agent:'Tolu',  emoji:'🎮', label:'JSS2 · Advanced Scratch', color:'teal'  },
-  jss3:{ agent:'Chidi', emoji:'🌐', label:'JSS3 · Intro to HTML',    color:'blue'  },
-  ss1: { agent:'Chidi', emoji:'🌐', label:'SS1 · Advanced HTML',     color:'blue'  },
-  ss2: { agent:'Amaka', emoji:'🎨', label:'SS2 · CSS Styling',       color:'amber' },
-  ss3: { agent:'Emeka', emoji:'⚡', label:'SS3 · JavaScript Logic',  color:'coral' },
+  jss1:{ agent:'Chidi', emoji:'🌐', label:'JSS1 · HTML',                     color:'teal'  },
+  jss2:{ agent:'Amaka', emoji:'🎨', label:'JSS2 · CSS',                      color:'amber' },
+  jss3:{ agent:'Emeka', emoji:'⚡', label:'JSS3 · JavaScript',               color:'coral' },
+  ss1: { agent:'Ngozi', emoji:'🖥️', label:'SS1 · JavaScript on the Server',  color:'blue'  },
+  ss2: { agent:'Ngozi', emoji:'🗄️', label:'SS2 · JavaScript + Database',     color:'blue'  },
+  ss3: { agent:'Kunle', emoji:'🚀', label:'SS3 · Full-Stack Project',        color:'coral' },
 };
 
 // ── Agent intro messages ────────────────────────────────
 const INTROS = {
-  jss1: d => `I'm Tolu. You're in exactly the right place.${d ? ` Your goal to ${d.toLowerCase()} starts with understanding how code thinks.` : ''} Scratch uses blocks — no typing, no syntax errors. Just logic. By the end, you'll have real programs running. Let's go.`,
-  jss2: d => `I'm Tolu. You've got the basics — time to make them serious. Advanced Scratch covers broadcasts, sprite cloning, and game logic.${d ? ` The building blocks for ${d.toLowerCase()}.` : ''} This track makes you a real Scratch programmer.`,
-  jss3: d => `I'm Chidi. Every website you've visited started with HTML. JSS3 takes you from a blank file to a real, structured page with headings, links, and images.${d ? ` That foundation is everything for what you want to build.` : ''} Let's open a file.`,
-  ss1:  d => `I'm Chidi. You know basic HTML. SS1 goes professional — semantic tags, forms, and accessibility. ${d ? `The kind of structure that makes ${d.toLowerCase()} work correctly.` : 'The structure real products are built on.'}`,
-  ss2:  d => `I'm Amaka. You write solid HTML. Now let's make it look like something. CSS controls every colour, font, spacing, and layout on the web.${d ? ` That's how you make ${d.toLowerCase()} feel like a real product.` : ''} This is where pages stop being documents and start being experiences.`,
-  ss3:  d => `I'm Emeka. You're ready for the final track. JavaScript makes pages come alive — buttons that respond, logic that runs, data that changes.${d ? ` Everything it takes to ${d.toLowerCase()} runs on this.` : ''} Let's bring it to life.`,
+  jss1: d => `I'm Chidi. Every website you've ever visited started with HTML, and that's exactly where you begin.${d ? ` Your goal to ${d.toLowerCase()} starts here.` : ''} I'll take you from a blank file to a real, structured page with headings, links, and images. Let's open a file.`,
+  jss2: d => `I'm Amaka. You can structure a page — now let's make it look like something. CSS controls every colour, font, spacing, and layout on the web.${d ? ` That's how you make ${d.toLowerCase()} feel like a real product.` : ''} This is where pages stop being documents and start being experiences.`,
+  jss3: d => `I'm Emeka. Time to make your pages come alive. JavaScript adds behaviour — buttons that respond, logic that runs, data that changes.${d ? ` Everything it takes to ${d.toLowerCase()} runs on this.` : ''} Finish here and you've mastered the whole frontend.`,
+  ss1:  d => `I'm Ngozi. You know the frontend; now we go behind the scenes to the server. You'll run JavaScript with Node.js and build simple APIs.${d ? ` This is the power that makes ${d.toLowerCase()} real.` : ''} This is where a website becomes an app.`,
+  ss2:  d => `I'm Ngozi. Every real app needs to remember things. I'll teach you to store and protect real data in a database with Supabase — tables, reading and writing, and keeping each user's data safe.${d ? ` The backbone of ${d.toLowerCase()}.` : ''}`,
+  ss3:  d => `I'm Kunle. This is the final track: you plan, build, test, and ship a full-stack project to the internet, using AI as your pair.${d ? ` We'll build toward ${d.toLowerCase()}.` : ''} This is what a real junior developer does.`,
 };
 
 // ── Diagnostic question banks ───────────────────────────
-const SCRATCH_Q = [
-  { q:'What does a "repeat 10" block do in Scratch?', opts:['Runs the blocks inside it 10 times','Makes the sprite jump 10 steps','Plays a sound 10 times','Waits for 10 seconds'], correct:0 },
-  { q:'In Scratch, what makes your program start running?', opts:['Clicking the green flag','Pressing the spacebar','Dragging a sprite to centre','Clicking the red stop button'], correct:0 },
-  { q:'Which type of Scratch block reacts to things like key presses or clicks?', opts:['Event blocks','Motion blocks','Sound blocks','Operator blocks'], correct:0 },
+const BEGINNER_Q = [
+  { q:'What does a web browser (like Chrome) do?', opts:['Shows web pages','Prints documents','Edits photos','Only plays music'], correct:0 },
+  { q:'Which of these is used to build the structure of a web page?', opts:['HTML','Excel','Photoshop','MP3'], correct:0 },
+  { q:'In <h1>Hello</h1>, what is "Hello"?', opts:['The text shown on the page','A secret password','The file name','A colour'], correct:0 },
 ];
 const HTML_Q = [
   { q:'What does an <h1> tag do on a web page?', opts:['Creates the main page heading','Makes all text bold','Creates a clickable link','Adds a horizontal line'], correct:0 },
@@ -406,9 +406,10 @@ function selectExp(btn) {
     if (experience === 'never') {
       placedCourse = 'jss1'; advance(3);
     } else if (experience === 'javascript') {
-      placedCourse = 'ss3'; advance(3);
+      // Knows frontend JS already → start the backend.
+      placedCourse = 'ss1'; advance(3);
     } else {
-      diagBank  = experience === 'little' ? SCRATCH_Q : HTML_Q;
+      diagBank  = experience === 'little' ? BEGINNER_Q : HTML_Q;
       diagIdx   = 0;
       diagScore = 0;
       renderDiag();
@@ -451,9 +452,11 @@ function answerDiag(btn, chosen, correct) {
     } else {
       // Route by score
       if (experience === 'little') {
-        placedCourse = diagScore >= 2 ? 'jss2' : 'jss1';
+        // Dabbler: strong on basics can skip to CSS, otherwise start at HTML.
+        placedCourse = diagScore === 3 ? 'jss2' : 'jss1';
       } else {
-        placedCourse = diagScore === 3 ? 'ss2' : diagScore === 2 ? 'ss1' : 'jss3';
+        // Knows some HTML/CSS: strong → straight to JavaScript, else CSS.
+        placedCourse = diagScore >= 2 ? 'jss3' : 'jss2';
       }
       advance(3);
     }

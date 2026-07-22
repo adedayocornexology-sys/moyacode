@@ -1,128 +1,154 @@
 // Rich lesson content bank used by lesson.html
+// Curriculum (2026-07-22 rebrand): frontend across JSS, backend across SS.
+//   JSS1 HTML · JSS2 CSS · JSS3 JavaScript  →  SS1 Server JS · SS2 Database · SS3 Projects
+// Reference standards woven throughout: MDN (developer.mozilla.org) + roadmap.sh.
 const LESSON_BANKS = {
   jss1: {
-    title: 'Scratch Basics', classLabel: 'JSS1', quizKey: 'jss1', totalXP: 50,
+    title: 'HTML — Structure of the Web', classLabel: 'JSS1', quizKey: 'jss1', totalXP: 50,
     steps: [
-      { id:'intro', title:'What is Scratch?', readMins:2, sections:[
-        { type:'prose', text:'Scratch is a visual coding tool. Instead of typing code, you drag and connect blocks to create games, stories, and animations.' },
-        { type:'callout', variant:'info', title:'Core Idea', text:'A Scratch project has a stage, sprites, scripts, and events. Events decide when code starts.' },
-        { type:'prose', text:'Think of blocks like LEGO pieces: one block alone does little, but connected blocks create powerful behavior.' }
+      { id:'html-intro', title:'What is HTML?', readMins:2, sections:[
+        { type:'prose', text:'HTML (HyperText Markup Language) is the structure of every web page — the headings, paragraphs, links, images and buttons you see. It is the very first thing a web developer learns.' },
+        { type:'prose', text:'Your browser reads HTML and builds the page from it. If a website were a house, HTML would be the walls and rooms.' },
+        { type:'callout', variant:'info', title:'Reference', text:'The MDN Web Docs (developer.mozilla.org) are the world standard for HTML. We follow them here.' }
       ]},
-      { id:'green-flag', title:'When Green Flag Clicked', readMins:3, sections:[
-        { type:'prose', text:'Most Scratch scripts begin with the event block “when green flag clicked.” This is your entry point.' },
-        { type:'callout', variant:'warning', title:'Watch Out', text:'If there is no event block at the top, your script may never run.' },
-        { type:'prose', text:'Use this block whenever you want your project to start from a clean state.' }
-      ], codeBlock:{ label:'Scratch Pseudocode', code:`when green flag clicked\nset [score] to (0)\nsay [Welcome!] for (2) secs` }},
-      { id:'motion', title:'Motion and Coordinates', readMins:3, sections:[
-        { type:'prose', text:'Sprites move with x and y coordinates. Increasing x moves right, decreasing x moves left.' },
-        { type:'prose', text:'Increasing y moves up, decreasing y moves down. This is how most game movement works.' }
-      ], codeBlock:{ label:'Movement Example', code:`if <key [right arrow] pressed?> then\n  change x by (10)\nif <key [left arrow] pressed?> then\n  change x by (-10)` }},
-      { id:'loops', title:'Loops: Repeat vs Forever', readMins:3, sections:[
-        { type:'prose', text:'Use Repeat when you know exactly how many times to run a block sequence.' },
-        { type:'prose', text:'Use Forever for continuous behavior, like listening for key input in a game.' },
-        { type:'callout', variant:'tip', title:'MoyaBot Tip', text:'Most game control logic lives inside a Forever loop.' }
-      ]},
+      { id:'tags', title:'Tags and Elements', readMins:4, sections:[
+        { type:'prose', text:'Most HTML is written as elements with an opening and closing tag, like <p>Hello</p>. The text lives between the tags.' },
+        { type:'callout', variant:'warning', title:'Watch Out', text:'Forgetting a closing tag (like </p>) is the most common beginner bug and can break your whole layout.' }
+      ], codeBlock:{ label:'A basic page', code:`<!DOCTYPE html>\n<html>\n  <body>\n    <h1>My First Page</h1>\n    <p>Welcome to the web.</p>\n  </body>\n</html>` }},
+      { id:'text', title:'Headings and Paragraphs', readMins:3, sections:[
+        { type:'prose', text:'Use <h1> to <h6> for headings — <h1> is the biggest and most important, <h6> the smallest. Use <p> for normal paragraph text.' },
+        { type:'callout', variant:'info', title:'Semantics', text:'Headings describe structure to readers, search engines, and screen readers for blind users. Use them in order.' }
+      ], codeBlock:{ label:'Headings', code:`<h1>Main title</h1>\n<h2>A section</h2>\n<p>Some words about the section.</p>` }},
+      { id:'links-images', title:'Links and Images', readMins:4, sections:[
+        { type:'prose', text:'Links use the <a> tag with an href attribute pointing where to go. Images use <img> with a src (the file) and alt (a text description).' },
+        { type:'callout', variant:'tip', title:'Accessibility', text:'Always write alt text. It describes the image to people who cannot see it, and shows if the image fails to load.' }
+      ], codeBlock:{ label:'Link and image', code:`<a href="https://moyacode.vercel.app">Visit MoyaCode</a>\n<img src="logo.png" alt="MoyaCode logo" />` }},
       { id:'ready', title:'Ready for the Quest?', readMins:1, sections:[
-        { type:'prose', text:'You now understand events, movement, and loops — the core of beginner Scratch logic.' },
-        { type:'callout', variant:'info', title:'Quiz Focus', text:'Expect questions about event blocks, movement blocks, and loop behavior.' }
+        { type:'prose', text:'You can now build the skeleton of a real web page: headings, paragraphs, links, and images.' },
+        { type:'callout', variant:'info', title:'Quiz Focus', text:'Expect questions on tags, headings, the <a> and <img> tags, and their attributes.' }
       ]}
     ]
   },
 
   jss2: {
-    title: 'Advanced Scratch', classLabel: 'JSS2', quizKey: 'jss2', totalXP: 50,
+    title: 'CSS — Styling the Web', classLabel: 'JSS2', quizKey: 'jss2', totalXP: 50,
     steps: [
-      { id:'control', title:'Control Blocks', readMins:3, sections:[
-        { type:'prose', text:'Control blocks shape decision flow. “if / else” lets your project react differently depending on conditions.' },
-        { type:'callout', variant:'info', title:'Logic Flow', text:'Only one branch runs at a time: either IF branch or ELSE branch.' }
-      ]},
-      { id:'variables', title:'Variables', readMins:3, sections:[
-        { type:'prose', text:'Variables store changing values such as score, lives, and timer values.' },
-        { type:'callout', variant:'tip', title:'Good Habit', text:'Reset variables when green flag is clicked to avoid stale values.' }
-      ], codeBlock:{ label:'Variable Flow', code:`when green flag clicked\nset [lives] to (3)\nset [score] to (0)` }},
-      { id:'broadcast', title:'Broadcast Messages', readMins:3, sections:[
-        { type:'prose', text:'Broadcast lets one sprite send a message so other sprites can react. This is sprite-to-sprite communication.' },
-        { type:'prose', text:'Use “broadcast [message]” with “when I receive [message]” to coordinate gameplay.' }
-      ]},
-      { id:'clones', title:'Clones', readMins:3, sections:[
-        { type:'prose', text:'Clones create copies of sprites at runtime. Useful for bullets, enemies, or collectibles.' },
-        { type:'callout', variant:'warning', title:'Performance Tip', text:'Delete clones when done, or your project can become slow.' }
-      ]},
+      { id:'css-intro', title:'What is CSS?', readMins:2, sections:[
+        { type:'prose', text:'CSS (Cascading Style Sheets) controls how a page looks: colours, fonts, spacing, and layout. HTML is the structure; CSS is the design.' },
+        { type:'callout', variant:'info', title:'Cascading', text:'Styles "cascade" from parent elements to children unless a more specific rule overrides them.' }
+      ], codeBlock:{ label:'Starter CSS', code:`body {\n  font-family: sans-serif;\n  color: #1a1a2e;\n  background: #f4f4f8;\n}` }},
+      { id:'selectors', title:'Selectors', readMins:4, sections:[
+        { type:'prose', text:'A selector chooses what to style. An element selector (p) targets all paragraphs, a class selector (.card) targets elements with class="card", and an ID selector (#header) targets one unique element.' },
+        { type:'callout', variant:'warning', title:'Remember', text:'Class = dot (.card). ID = hash (#header). This trips up almost every beginner once.' }
+      ], codeBlock:{ label:'Selectors', code:`p { color: #333; }\n.card { border-radius: 12px; }\n#hero { min-height: 100vh; }` }},
+      { id:'box-model', title:'The Box Model', readMins:4, sections:[
+        { type:'prose', text:'Every element is a box with four layers: content, padding (space inside), border, and margin (space outside).' },
+        { type:'prose', text:'Add box-sizing: border-box so that padding and border are counted inside the width — it makes layouts far easier to reason about.' }
+      ], codeBlock:{ label:'Box model', code:`* { box-sizing: border-box; }\n.card {\n  padding: 16px;\n  margin: 12px;\n  border: 1px solid #ccc;\n}` }},
+      { id:'layout', title:'Layout with Flexbox', readMins:4, sections:[
+        { type:'prose', text:'Flexbox arranges items in a row or column and spaces them neatly. Set display: flex on a container and its children line up automatically.' },
+        { type:'callout', variant:'tip', title:'Design Tip', text:'Fewer colours with strong contrast almost always looks cleaner than many colours.' }
+      ], codeBlock:{ label:'Flexbox', code:`.row {\n  display: flex;\n  gap: 12px;\n  justify-content: space-between;\n}` }},
       { id:'ready', title:'Ready for the Quest?', readMins:1, sections:[
-        { type:'prose', text:'You are now ready for Advanced Scratch quiz questions on control, variables, broadcast, and clone patterns.' }
+        { type:'prose', text:'You can now make a page look good: selectors, the box model, and simple layouts.' },
+        { type:'callout', variant:'info', title:'Quiz Focus', text:'Expect selector types, the box model layers, and exact property names.' }
       ]}
     ]
   },
 
   jss3: {
-    title: 'Intro to HTML', classLabel: 'JSS3', quizKey: 'jss3', totalXP: 50,
+    title: 'JavaScript — Making It Work', classLabel: 'JSS3', quizKey: 'jss3', totalXP: 50,
     steps: [
-      { id:'html-intro', title:'What is HTML?', readMins:2, sections:[
-        { type:'prose', text:'HTML (HyperText Markup Language) provides structure for web pages: headings, paragraphs, links, and media.' },
-        { type:'prose', text:'Browsers read HTML and build the visual page from it.' }
+      { id:'js-intro', title:'What is JavaScript?', readMins:2, sections:[
+        { type:'prose', text:'JavaScript makes pages do things: respond to clicks, update content, check forms, and run logic. HTML is structure, CSS is style, JavaScript is behaviour. Together they are the three languages of the frontend.' },
+        { type:'callout', variant:'info', title:'Big idea', text:'By the end of JSS3 you can build a complete, interactive website. That is the whole frontend.' }
       ]},
-      { id:'tags', title:'Tags and Structure', readMins:4, sections:[
-        { type:'prose', text:'Most HTML elements use opening and closing tags, for example: <p> ... </p>.' },
-        { type:'callout', variant:'warning', title:'Watch Out', text:'Missed closing tags can break layout and make debugging hard.' }
-      ], codeBlock:{ label:'Basic Structure', code:`<html>\n  <body>\n    <h1>Title</h1>\n  </body>\n</html>` }},
-      { id:'text', title:'Headings and Paragraphs', readMins:3, sections:[
-        { type:'prose', text:'Use h1 to h6 for heading hierarchy. Use p for paragraph text.' },
-        { type:'callout', variant:'info', title:'Semantics', text:'Headings communicate structure to readers, search engines, and assistive tools.' }
-      ]},
-      { id:'links-images', title:'Links and Images', readMins:4, sections:[
-        { type:'prose', text:'Links use the a tag and href attribute. Images use img with src and alt.' },
-        { type:'callout', variant:'tip', title:'Accessibility', text:'Always include alt text to describe images.' }
-      ]},
-      { id:'ready', title:'Ready for the Quest?', readMins:1, sections:[{ type:'prose', text:'You have the core HTML basics to tackle the quest confidently.' }]}
+      { id:'variables', title:'Variables and Values', readMins:3, sections:[
+        { type:'prose', text:'A variable stores a value. Use let when the value can change and const when it should not. Values can be numbers, text (strings), or true/false (booleans).' },
+        { type:'callout', variant:'warning', title:'Syntax', text:'A single = assigns a value. Three (===) checks if two values are strictly equal. Do not mix them up.' }
+      ], codeBlock:{ label:'Variables', code:`let score = 0;\nconst name = "Ada";\nscore = score + 10;` }},
+      { id:'functions', title:'Functions', readMins:4, sections:[
+        { type:'prose', text:'A function is reusable logic you can run whenever you like. It takes inputs (parameters) and can give back a result (return value).' }
+      ], codeBlock:{ label:'A function', code:`function addXp(current, amount) {\n  return current + amount;\n}\n\nlet total = addXp(50, 10); // 60` }},
+      { id:'dom', title:'Changing the Page (the DOM)', readMins:4, sections:[
+        { type:'prose', text:'The DOM is the live version of your HTML that JavaScript can read and change. Use document.querySelector to find an element, then update it or listen for events like a click.' }
+      ], codeBlock:{ label:'React to a click', code:`const btn = document.querySelector("#go");\nbtn.addEventListener("click", () => {\n  document.querySelector("#msg").textContent = "Clicked!";\n});` }},
+      { id:'ready', title:'Ready for the Quest?', readMins:1, sections:[
+        { type:'prose', text:'You have completed the frontend: HTML, CSS, and JavaScript. Next, in Senior School, you take JavaScript to the server.' },
+        { type:'callout', variant:'info', title:'Quiz Focus', text:'Expect variables (let/const), functions, ===, and basic DOM updates.' }
+      ]}
     ]
   },
 
   ss1: {
-    title: 'Advanced HTML', classLabel: 'SS1', quizKey: 'ss1', totalXP: 50,
+    title: 'JavaScript on the Server', classLabel: 'SS1', quizKey: 'ss1', totalXP: 50,
     steps: [
-      { id:'lists', title:'Lists', readMins:3, sections:[{ type:'prose', text:'Ordered lists (<ol>) are numbered. Unordered lists (<ul>) are bullets. List items are <li>.' }]},
-      { id:'tables', title:'Tables', readMins:4, sections:[{ type:'prose', text:'Tables organize data into rows (<tr>) and cells (<td>/<th>).' },{ type:'callout', variant:'warning', title:'Best Practice', text:'Use tables for data, not overall page layout.' }]},
-      { id:'forms', title:'Forms and Inputs', readMins:4, sections:[{ type:'prose', text:'Forms collect user data using input, select, textarea, and submit controls.' },{ type:'prose', text:'Labels improve usability and accessibility when linked via for/id.' }]},
-      { id:'semantic', title:'Semantic HTML', readMins:3, sections:[{ type:'prose', text:'Use semantic tags like header, nav, main, section, article, and footer to describe meaning.' }]},
-      { id:'ready', title:'Ready for the Quest?', readMins:1, sections:[{ type:'prose', text:'You now know advanced HTML structures used in real pages.' }]}
+      { id:'server-intro', title:'Frontend vs Backend', readMins:3, sections:[
+        { type:'prose', text:'The frontend runs in the user’s browser. The backend runs on a server — a computer, somewhere else, that you control. The same language you learned, JavaScript, can run on the server using Node.js.' },
+        { type:'callout', variant:'info', title:'Why a server?', text:'A server keeps secrets safe (like passwords and keys), stores data for everyone, and does work the browser should not be trusted to do.' }
+      ]},
+      { id:'node', title:'Node.js and Running Code', readMins:3, sections:[
+        { type:'prose', text:'Node.js lets JavaScript run outside the browser. Instead of clicking a button, your code runs as a program on the server. This is where the backend lives.' }
+      ], codeBlock:{ label:'A tiny Node program', code:`// hello.js  →  run with:  node hello.js\nconsole.log("This ran on the server, not the browser.");` }},
+      { id:'http', title:'Requests and Responses', readMins:4, sections:[
+        { type:'prose', text:'The web works by request and response. The browser sends a request ("give me the home page"), and the server sends back a response (the page, or some data). Each request has a method: GET to read, POST to send new data.' },
+        { type:'callout', variant:'tip', title:'Real life', text:'When you tap "Ask Moya", your browser sends a POST request to a server; the server thinks and sends a response back.' }
+      ]},
+      { id:'api', title:'Building a Simple API', readMins:4, sections:[
+        { type:'prose', text:'A server exposes URLs called routes. When a request hits a route, your code runs and returns a response — often JSON, a simple text format for data. This is how the frontend and backend talk.' }
+      ], codeBlock:{ label:'A route (Express-style)', code:`app.get("/api/score", (req, res) => {\n  res.json({ score: 100 });\n});` }},
+      { id:'ready', title:'Ready for the Quest?', readMins:1, sections:[
+        { type:'prose', text:'You understand the backend: servers, Node.js, requests and responses, and simple API routes.' },
+        { type:'callout', variant:'info', title:'Quiz Focus', text:'Expect frontend vs backend, GET vs POST, what a server does, and what JSON is.' }
+      ]}
     ]
   },
 
   ss2: {
-    title: 'CSS Styling', classLabel: 'SS2', quizKey: 'ss2', totalXP: 50,
+    title: 'JavaScript + Database', classLabel: 'SS2', quizKey: 'ss2', totalXP: 50,
     steps: [
-      { id:'css-intro', title:'What is CSS?', readMins:2, sections:[
-        { type:'prose', text:'CSS controls presentation and layout: colors, typography, spacing, and responsiveness.' },
-        { type:'prose', text:'If HTML is structure, CSS is visual design.' },
-        { type:'callout', variant:'info', title:'Cascading', text:'Styles cascade from parent to child unless overridden with more specific rules.' }
-      ], codeBlock:{ label:'Starter CSS', code:`body {\n  font-family: sans-serif;\n  color: #CBD5F0;\n}` }},
-      { id:'selectors', title:'Selectors', readMins:4, sections:[
-        { type:'prose', text:'Selectors decide what gets styled: element selector (p), class selector (.card), and ID selector (#header).' },
-        { type:'callout', variant:'warning', title:'Specificity', text:'ID selectors are very specific; prefer classes for reusable styling.' }
-      ], codeBlock:{ label:'Selector Examples', code:`p { color: #CBD5F0; }\n.card { border-radius: 12px; }\n#hero { min-height: 100vh; }` }},
-      { id:'box-model', title:'The Box Model', readMins:4, sections:[
-        { type:'prose', text:'Every element is a box made of content, padding, border, and margin.' },
-        { type:'prose', text:'Use box-sizing: border-box so widths are easier to reason about.' }
-      ], codeBlock:{ label:'Box Model', code:`* { box-sizing: border-box; }\n.card { padding: 16px; margin: 12px; border: 1px solid #243350; }` }},
-      { id:'fonts-colors', title:'Colours & Fonts', readMins:3, sections:[
-        { type:'prose', text:'Use consistent font scales and color tokens for readable design systems.' },
-        { type:'callout', variant:'tip', title:'Design Tip', text:'Use fewer colors with stronger contrast for cleaner UI.' }
+      { id:'db-intro', title:'Why Databases?', readMins:3, sections:[
+        { type:'prose', text:'A server forgets everything when it restarts. A database remembers — it stores your users, their progress, their posts, permanently. Every real app needs one.' },
+        { type:'callout', variant:'info', title:'We use Supabase', text:'Supabase gives you a real database (PostgreSQL) with an easy way to read and write data from your code. MoyaCode itself runs on Supabase.' }
+      ]},
+      { id:'tables', title:'Tables, Rows and Columns', readMins:4, sections:[
+        { type:'prose', text:'Data lives in tables. A table has columns (the fields, like name and score) and rows (one record each, like one student). Think of a spreadsheet with strict rules.' }
+      ], codeBlock:{ label:'A students table', code:`students\n────────────────────────\nid | name  | score\n1  | Ada   | 120\n2  | Emeka | 90` }},
+      { id:'crud', title:'Reading and Writing Data', readMins:4, sections:[
+        { type:'prose', text:'The four things you do with data are: Create, Read, Update, Delete — often called CRUD. With Supabase you do them with short JavaScript calls.' }
+      ], codeBlock:{ label:'Read and insert', code:`// read\nconst { data } = await supabase\n  .from("students").select("*");\n\n// create\nawait supabase.from("students")\n  .insert({ name: "Ada", score: 120 });` }},
+      { id:'security', title:'Keeping Data Safe', readMins:4, sections:[
+        { type:'prose', text:'Never let one user read another user’s private data. Supabase uses Row Level Security (RLS): rules that say a user can only see their own rows. Security is part of building, not an afterthought.' },
+        { type:'callout', variant:'warning', title:'Golden rule', text:'Secret keys stay on the server. Never put a database secret in frontend code the browser can read.' }
       ]},
       { id:'ready', title:'Ready for the Quest?', readMins:1, sections:[
-        { type:'prose', text:'You are ready for CSS quiz questions on selector types, property names, and styling logic.' },
-        { type:'callout', variant:'info', title:'Remember', text:'Class = dot (.), ID = hash (#), and property names must be exact.' }
+        { type:'prose', text:'You can now store and protect real data: tables, CRUD, and Row Level Security with Supabase.' },
+        { type:'callout', variant:'info', title:'Quiz Focus', text:'Expect tables vs rows vs columns, the four CRUD actions, and why RLS matters.' }
       ]}
     ]
   },
 
   ss3: {
-    title: 'JavaScript Logic', classLabel: 'SS3', quizKey: 'ss3', totalXP: 50,
+    title: 'Build a Full-Stack Project', classLabel: 'SS3', quizKey: 'ss3', totalXP: 50,
     steps: [
-      { id:'js-intro', title:'What is JavaScript?', readMins:2, sections:[{ type:'prose', text:'JavaScript adds behavior to web pages: click handlers, dynamic updates, logic, and data processing.' }]},
-      { id:'variables', title:'Variables', readMins:3, sections:[{ type:'prose', text:'Use let for changing values and const for fixed references.' },{ type:'callout', variant:'warning', title:'Syntax', text:'Use = for assignment and === for strict equality checks.' }]},
-      { id:'functions', title:'Functions', readMins:4, sections:[{ type:'prose', text:'Functions package reusable logic. Inputs are parameters; outputs are return values.' }]},
-      { id:'dom', title:'DOM Basics', readMins:4, sections:[{ type:'prose', text:'Use document.getElementById or querySelector to read/update page content and react to events.' }]},
-      { id:'ready', title:'Ready for the Quest?', readMins:1, sections:[{ type:'prose', text:'You now have the JS foundations needed for your final quest.' }]}
+      { id:'plan', title:'Planning a Project', readMins:3, sections:[
+        { type:'prose', text:'You now know the whole stack: HTML, CSS, JavaScript, a server, and a database. SS3 is where you put it together and build something real. Every good project starts with a plan: what does it do, and who is it for?' },
+        { type:'callout', variant:'tip', title:'Start small', text:'A finished small app beats an unfinished big one. Pick one clear feature and build it fully.' }
+      ]},
+      { id:'pieces', title:'How the Pieces Connect', readMins:4, sections:[
+        { type:'prose', text:'The frontend (HTML/CSS/JS) shows the app and takes input. It sends requests to your backend (server). The backend reads and writes the database, then responds. That round trip is a full-stack app.' }
+      ], codeBlock:{ label:'The flow', code:`Browser (frontend)\n   → request →  Server (backend)\n                    → query →  Database\n                    ← data  ←\n   ← response ←` }},
+      { id:'build', title:'Build, Test, Fix', readMins:4, sections:[
+        { type:'prose', text:'Build one small piece at a time and test it before moving on. When something breaks — and it will — read the error, check one thing at a time, and use AI (like Moya) to explain what you do not understand.' },
+        { type:'callout', variant:'info', title:'AI is your pair', text:'Professional developers use AI every day to explain errors and suggest fixes. Learning to work with it is a real skill.' }
+      ]},
+      { id:'ship', title:'Ship It to the World', readMins:3, sections:[
+        { type:'prose', text:'A project no one can visit is unfinished. Deploying puts your app on the internet with a real link you can share — the same way MoyaCode is live for you right now.' }
+      ]},
+      { id:'ready', title:'Ready for the Quest?', readMins:1, sections:[
+        { type:'prose', text:'You have the full picture of building and shipping software. This is what a junior developer does.' },
+        { type:'callout', variant:'info', title:'Quiz Focus', text:'Expect the frontend→backend→database flow, planning, testing, and what deploying means.' }
+      ]}
     ]
   }
 };

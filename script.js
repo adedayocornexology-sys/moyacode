@@ -1,69 +1,69 @@
 // ─── QUIZ BANKS — all 6 classes, 5 questions each ────────────────────────────
 const QUIZ_BANKS = {
   jss1: {
-    title: "JSS1 · Scratch Basics",
+    title: "JSS1 · HTML — Structure of the Web",
     next:  "jss2",
     questions: [
-      { id:1, question:"Which block starts the program when the green flag is clicked?", options:["When green flag clicked","Forever","Wait 1 second","Stop all"], correct_answer:"When green flag clicked", explanation:"The green flag block is the standard entry point for every Scratch project.", xp_value:10 },
-      { id:2, question:"Which block makes a sprite display a speech bubble?", options:["Think [Hello]","Broadcast [Hello]","Say [Hello]","Play sound"], correct_answer:"Say [Hello]", explanation:"Say shows a speech bubble. Think shows a thought bubble — they look different on screen.", xp_value:10 },
-      { id:3, question:"Which motion block moves a sprite to the right?", options:["Change y by 10","Point in direction 90","Change x by 10","Go to random position"], correct_answer:"Change x by 10", explanation:"X controls left-right movement on the Scratch stage. Positive x = right.", xp_value:10 },
-      { id:4, question:"Which block repeats actions forever until the project stops?", options:["Repeat 10","If then","Wait until","Forever"], correct_answer:"Forever", explanation:"The Forever loop keeps running every frame until the project is stopped.", xp_value:10 },
-      { id:5, question:"Which block switches how a sprite looks?", options:["Show variable","Set volume","Next costume","Change size by"], correct_answer:"Next costume", explanation:"Costumes are visual appearances. Next costume cycles through them in order.", xp_value:15 },
+      { id:1, question:"What does HTML stand for?", options:["HighText Machine Language","Hyper Transfer Markup Link","Home Tool Markup Language","HyperText Markup Language"], correct_answer:"HyperText Markup Language", explanation:"HTML is the standard language used to structure and give meaning to web pages.", xp_value:10 },
+      { id:2, question:"Which tag creates the largest, most important heading?", options:["<h6>","<heading>","<head>","<h1>"], correct_answer:"<h1>", explanation:"h1 is the top heading. Use one h1 per page, then h2–h6 for sub-sections.", xp_value:10 },
+      { id:3, question:"Which attribute tells a link where to go?", options:["src","link","goto","href"], correct_answer:"href", explanation:"The <a> tag uses href to hold the destination URL.", xp_value:10 },
+      { id:4, question:"Which <img> attribute describes the image for screen readers?", options:["title","src","desc","alt"], correct_answer:"alt", explanation:"alt text describes an image to people who can't see it, and shows if the image fails to load.", xp_value:10 },
+      { id:5, question:"What is the most common beginner HTML mistake?", options:["Using too many headings","Forgetting a closing tag","Writing tags in lowercase","Adding alt text"], correct_answer:"Forgetting a closing tag", explanation:"A missing closing tag (like </p>) can break the whole layout and is hard to spot.", xp_value:15 },
     ]
   },
   jss2: {
-    title: "JSS2 · Advanced Scratch",
+    title: "JSS2 · CSS — Styling the Web",
     next:  "jss3",
     questions: [
-      { id:1, question:"Which block category contains the if...then...else block?", options:["Motion","Looks","Operators","Control"], correct_answer:"Control", explanation:"Control blocks manage logic flow — loops, conditions, and script timing all live here.", xp_value:10 },
-      { id:2, question:"What does the Forever block do in Scratch?", options:["Runs a script once","Stops all scripts","Waits for a key press","Repeats blocks indefinitely until stopped"], correct_answer:"Repeats blocks indefinitely until stopped", explanation:"Forever creates an infinite loop. Put a Stop block inside it to break out.", xp_value:10 },
-      { id:3, question:"Which block makes a sprite say Hello for 2 seconds?", options:["Think [Hello] for [2] seconds","Broadcast [Hello]","Play sound [Hello]","Say [Hello] for [2] seconds"], correct_answer:"Say [Hello] for [2] seconds", explanation:"Say shows a speech bubble for a set time. Think shows a thought bubble.", xp_value:10 },
-      { id:4, question:"In Scratch, what is a sprite?", options:["The background image","A sound file","A block that controls timing","A character or object that can be programmed"], correct_answer:"A character or object that can be programmed", explanation:"Sprites are the actors in your Scratch project — they move, speak, and react.", xp_value:10 },
-      { id:5, question:"What does the broadcast block do?", options:["Makes the sprite louder","Sends sprite to a new costume","Copies a block to another sprite","Sends a message other sprites can receive"], correct_answer:"Sends a message other sprites can receive", explanation:"Broadcast allows sprites to communicate and trigger scripts on other sprites.", xp_value:15 },
+      { id:1, question:"What does CSS stand for?", options:["Computer Style Sheets","Creative Style Sheets","Colorful Style Sheets","Cascading Style Sheets"], correct_answer:"Cascading Style Sheets", explanation:"CSS controls how HTML looks. 'Cascading' means styles flow from parent to child.", xp_value:10 },
+      { id:2, question:"Which selector targets elements with class=\"card\"?", options:["#card","card","*card",".card"], correct_answer:".card", explanation:"A dot (.) selects by class. A hash (#) selects by ID. This is the classic beginner mix-up.", xp_value:10 },
+      { id:3, question:"The box model has content, padding, border and…?", options:["shadow","outline","margin","gap"], correct_answer:"margin", explanation:"Margin is the space outside the border. Padding is the space inside it.", xp_value:10 },
+      { id:4, question:"Which property controls the size of text?", options:["text-size","size","font","font-size"], correct_answer:"font-size", explanation:"font-size takes values like px and rem. rem is recommended for accessibility.", xp_value:10 },
+      { id:5, question:"Which display value lays items out in a flexible row or column?", options:["block","inline","grid-row","flex"], correct_answer:"flex", explanation:"display: flex turns a container into a flexbox so its children line up neatly.", xp_value:15 },
     ]
   },
   jss3: {
-    title: "JSS3 · Intro to HTML",
+    title: "JSS3 · JavaScript — Making It Work",
     next:  "ss1",
     questions: [
-      { id:1, question:"What does HTML stand for?", options:["HighText Machine Language","Hyper Transfer Markup Link","Home Tool Markup Language","HyperText Markup Language"], correct_answer:"HyperText Markup Language", explanation:"HTML is the standard language used to structure and give meaning to web pages.", xp_value:10 },
-      { id:2, question:"Which tag creates the largest heading on a page?", options:["<h6>","<heading>","<head>","<h1>"], correct_answer:"<h1>", explanation:"h1 is the most important heading. h6 is the least important. Always use one h1 per page.", xp_value:10 },
-      { id:3, question:"Which tag wraps a paragraph of text?", options:["<text>","<para>","<article>","<p>"], correct_answer:"<p>", explanation:"The p element stands for paragraph and wraps blocks of body text.", xp_value:10 },
-      { id:4, question:"Which tag inserts a single line break?", options:["<break>","<lb>","<line>","<br>"], correct_answer:"<br>", explanation:"br creates a line break inline. It has no closing tag.", xp_value:10 },
-      { id:5, question:"Which tag marks text as strongly important?", options:["<bold>","<em>","<important>","<strong>"], correct_answer:"<strong>", explanation:"strong marks text as important. Browsers render it bold by default, but the meaning is semantic.", xp_value:15 },
+      { id:1, question:"Which keyword declares a value that CAN change later?", options:["const","fixed","var","let"], correct_answer:"let", explanation:"Use let for values that change, and const for values that should stay the same.", xp_value:10 },
+      { id:2, question:"Which operator checks strict equality (value AND type)?", options:["=","==","=>","==="], correct_answer:"===", explanation:"= assigns. === checks that two values are strictly equal. Don't confuse them.", xp_value:10 },
+      { id:3, question:"What does a function's return value do?", options:["Ends the program","Gives back a result you can use","Prints to the screen","Creates a variable"], correct_answer:"Gives back a result you can use", explanation:"A function takes inputs (parameters) and can return an output for the rest of your code.", xp_value:10 },
+      { id:4, question:"Which finds an element on the page so JavaScript can change it?", options:["page.get()","find.element()","document.querySelector()","html.select()"], correct_answer:"document.querySelector()", explanation:"querySelector finds an element in the DOM; then you can update it or listen for clicks.", xp_value:10 },
+      { id:5, question:"Which prints a message to the developer console for debugging?", options:["print()","log()","write()","console.log()"], correct_answer:"console.log()", explanation:"console.log() is your best debugging tool. Open DevTools with F12 to see it.", xp_value:15 },
     ]
   },
   ss1: {
-    title: "SS1 · Advanced HTML",
+    title: "SS1 · JavaScript on the Server",
     next:  "ss2",
     questions: [
-      { id:1, question:"Which tag creates a numbered ordered list?", options:["<ul>","<li>","<list>","<ol>"], correct_answer:"<ol>", explanation:"ol means ordered list — numbers. ul means unordered list — bullets.", xp_value:10 },
-      { id:2, question:"Which attribute tells an image where to load from?", options:["href=","link=","source=","src="], correct_answer:"src=", explanation:"src stands for source. It holds the URL or file path of the image to display.", xp_value:10 },
-      { id:3, question:"Which tag creates a dropdown selection menu?", options:["<dropdown>","<option>","<menu>","<select>"], correct_answer:"<select>", explanation:"select creates the dropdown container. option tags go inside it for each choice.", xp_value:10 },
-      { id:4, question:"Which tag defines a row inside an HTML table?", options:["<td>","<th>","<row>","<tr>"], correct_answer:"<tr>", explanation:"tr means table row. td is a table cell inside that row. th is a header cell.", xp_value:10 },
-      { id:5, question:"Which semantic tag marks the bottom section of a page?", options:["<bottom>","<end>","<base>","<footer>"], correct_answer:"<footer>", explanation:"footer is a semantic tag that tells browsers and screen readers this is the page footer.", xp_value:15 },
+      { id:1, question:"Where does the BACKEND of an app run?", options:["In the user's browser","On a server you control","On the user's phone","Inside the HTML file"], correct_answer:"On a server you control", explanation:"The frontend runs in the browser; the backend runs on a server, where secrets stay safe.", xp_value:10 },
+      { id:2, question:"What lets JavaScript run on the server (outside the browser)?", options:["Chrome","Node.js","HTML","CSS"], correct_answer:"Node.js", explanation:"Node.js runs JavaScript as a program on the server — the foundation of the JS backend.", xp_value:10 },
+      { id:3, question:"Which request method is used to READ data?", options:["POST","DELETE","GET","SEND"], correct_answer:"GET", explanation:"GET reads/fetches data. POST sends new data to the server.", xp_value:10 },
+      { id:4, question:"Which request method SENDS new data to the server?", options:["GET","READ","OPEN","POST"], correct_answer:"POST", explanation:"POST submits new data — like sending a message to 'Ask Moya'.", xp_value:10 },
+      { id:5, question:"What simple text format do APIs usually send back?", options:["MP3","JSON","JPEG","ZIP"], correct_answer:"JSON", explanation:"JSON is a lightweight text format for data that the frontend and backend both understand.", xp_value:15 },
     ]
   },
   ss2: {
-    title: "SS2 · CSS Styling",
+    title: "SS2 · JavaScript + Database",
     next:  "ss3",
     questions: [
-      { id:1, question:"What does CSS stand for?", options:["Computer Style Sheets","Creative Style Sheets","Colorful Style Sheets","Cascading Style Sheets"], correct_answer:"Cascading Style Sheets", explanation:"CSS describes how HTML elements are displayed. Cascading means styles flow from parent to child.", xp_value:10 },
-      { id:2, question:"Which property changes the background color of an element?", options:["color","bgcolor","bg-color","background-color"], correct_answer:"background-color", explanation:"background-color sets the fill behind the element's content. color only affects the text.", xp_value:10 },
-      { id:3, question:"Which CSS symbol targets an element by its ID?", options:[".","*","@","#"], correct_answer:"#", explanation:"# is the ID selector. A period (.) selects by class. IDs should be unique on each page.", xp_value:10 },
-      { id:4, question:"Which property controls the size of text?", options:["text-size","size","font","font-size"], correct_answer:"font-size", explanation:"font-size accepts values in px, rem, em, and %. rem is recommended for accessibility.", xp_value:10 },
-      { id:5, question:"Which CSS symbol targets elements by their class name?", options:["#","*",">","."], correct_answer:".", explanation:"A period targets class names. You can apply the same class to many elements.", xp_value:15 },
+      { id:1, question:"Why does an app need a database?", options:["To make it look nicer","To remember data permanently","To run faster","To style the page"], correct_answer:"To remember data permanently", explanation:"A server forgets on restart; a database stores users and progress permanently.", xp_value:10 },
+      { id:2, question:"In a database table, one single record is called a…?", options:["column","field","row","cell"], correct_answer:"row", explanation:"Columns are the fields (name, score); each row is one record, like one student.", xp_value:10 },
+      { id:3, question:"CRUD stands for Create, Read, Update and…?", options:["Deploy","Delete","Download","Draw"], correct_answer:"Delete", explanation:"CRUD — Create, Read, Update, Delete — are the four things you do with data.", xp_value:10 },
+      { id:4, question:"Which Supabase feature stops users seeing each other's private data?", options:["Dark mode","Row Level Security (RLS)","Auto-save","Flexbox"], correct_answer:"Row Level Security (RLS)", explanation:"RLS rules ensure a user can only read their own rows. Security is part of building.", xp_value:10 },
+      { id:5, question:"Where must a secret database key be kept?", options:["In the HTML","In the frontend JavaScript","On the server only","In the CSS file"], correct_answer:"On the server only", explanation:"Never put a secret in code the browser can read. Secrets live on the server.", xp_value:15 },
     ]
   },
   ss3: {
-    title: "SS3 · JavaScript Logic",
+    title: "SS3 · Build a Full-Stack Project",
     next:  null,
     questions: [
-      { id:1, question:"Which keyword declares a block-scoped variable in modern JavaScript?", options:["var","int","const","let"], correct_answer:"let", explanation:"let is block-scoped and can be reassigned. const is block-scoped but cannot be reassigned. Avoid var.", xp_value:10 },
-      { id:2, question:"How do you show a popup message to the user?", options:["popup()","msg()","window()","alert()"], correct_answer:"alert()", explanation:"alert() displays a browser dialog box. It pauses script execution until the user clicks OK.", xp_value:10 },
-      { id:3, question:"How do you write a single-line comment in JavaScript?", options:["/* comment */","<!-- comment -->","# comment","// comment"], correct_answer:"// comment", explanation:"// starts a single-line comment. Everything after // on that line is ignored by the browser.", xp_value:10 },
-      { id:4, question:"Which operator assigns a value to a variable?", options:["==","===","=>","="], correct_answer:"=", explanation:"= assigns a value. == checks loose equality. === checks strict equality (value AND type).", xp_value:10 },
-      { id:5, question:"How do you print a message to the browser developer console?", options:["print()","log()","write()","console.log()"], correct_answer:"console.log()", explanation:"console.log() is your best debugging tool. Open DevTools with F12 to see the output.", xp_value:15 },
+      { id:1, question:"In a full-stack app, the frontend sends requests to the…?", options:["database directly","backend (server)","CSS file","user"], correct_answer:"backend (server)", explanation:"Frontend → backend → database, then the data flows back. That round trip is full-stack.", xp_value:10 },
+      { id:2, question:"What should you do before moving to the next feature?", options:["Deploy immediately","Test the piece you just built","Delete your code","Start a new project"], correct_answer:"Test the piece you just built", explanation:"Build one small piece, test it, then move on. It keeps bugs easy to find.", xp_value:10 },
+      { id:3, question:"What does 'deploying' an app do?", options:["Deletes the app","Puts it online with a shareable link","Makes it run faster","Hides the code"], correct_answer:"Puts it online with a shareable link", explanation:"Deploying puts your app on the internet — the way MoyaCode is live for you now.", xp_value:10 },
+      { id:4, question:"What's the best way to tackle a big project?", options:["Build everything at once","Build one small piece at a time","Never plan","Copy someone else's whole app"], correct_answer:"Build one small piece at a time", explanation:"A finished small app beats an unfinished big one. Ship one clear feature fully.", xp_value:10 },
+      { id:5, question:"How do professional developers use AI like Moya?", options:["To write the whole app for them","To explain errors and suggest fixes","They never use AI","To style pages only"], correct_answer:"To explain errors and suggest fixes", explanation:"Pros use AI daily to understand errors and move faster — a real, learnable skill.", xp_value:15 },
     ]
   }
 };
@@ -147,12 +147,12 @@ function saveProgress(key) {
 
 // ─── AGENT MAP (Faculty) ──────────────────────────────────────────────────────
 const AGENT_MAP = {
-  jss1: { name: "Tolu",  role: "Scratch",     emoji: "🎮" },
-  jss2: { name: "Tolu",  role: "Scratch",     emoji: "🎮" },
-  jss3: { name: "Chidi", role: "HTML",        emoji: "🌐" },
-  ss1:  { name: "Chidi", role: "HTML",        emoji: "🌐" },
-  ss2:  { name: "Amaka", role: "CSS",         emoji: "🎨" },
-  ss3:  { name: "Emeka", role: "JavaScript",  emoji: "⚡" },
+  jss1: { name: "Chidi", role: "HTML",       emoji: "🌐" },
+  jss2: { name: "Amaka", role: "CSS",        emoji: "🎨" },
+  jss3: { name: "Emeka", role: "JavaScript", emoji: "⚡" },
+  ss1:  { name: "Ngozi", role: "Server",     emoji: "🖥️" },
+  ss2:  { name: "Ngozi", role: "Database",   emoji: "🗄️" },
+  ss3:  { name: "Kunle", role: "Projects",   emoji: "🚀" },
 };
 
 function getAgentHandoff(fromKey, toKey) {
@@ -606,7 +606,7 @@ function renderActionButtons(passed, classKey, nextKey, isLast) {
       <div class="cert-name-hint">Tap to add your name before sharing</div>
       <div class="cert-completed">has successfully completed the</div>
       <div class="cert-program">Full Stack Developer Curriculum</div>
-      <div class="cert-courses">Scratch · HTML · CSS · JavaScript</div>
+      <div class="cert-courses">HTML · CSS · JavaScript · Servers · Databases · Full-Stack</div>
       <div class="cert-divider"></div>
       <div class="cert-footer">
         <div class="cert-sig">MoyaCode Faculty</div>
@@ -625,9 +625,9 @@ function renderActionButtons(passed, classKey, nextKey, isLast) {
     let msg;
     if (passed && isLast) {
       const name = (document.getElementById("cert-name")?.value.trim()) || "A MoyaCode student";
-      msg = `🎓 ${name} just graduated from MoyaCode!\n\nI completed the full curriculum:\n✅ Scratch (JSS1–JSS2)\n✅ HTML (JSS3–SS1)\n✅ CSS (SS2)\n✅ JavaScript (SS3)\n\nFree coding education for Nigerian secondary school students.\n🔗 https://adedayocornexology-sys.github.io/moyacode/`;
+      msg = `🎓 ${name} just graduated from MoyaCode as a full-stack developer!\n\nI completed the full curriculum:\n✅ HTML (JSS1)\n✅ CSS (JSS2)\n✅ JavaScript (JSS3)\n✅ JavaScript on the Server (SS1)\n✅ JavaScript + Database (SS2)\n✅ Full-Stack Project (SS3)\n\nFree coding education for Nigerian secondary school students.\n🔗 https://moyacode.vercel.app`;
     } else {
-      msg = `${passed?"🏆":"💪"} I ${passed?"passed":"attempted"} the ${quiz.title} quest on MoyaCode — ${state.score}/${total} (${state.xp} XP)!\n\nFree coding platform for Nigerian secondary school students.\n🔗 https://adedayocornexology-sys.github.io/moyacode/`;
+      msg = `${passed?"🏆":"💪"} I ${passed?"passed":"attempted"} the ${quiz.title} quest on MoyaCode — ${state.score}/${total} (${state.xp} XP)!\n\nFree coding platform for Nigerian secondary school students.\n🔗 https://moyacode.vercel.app`;
     }
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
   });

@@ -157,7 +157,7 @@ function buildRecommendation(standing, nextCourse, borderline, failed, atRisk) {
     return "All courses passed. Student is ready for the advanced track or a capstone assessment.";
   }
   if (standing === "not-started") {
-    return "Student has not begun any course. Prompt to start JSS1 · Scratch Basics.";
+    return "Student has not begun any course. Prompt to start JSS1 · HTML.";
   }
 
   const parts = [];

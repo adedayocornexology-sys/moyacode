@@ -1,0 +1,25 @@
+*Ajasin Foundation — Paystack Account Activation*
+
+Documents needed to activate our Paystack account so the Foundation can receive donations online.
+
+Since the Foundation is registered with the CAC as *Incorporated Trustees*, Paystack requires the following:
+
+*1) Organisation documents*
+• CAC Certificate of Incorporation (Incorporated Trustees)
+• CAC/IT registration number
+• Form CAC IT/1 (the Incorporated Trustees application form)
+• TIN (Tax Identification Number) for the Foundation
+• Proof of address: a recent utility bill (electricity, water, waste, or cable TV), not older than 6 months, showing the Foundation's name and address
+• A corporate bank account in the Foundation's name (this is where Paystack settles the money)
+• SCUML certificate (Paystack may request this for NGOs)
+
+*2) For at least TWO trustees / directors (each person provides)*
+• A government-issued ID: NIN slip, Driver's Licence, Voter's Card, or International Passport
+• Their BVN (Bank Verification Number)
+• A personal bank account number
+
+*Very important:* the names and details must match EXACTLY across all the documents.
+
+The documents are uploaded in the Paystack Dashboard, under Settings → Compliance.
+
+Once this is done, our website's online donations go live.

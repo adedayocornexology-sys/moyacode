@@ -19,12 +19,12 @@ import { getAgentForCourse } from './agents.js';
 
 // Curriculum order + friendly labels. Keys match script.js / agents.js.
 export const COURSES = [
-  { key: 'jss1', label: 'JSS1 — Scratch Basics' },
-  { key: 'jss2', label: 'JSS2 — Scratch Projects' },
-  { key: 'jss3', label: 'JSS3 — HTML Foundations' },
-  { key: 'ss1',  label: 'SS1 — Building Web Pages' },
-  { key: 'ss2',  label: 'SS2 — CSS Styling' },
-  { key: 'ss3',  label: 'SS3 — JavaScript' },
+  { key: 'jss1', label: 'JSS1 — HTML' },
+  { key: 'jss2', label: 'JSS2 — CSS' },
+  { key: 'jss3', label: 'JSS3 — JavaScript' },
+  { key: 'ss1',  label: 'SS1 — JavaScript on the Server' },
+  { key: 'ss2',  label: 'SS2 — JavaScript + Database' },
+  { key: 'ss3',  label: 'SS3 — Full-Stack Project' },
 ];
 
 const COURSE_LABEL = Object.fromEntries(COURSES.map(c => [c.key, c.label]));

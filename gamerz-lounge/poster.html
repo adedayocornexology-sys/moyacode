@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:1080px; height:1920px; overflow:hidden; }
+  body{
+    font-family:"Bahnschrift","Segoe UI",Arial,sans-serif;
+    background:
+      radial-gradient(1200px 900px at 78% 12%, rgba(255,0,170,.32), transparent 60%),
+      radial-gradient(1100px 1000px at 18% 80%, rgba(0,225,255,.30), transparent 60%),
+      radial-gradient(900px 800px at 50% 50%, rgba(150,60,255,.28), transparent 65%),
+      linear-gradient(160deg,#0a0414 0%,#140a2e 45%,#0a0518 100%);
+    position:relative; color:#fff;
+  }
+  /* arcade grid floor */
+  .grid{
+    position:absolute; left:-20%; right:-20%; bottom:-2%; height:46%;
+    background-image:
+      linear-gradient(rgba(0,225,255,.22) 2px, transparent 2px),
+      linear-gradient(90deg, rgba(255,0,170,.18) 2px, transparent 2px);
+    background-size:70px 70px;
+    transform:perspective(620px) rotateX(62deg);
+    transform-origin:bottom center;
+    mask-image:linear-gradient(to top, #000 5%, transparent 92%);
+    -webkit-mask-image:linear-gradient(to top, #000 5%, transparent 92%);
+  }
+  /* faint scanlines */
+  .scan{ position:absolute; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(255,255,255,.035) 0 2px, transparent 2px 5px);
+    pointer-events:none; }
+  .wrap{ position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; padding:92px 70px; }
+
+  /* brand */
+  .brand{ display:flex; align-items:center; gap:18px; letter-spacing:2px; }
+  .dot{ width:26px; height:26px; border-radius:50%;
+    background:conic-gradient(from 0deg,#00e1ff,#ff00aa,#9b3cff,#00e1ff);
+    box-shadow:0 0 24px rgba(0,225,255,.9); }
+  .brand b{ font-size:40px; font-weight:700; letter-spacing:6px;
+    background:linear-gradient(90deg,#fff,#bfe9ff); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .brand span{ font-size:24px; opacity:.65; letter-spacing:4px; }
+
+  /* series badge */
+  .badge{ margin-top:30px; display:inline-flex; align-items:center; gap:16px;
+    padding:16px 34px; border-radius:999px;
+    border:2px solid rgba(0,225,255,.55);
+    background:rgba(0,225,255,.06);
+    box-shadow:0 0 26px rgba(0,225,255,.25), inset 0 0 22px rgba(0,225,255,.12);
+    font-size:27px; font-weight:700; letter-spacing:7px; color:#bff4ff; text-transform:uppercase; }
+  .badge .ep{ color:#ff5bcf; }
+
+  /* hero title */
+  .hero{ margin-top:74px; text-align:center; line-height:.86; }
+  .hero .l1{ font-size:215px; font-weight:700; letter-spacing:2px;
+    color:#fff;
+    text-shadow:0 0 8px #fff, 0 0 38px #00e1ff, 0 0 78px #00e1ff; }
+  .hero .l2{ font-size:215px; font-weight:700; letter-spacing:1px;
+    color:transparent;
+    -webkit-text-stroke:4px #ff35b5;
+    text-shadow:0 0 36px rgba(255,53,181,.85), 0 0 80px rgba(255,53,181,.5); }
+
+  .tag{ margin-top:46px; font-size:38px; letter-spacing:10px; font-weight:600;
+    color:#e9d9ff; text-transform:uppercase; opacity:.92; }
+  .sub{ margin-top:18px; font-size:25px; letter-spacing:3px; color:#a98fd8; }
+
+  /* icon row */
+  .icons{ margin-top:66px; display:flex; gap:46px; }
+  .chip{ width:128px; height:128px; border-radius:30px;
+    display:flex; align-items:center; justify-content:center; font-size:62px;
+    background:linear-gradient(160deg, rgba(255,255,255,.10), rgba(255,255,255,.02));
+    border:2px solid rgba(255,255,255,.16);
+    box-shadow:0 14px 40px rgba(0,0,0,.45), 0 0 30px rgba(155,60,255,.25);
+    backdrop-filter:blur(2px); }
+  .chip.code{ font-family:"Consolas",monospace; font-weight:700; font-size:54px;
+    color:#7CFFB2; text-shadow:0 0 18px rgba(124,255,178,.8); }
+
+  /* footer */
+  .foot{ position:absolute; bottom:96px; left:0; right:0; text-align:center; }
+  .foot .big{ font-size:46px; font-weight:700; letter-spacing:4px;
+    color:#fff; text-shadow:0 0 26px rgba(255,0,170,.6); }
+  .foot .small{ margin-top:14px; font-size:26px; letter-spacing:6px; color:#9fd9ff; opacity:.85; }
+
+  .corner{ position:absolute; width:64px; height:64px; border-color:rgba(0,225,255,.5); }
+  .c1{ top:54px; left:54px; border-top:4px solid; border-left:4px solid; }
+  .c2{ top:54px; right:54px; border-top:4px solid; border-right:4px solid; border-color:rgba(255,0,170,.5);}
+  .c3{ bottom:54px; left:54px; border-bottom:4px solid; border-left:4px solid; border-color:rgba(255,0,170,.5);}
+  .c4{ bottom:54px; right:54px; border-bottom:4px solid; border-right:4px solid; }
+</style>
+</head>
+<body>
+  <div class="grid"></div>
+  <div class="scan"></div>
+  <div class="corner c1"></div><div class="corner c2"></div>
+  <div class="corner c3"></div><div class="corner c4"></div>
+
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span><b>MOYACODE</b><span>// build · play · level up</span></div>
+
+    <div class="badge">🎮 Game Launch Series · <span class="ep">EP 01</span></div>
+
+    <div class="hero">
+      <div class="l1">GAMERZ</div>
+      <div class="l2">LOUNGE</div>
+    </div>
+
+    <div class="tag">Where Young Builders Play</div>
+    <div class="sub">music · art · stories · your characters, in the game</div>
+
+    <div class="icons">
+      <div class="chip">🎮</div>
+      <div class="chip code">&lt;/&gt;</div>
+      <div class="chip">🔥</div>
+      <div class="chip">🏆</div>
+    </div>
+
+    <div class="foot">
+      <div class="big">DOORS OPEN SOON</div>
+      <div class="small">MOYACODE-LIVE.VERCEL.APP</div>
+    </div>
+  </div>
+</body>
+</html>

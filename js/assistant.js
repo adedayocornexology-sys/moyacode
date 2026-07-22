@@ -135,7 +135,7 @@ async function showWelcome() {
       ['📊 My progress', () => ask('Show my progress')],
     ]);
   } else {
-    const nm = state.nextCourse ? esc(state.nextCourse.label) : 'JSS1 — Scratch Basics';
+    const nm = state.nextCourse ? esc(state.nextCourse.label) : 'JSS1 — HTML';
     card.innerHTML =
       `<h4>👋 Hi, I'm Moya</h4>` +
       `<p>Your coding guide. ${state.signedIn ? "Let's pick up your journey." : "Start your journey — I'll remember where you reach."} First stop: <b>${nm}</b>.</p>`;

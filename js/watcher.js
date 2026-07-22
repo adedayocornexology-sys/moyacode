@@ -2,12 +2,12 @@
 // One source of truth (buildActivityRecord); two templates (renderParentReport, renderStudentReflection).
 
 const COURSE_META = {
-  jss1: { title: "JSS1 · Scratch Basics",   totalQs: 5, maxXP: 55 },
-  jss2: { title: "JSS2 · Advanced Scratch",  totalQs: 5, maxXP: 55 },
-  jss3: { title: "JSS3 · Intro to HTML",     totalQs: 5, maxXP: 55 },
-  ss1:  { title: "SS1 · Advanced HTML",      totalQs: 5, maxXP: 55 },
-  ss2:  { title: "SS2 · CSS Styling",        totalQs: 5, maxXP: 55 },
-  ss3:  { title: "SS3 · JavaScript Logic",   totalQs: 5, maxXP: 55 },
+  jss1: { title: "JSS1 · HTML",                 totalQs: 5, maxXP: 55 },
+  jss2: { title: "JSS2 · CSS",                  totalQs: 5, maxXP: 55 },
+  jss3: { title: "JSS3 · JavaScript",           totalQs: 5, maxXP: 55 },
+  ss1:  { title: "SS1 · JavaScript on the Server", totalQs: 5, maxXP: 55 },
+  ss2:  { title: "SS2 · JavaScript + Database", totalQs: 5, maxXP: 55 },
+  ss3:  { title: "SS3 · Full-Stack Project",    totalQs: 5, maxXP: 55 },
 };
 
 const COURSE_ORDER = ["jss1", "jss2", "jss3", "ss1", "ss2", "ss3"];

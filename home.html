@@ -224,12 +224,12 @@
 const COURSE_ORDER = ['jss1','jss2','jss3','ss1','ss2','ss3'];
 
 const COURSE_META = {
-  jss1:{ label:'Scratch Basics',   agent:'Tolu',  emoji:'🎮', role:'Scratch & Visual Programming', color:'teal',  xpMax:120 },
-  jss2:{ label:'Advanced Scratch', agent:'Tolu',  emoji:'🎮', role:'Scratch & Visual Programming', color:'teal',  xpMax:160 },
-  jss3:{ label:'Intro to HTML',    agent:'Chidi', emoji:'🌐', role:'HTML & Web Structure',          color:'blue',  xpMax:190 },
-  ss1: { label:'Advanced HTML',    agent:'Chidi', emoji:'🌐', role:'HTML & Web Structure',          color:'blue',  xpMax:210 },
-  ss2: { label:'CSS Styling',      agent:'Amaka', emoji:'🎨', role:'CSS Styling',                   color:'amber', xpMax:240 },
-  ss3: { label:'JavaScript Logic', agent:'Emeka', emoji:'⚡', role:'JavaScript Logic',              color:'coral', xpMax:300 },
+  jss1:{ label:'HTML',                     agent:'Chidi', emoji:'🌐', role:'HTML & Web Structure', color:'teal',  xpMax:120 },
+  jss2:{ label:'CSS',                      agent:'Amaka', emoji:'🎨', role:'CSS Styling',          color:'teal',  xpMax:160 },
+  jss3:{ label:'JavaScript',               agent:'Emeka', emoji:'⚡', role:'JavaScript',           color:'blue',  xpMax:190 },
+  ss1: { label:'JavaScript on the Server', agent:'Ngozi', emoji:'🖥️', role:'Servers & Databases',  color:'blue',  xpMax:210 },
+  ss2: { label:'JavaScript + Database',    agent:'Ngozi', emoji:'🗄️', role:'Servers & Databases',  color:'amber', xpMax:240 },
+  ss3: { label:'Full-Stack Project',       agent:'Kunle', emoji:'🚀', role:'Full-Stack Projects',  color:'coral', xpMax:300 },
 };
 
 const KEY_LABELS = { jss1:'JSS1', jss2:'JSS2', jss3:'JSS3', ss1:'SS1', ss2:'SS2', ss3:'SS3' };
@@ -360,7 +360,7 @@ function render() {
     grad.innerHTML = `
       <div class="empty-emoji">🎓</div>
       <div class="empty-h">You've graduated.</div>
-      <p class="empty-p">All six courses complete. You built the whole stack — Scratch, HTML, CSS, JavaScript. That's real.</p>
+      <p class="empty-p">All six courses complete. You built the whole stack — HTML, CSS, JavaScript, servers and databases. That's real.</p>
       <a class="btn-continue" href="selection.html">Review your courses <span class="btn-arrow">→</span></a>
     `;
     page.appendChild(grad);
