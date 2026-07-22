@@ -78,6 +78,8 @@ const CSS = `
 .moya-foot button{background:var(--c-teal,#00e5a0);border:none;border-radius:12px;padding:0 15px;color:#041014;font-weight:800;cursor:pointer}
 .moya-foot button:disabled{opacity:.5;cursor:default}
 .moya-typing{align-self:flex-start;color:#8da2c0;font-size:.85rem;padding:4px 6px}
+.moya-note{align-self:stretch;color:#8da2c0;font-size:.72rem;line-height:1.4;padding:8px 10px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px}
 `;
 
 // ── State ─────────────────────────────────────────────────────────────
@@ -105,6 +107,9 @@ function chips(items) {
 // ── The deterministic "welcome back" card (no LLM required) ────────────
 async function showWelcome() {
   body.replaceChildren();
+  // AI disclosure (required for a product serving minors) — always shown first.
+  body.append(el('div', { className: 'moya-note',
+    textContent: "You're chatting with Moya, an AI assistant — not a person. Keep personal details (full name, address, school, phone, passwords) private." }));
   const state = await MoyaMCP.getLearnerState();
   const card = el('div', { className: 'moya-card' });
 
@@ -215,7 +220,7 @@ function mount() {
   panel.innerHTML = `
     <div class="moya-head">
       <span class="dot">M</span>
-      <div><b>Moya</b><small>Your coding guide</small></div>
+      <div><b>Moya</b><small>AI learning assistant</small></div>
       <button class="moya-x" aria-label="Close">×</button>
     </div>
     <div class="moya-body"></div>
