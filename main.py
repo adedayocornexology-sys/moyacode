@@ -127,6 +127,16 @@ async def torch(request: Request):
     return templates.TemplateResponse("torch.html", {"request": request})
 
 
+@app.get("/privacy")
+async def privacy(request: Request):
+    return templates.TemplateResponse("privacy.html", {"request": request})
+
+
+@app.get("/child-safety")
+async def child_safety(request: Request):
+    return templates.TemplateResponse("child-safety.html", {"request": request})
+
+
 # ── Arcade API ───────────────────────────────────────────────────────
 class FeedbackIn(BaseModel):
     game_id: int

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Child Safety · MoyaCode{% endblock %}
+
+{% block head %}
+<style>
+  .policy { max-width: 760px; }
+  .policy h2 { font-family: var(--f-display); font-size: clamp(1.2rem, 3vw, 1.6rem); font-weight: 700; margin: 34px 0 10px; letter-spacing: -0.01em; }
+  .policy p, .policy li { color: var(--t-200); line-height: 1.65; font-size: 1rem; margin-top: 10px; }
+  .policy ul { margin: 6px 0 6px 20px; }
+  .policy strong { color: var(--t-100); }
+  .policy .updated { color: var(--t-400); font-size: 0.85rem; margin-top: 6px; }
+  .policy .box { margin-top: 20px; padding: 16px 18px; border: 1px solid var(--c-teal-dim); background: var(--c-teal-faint); border-radius: var(--r-lg); scroll-margin-top: 90px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="wrap policy">
+  <span class="eyebrow">Child Safety</span>
+  <h1 class="page-h1">Keeping students safe</h1>
+  <p class="lead">MoyaCode is built for children. Safety isn't an add-on — it shapes how the whole product, including our AI assistant, is designed.</p>
+  <p class="updated">Last updated: 20 July 2026</p>
+
+  <h2>You're talking to an AI</h2>
+  <p>Our assistant, <strong>Moya</strong>, is an artificial-intelligence system, not a human. We always tell students this clearly in the chat. Moya's only job is to help you learn to code and use MoyaCode.</p>
+
+  <h2>How we protect students</h2>
+  <ul>
+    <li><strong>Age-appropriate by design.</strong> Moya is instructed to keep every reply kind, safe, and on the topic of learning to code, and to decline anything unsafe or off-topic.</li>
+    <li><strong>No personal information.</strong> Moya never asks for a student's full name, address, school, phone number, passwords, location, or photos — and reminds students to keep those private.</li>
+    <li><strong>Reviewed submissions.</strong> Anything students submit (characters, games) is reviewed by a person before it can appear publicly.</li>
+    <li><strong>Data minimisation.</strong> We collect as little as possible and never sell it. See our <a href="/privacy" style="color:var(--c-teal)">Privacy Policy</a>.</li>
+    <li><strong>Safety technology.</strong> Moya runs on Anthropic's Claude with additional child-safety instructions and content limits layered on top.</li>
+  </ul>
+
+  <h2>For parents and teachers</h2>
+  <p>MoyaCode works best alongside a caring adult. We encourage you to sit with your student sometimes, talk about what they're building, and remind them of the online-safety basics: keep personal details private, and tell a trusted adult if anything feels wrong.</p>
+
+  <h2>Our commitments</h2>
+  <p>We follow Anthropic's guidelines for organisations serving minors and applicable child-protection standards, including Nigeria's <strong>Data Protection Act (NDPA 2023)</strong> and the principles of COPPA. We keep these safeguards under review and improve them over time.</p>
+
+  <div class="box" id="report">
+    <h2 style="margin-top:0">Report a problem</h2>
+    <p>If Moya ever says something inappropriate, or if you see anything unsafe on MoyaCode, please tell us. A parent or teacher can help.</p>
+    <ul>
+      <li>Tell a trusted adult (parent, guardian, or teacher) right away.</li>
+      <li>Have them contact the MoyaCode team through your school coordinator, describing what happened and when.</li>
+    </ul>
+    <p>We take every report seriously and will act quickly.</p>
+  </div>
+</section>
+{% endblock %}

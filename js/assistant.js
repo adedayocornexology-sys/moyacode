@@ -108,8 +108,11 @@ function chips(items) {
 async function showWelcome() {
   body.replaceChildren();
   // AI disclosure (required for a product serving minors) — always shown first.
-  body.append(el('div', { className: 'moya-note',
-    textContent: "You're chatting with Moya, an AI assistant — not a person. Keep personal details (full name, address, school, phone, passwords) private." }));
+  const note = el('div', { className: 'moya-note' });
+  note.innerHTML = "You're chatting with Moya, an <b>AI assistant</b> — not a person. " +
+    "Keep personal details (full name, address, school, phone, passwords) private. " +
+    "<a href=\"/child-safety#report\" target=\"_blank\" rel=\"noopener\" style=\"color:var(--c-teal,#00e5a0)\">Report a problem</a>";
+  body.append(note);
   const state = await MoyaMCP.getLearnerState();
   const card = el('div', { className: 'moya-card' });
 

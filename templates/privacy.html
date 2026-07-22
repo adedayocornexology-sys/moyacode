@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Privacy Policy · MoyaCode{% endblock %}
+
+{% block head %}
+<style>
+  .policy { max-width: 760px; }
+  .policy h2 { font-family: var(--f-display); font-size: clamp(1.2rem, 3vw, 1.6rem); font-weight: 700; margin: 34px 0 10px; letter-spacing: -0.01em; }
+  .policy p, .policy li { color: var(--t-200); line-height: 1.65; font-size: 1rem; margin-top: 10px; }
+  .policy ul { margin: 6px 0 6px 20px; }
+  .policy strong { color: var(--t-100); }
+  .policy .updated { color: var(--t-400); font-size: 0.85rem; margin-top: 6px; }
+  .policy .box { margin-top: 20px; padding: 16px 18px; border: 1px solid var(--c-teal-dim); background: var(--c-teal-faint); border-radius: var(--r-lg); }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="wrap policy">
+  <span class="eyebrow">Privacy</span>
+  <h1 class="page-h1">Privacy Policy</h1>
+  <p class="lead">MoyaCode teaches young people to code. We built it for students, and we take their privacy seriously.</p>
+  <p class="updated">Last updated: 20 July 2026</p>
+
+  <h2>Who this is for</h2>
+  <p>MoyaCode is designed for Nigerian secondary-school students (JSS1–SS3), who are usually <strong>minors</strong>. Because of that, we collect as little personal information as possible and we design every feature — including our AI assistant — to be safe for children.</p>
+
+  <h2>What we collect</h2>
+  <ul>
+    <li><strong>On your device (default):</strong> your learning progress — which lessons you've done, XP, streaks, and your onboarding choices — is stored in your browser's local storage. It stays on your device and is not sent to us unless you create an account.</li>
+    <li><strong>If you create an account:</strong> we store a login identifier and the same learning-progress data in a secure database so you can continue on another device. Each account can only ever see its own data (enforced by per-user database rules).</li>
+    <li><strong>If you submit a character or game:</strong> we store what you type in the submission form so we can review and feature it. Please don't include personal details you wouldn't want shared.</li>
+  </ul>
+  <p>We do <strong>not</strong> ask for or need your home address, and we ask you never to share passwords, phone numbers, or precise location.</p>
+
+  <h2>Our AI assistant (Moya)</h2>
+  <p>Moya is an <strong>AI assistant</strong>, not a person. It helps you learn to code and find your way around MoyaCode. To power Moya's chat, the messages you send are processed by <strong>Anthropic's Claude</strong> AI service under their terms. Moya is instructed never to ask for your personal information, and we do not use your chats to build a profile of you. Please keep personal details out of the chat.</p>
+
+  <h2>How we use information</h2>
+  <ul>
+    <li>To show your progress and recommend what to learn next.</li>
+    <li>To review and feature student submissions (with review before anything is shown publicly).</li>
+    <li>To keep the service safe and working.</li>
+  </ul>
+  <p>We do <strong>not</strong> sell your information or use it for advertising.</p>
+
+  <h2>Your rights and choices</h2>
+  <p>You can clear the data stored on your device at any time by clearing your browser storage. If you have an account and want your data removed, or if a parent or teacher has a question, use the contact path below. We follow the principles of Nigeria's <strong>Data Protection Act (NDPA 2023)</strong> and child-privacy standards such as COPPA.</p>
+
+  <div class="box">
+    <strong>Parents & teachers:</strong> MoyaCode is meant to be used with your guidance. See our <a href="/child-safety" style="color:var(--c-teal)">Child-Safety page</a> for how we protect students and how to report a concern.
+  </div>
+
+  <h2>Contact</h2>
+  <p>Questions about privacy? Use the "Report a problem" option in the Moya assistant, or have a parent or teacher reach out to the MoyaCode team through your school coordinator.</p>
+</section>
+{% endblock %}
