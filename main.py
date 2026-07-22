@@ -31,9 +31,9 @@ BASE_DIR = Path(__file__).resolve().parent
 
 # Supabase — defaults mirror js/supabase.js so it works out of the box,
 # but override them via a .env file (see .env.example) for production.
-SUPABASE_URL = os.getenv("SUPABASE_URL", "https://bzlchdijdpjjobemrcci.supabase.co")
+SUPABASE_URL = os.getenv("SUPABASE_URL", "https://meskscsjwiseelrvzqaj.supabase.co")
 SUPABASE_KEY = os.getenv(
-    "SUPABASE_KEY", "sb_publishable_qm4IIrY9y-Hal7LVBqBW8Q_a8eyO708"
+    "SUPABASE_KEY", "sb_publishable_wAAwr4ISpIXRlhz2ZdfGXQ_0nJaw8QH"
 )
 REST = f"{SUPABASE_URL}/rest/v1"
 SB_HEADERS = {
@@ -64,8 +64,8 @@ _CSP = (
     "img-src 'self' data: blob: https:; "
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; "
     "font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; "
-    "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; "
-    "connect-src 'self' https://*.supabase.co; "
+    "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://esm.sh; "
+    "connect-src 'self' https://*.supabase.co https://esm.sh; "
     "frame-src 'self'; "
     "frame-ancestors 'self'; "
     "base-uri 'self'; "

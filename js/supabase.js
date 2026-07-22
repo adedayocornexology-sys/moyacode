@@ -8,7 +8,10 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-export const SUPABASE_URL  = 'https://bzlchdijdpjjobemrcci.supabase.co';
-const        SUPABASE_ANON = 'sb_publishable_qm4IIrY9y-Hal7LVBqBW8Q_a8eyO708';
+// MoyaCode's database lives in this (active) Supabase project. The original
+// MoyaCode project was paused on the free tier, so student auth + progress,
+// games, and character submissions all live here now.
+export const SUPABASE_URL  = 'https://meskscsjwiseelrvzqaj.supabase.co';
+const        SUPABASE_ANON = 'sb_publishable_wAAwr4ISpIXRlhz2ZdfGXQ_0nJaw8QH';
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON);
