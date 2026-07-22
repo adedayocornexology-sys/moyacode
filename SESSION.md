@@ -1,7 +1,24 @@
 # MoyaCode — Session Log
 
 > Resume point for the MoyaCode web app. Read this first to continue.
-> Last updated: **2026-07-08**
+> Last updated: **2026-07-22**
+
+---
+
+## 2026-07-22 — 🚀 THE FULL APP IS LIVE: https://moyacode.vercel.app
+
+Shipped the whole FastAPI app to production on Vercel (previously local-only; only the static character form was public). No app-code changes — pure deploy plumbing:
+
+- **`api/index.py`** — Vercel serverless entrypoint. Puts the repo root on `sys.path` and re-exports `main.app` (an ASGI app), which Vercel's Python runtime serves directly.
+- **`vercel.json`** — `functions."api/index.py".includeFiles: "**"` bundles every runtime file (templates/, knowledge/, all root `*.html`, `js/`, `css/`, tokens/components CSS) into the function; `rewrites` sends every path to the function so FastAPI's routing + `StaticFiles` mount + Jinja all work exactly as they do locally. The app sees the original URL, so `/`, `/torch`, `/api/games`, `/api/wiki/*`, `/api/assistant` all resolve.
+- **`.vercelignore`** — keeps `.env`, caches, and heavy unused media out of the upload.
+- **Env:** `ANTHROPIC_API_KEY` set in Vercel prod (founder's Cornexology key, ~$5 cap, auto-reload OFF) → Moya free-text chat works live on Haiku. Verified with a real round-trip.
+- Vercel project name is **`moyacode`** (separate from the older static `moyacode-live`).
+- Redeploy: `npx vercel --prod --yes` from the repo root. Build ~4s.
+
+**Verified live (all 200):** `/` (real homepage), `/torch`, `/tracks`, `/api/wiki/search?q=moyacoin` (real data), `/js/assistant.js`, `/tokens.css`, and `POST /api/assistant` returns a real Claude answer.
+
+**⚠️ OPEN fast-follow — harden `/api/assistant`:** it's a public, unauthenticated endpoint hitting the founder's paid key. Risk is bounded (auto-reload OFF caps loss at ~$5), but add an Origin/Referer check + rate-limit before promoting the site widely. In-memory throttling won't work on serverless (isolated invocations) — use Vercel's firewall/rate-limit or a per-request header check.
 
 ---
 
