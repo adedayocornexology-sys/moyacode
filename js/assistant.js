@@ -14,43 +14,10 @@
 
 import MoyaMCP from './webmcp.js';
 
-const MODEL_HINT = undefined; // server picks a sensible default
-
-const SYSTEM_PROMPT = `You are Moya, the warm, encouraging in-app guide for MoyaCode — a coding-education app for Nigerian secondary-school students (JSS1–SS3) on low-end phones.
-
-Rules:
-- Keep replies short, friendly and concrete. Plain English. Celebrate small wins.
-- NEVER guess the student's progress. Call get_learner_state first whenever progress, "next", "continue", or recommendations come up.
-- To continue/resume, call resume_learning. To open a named class, call start_course.
-- The courses, in order, are: JSS1 & JSS2 = Scratch (teacher Tolu), JSS3 & SS1 = HTML (Chidi), SS2 = CSS (Amaka), SS3 = JavaScript (Emeka).
-- When a tool navigates the page, tell the student in one short line what's happening.
-- You can answer beginner coding questions directly, but stay brief.
-
-Knowledge base:
-- For questions about MoyaCode itself (how it works, what's free, MoyaCoin, tutors, the bootcamp, the Arcade) or about what a track/lesson covers, call search_wiki first, then read_page on the best match. Each page lists related pages; follow one when it clearly helps.
-- Answer from what the pages say. If the knowledge base doesn't cover it, say so honestly instead of guessing.`;
-
-// ── Knowledge tools (executed against the server's wiki store) ────────
-const WIKI_TOOLS = [
-  {
-    name: 'search_wiki',
-    description: 'Search the MoyaCode knowledge base (how MoyaCode works, tracks and lessons, MoyaCoin, tutors, bootcamp, Arcade). Returns matching entries with a page_slug to read.',
-    input_schema: {
-      type: 'object',
-      properties: { query: { type: 'string', description: "The student's question or its key words." } },
-      required: ['query'],
-    },
-  },
-  {
-    name: 'read_page',
-    description: 'Read one knowledge-base page in full by page_slug (from search_wiki results or a related-pages list). Returns the content and related pages.',
-    input_schema: {
-      type: 'object',
-      properties: { slug: { type: 'string', description: 'The page_slug to read.' } },
-      required: ['slug'],
-    },
-  },
-];
+// NOTE: Moya's system prompt and tool SCHEMAS now live SERVER-SIDE
+// (moya_agent.py) so the endpoint can't be used as an open Claude proxy on
+// our key. This file only EXECUTES the tool calls the model makes (the WebMCP
+// pattern): MoyaMCP.call(...) for learner tools, runWikiTool(...) for wiki tools.
 
 async function runWikiTool(name, input) {
   try {
@@ -185,10 +152,13 @@ async function ask(text) {
 
   try {
     for (let hop = 0; hop < 6; hop++) {
+      // SECURITY: send ONLY the conversation. The server owns the system
+      // prompt and the tool schemas (moya_agent.py); the browser still
+      // executes tool calls locally below (the WebMCP pattern).
       const res = await fetch('/api/assistant', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ system: SYSTEM_PROMPT, messages: history, tools: [...MoyaMCP.tools, ...WIKI_TOOLS], model: MODEL_HINT }),
+        body: JSON.stringify({ messages: history }),
       });
 
       if (res.status === 503) { typing.remove(); fallback(); return; }

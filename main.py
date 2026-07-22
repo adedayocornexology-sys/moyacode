@@ -22,6 +22,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field
 
+import moya_agent
 import wiki_store
 
 load_dotenv()
@@ -49,6 +50,44 @@ ANTHROPIC_MODEL = os.getenv("ANTHROPIC_MODEL", "claude-haiku-4-5-20251001")
 
 app = FastAPI(title="MoyaCode")
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+
+
+# ── Security headers (OWASP baseline) ────────────────────────────────
+# The pages use heavy inline styles/scripts and a few known CDNs (Google
+# Fonts, jsDelivr, cdnjs) plus the browser Supabase client, so the CSP
+# allows those explicitly + 'unsafe-inline'. The high-value, zero-risk
+# protections (clickjacking, MIME sniffing, referrer leakage, HSTS) are
+# always on. Tighten script-src away from 'unsafe-inline' later once the
+# inline scripts are externalised.
+_CSP = (
+    "default-src 'self'; "
+    "img-src 'self' data: blob: https:; "
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; "
+    "font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; "
+    "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; "
+    "connect-src 'self' https://*.supabase.co; "
+    "frame-src 'self'; "
+    "frame-ancestors 'self'; "
+    "base-uri 'self'; "
+    "object-src 'none'; "
+    "form-action 'self'"
+)
+
+
+@app.middleware("http")
+async def security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers.setdefault("Content-Security-Policy", _CSP)
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
+    response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    response.headers.setdefault(
+        "Permissions-Policy", "geolocation=(), microphone=(), camera=()"
+    )
+    response.headers.setdefault(
+        "Strict-Transport-Security", "max-age=31536000; includeSubDomains"
+    )
+    return response
 
 
 # ── Page routes (real server-side routing) ───────────────────────────
@@ -154,32 +193,54 @@ async def add_feedback(fb: FeedbackIn):
 
 
 # ── Assistant relay (WebMCP brain for "Moya") ────────────────────────
-# Thin, stateless relay to Claude. The browser owns the tools (js/webmcp.js)
-# and executes them client-side in the student's own session; this endpoint
-# is only the language brain. It passes the client's tool definitions through
-# so there is a single source of truth for tools (the browser).
+# Stateless relay to Claude. SECURITY: the server — not the browser — owns the
+# system prompt and the tool schemas (see moya_agent.py). The client sends ONLY
+# conversation `messages`; any client-supplied system/tools/model are ignored.
+# This prevents the endpoint from being used as an open Claude proxy on our key.
+# The browser still EXECUTES the WebMCP tools locally (the WebMCP pattern).
 class AssistantIn(BaseModel):
+    # Only `messages` is read from the client. Any client-supplied
+    # `system`/`tools`/`model` are ignored (not "forbidden") so that an
+    # already-loaded older client keeps working during the rollout — the
+    # server builds the upstream call purely from moya_agent, never from
+    # client input, so ignoring the extras is equally secure.
+    model_config = {"extra": "ignore"}
     messages: list[dict]
-    tools: list[dict] | None = None
-    system: str | None = None
-    model: str | None = None
 
 
 @app.post("/api/assistant")
-async def assistant(payload: AssistantIn):
+async def assistant(payload: AssistantIn, request: Request):
     if not ANTHROPIC_API_KEY:
         # Not configured — tell the client to fall back to its no-LLM UI.
         raise HTTPException(status_code=503, detail="assistant_unavailable")
 
+    # 1) Origin/Referer allowlist — block other sites calling our key.
+    if not moya_agent.origin_allowed(
+        request.headers.get("origin"), request.headers.get("referer")
+    ):
+        raise HTTPException(status_code=403, detail="origin_not_allowed")
+
+    # 2) Best-effort rate limit (per warm instance; Vercel Firewall is the
+    #    real limiter — see moya_agent.rate_limited).
+    client_ip = (request.headers.get("x-forwarded-for", "") or "").split(",")[0].strip() or (
+        request.client.host if request.client else "unknown"
+    )
+    if moya_agent.rate_limited(client_ip):
+        raise HTTPException(status_code=429, detail="rate_limited")
+
+    # 3) Validate the conversation payload (size/shape/roles).
+    err = moya_agent.validate_messages(payload.messages)
+    if err:
+        raise HTTPException(status_code=400, detail=err)
+
+    # 4) Build the upstream call with the SERVER-OWNED prompt + tools.
     body = {
-        "model": payload.model or ANTHROPIC_MODEL,
-        "max_tokens": 1024,
+        "model": ANTHROPIC_MODEL,
+        "max_tokens": moya_agent.MAX_TOKENS,
+        "system": moya_agent.MOYA_SYSTEM_PROMPT,
+        "tools": moya_agent.MOYA_TOOLS,
         "messages": payload.messages,
     }
-    if payload.system:
-        body["system"] = payload.system
-    if payload.tools:
-        body["tools"] = payload.tools
 
     try:
         async with httpx.AsyncClient(timeout=45) as client:
